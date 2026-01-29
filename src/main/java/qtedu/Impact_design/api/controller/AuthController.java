@@ -20,6 +20,13 @@ import qtedu.Impact_design.domain.service.AuthService;
 public class AuthController {
 
     private final AuthService authService;
+    private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
+
+    // 테스트용 - 나중에 삭제
+    @GetMapping("/encode")
+    public String encode(@RequestParam String password) {
+        return passwordEncoder.encode(password);
+    }
 
     @PostMapping("/login")
     public ResponseEntity<HttpResponse<TokenResponse>> login(

@@ -41,7 +41,7 @@ public class SecurityConfig {
                                 "/api/auth/teacher/login",
                                 "/api/auth/admin/login",
                                 "/api/auth/signup",
-                                "/api/auth/logout",
+                                "/api/auth/encode",
                                 "/api/ai/**",
                                 "/docs/**",
                                 "/health",
