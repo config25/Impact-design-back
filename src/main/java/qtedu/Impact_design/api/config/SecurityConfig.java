@@ -42,9 +42,7 @@ public class SecurityConfig {
                                 "/api/auth/admin/login",
                                 "/api/auth/signup",
                                 "/api/auth/logout",
-                                "/api/user/account-id",
-                                "/api/auth/find/password",
-                                "/api/auth/kakao",
+                                "/api/ai/**",
                                 "/docs/**",
                                 "/health",
 

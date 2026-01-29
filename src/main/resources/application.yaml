@@ -20,3 +20,22 @@ jwt:
   secret: REDACTED_JWT_SECRET
   access-expiration: 3600000
   refresh-expiration: 604800000
+
+openai:
+  api-key: ${OPENAI_API_KEY:REDACTED_OPENAI_KEY}
+  base-url: https://api.openai.com/v1
+
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_ACCESS_KEY:REDACTED_AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY:REDACTED_AWS_SECRET_KEY}
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
+    s3:
+      bucket: ${S3_BUCKET:futurefinder-bucket}
+      base-url: https://s3.ap-northeast-2.amazonaws.com

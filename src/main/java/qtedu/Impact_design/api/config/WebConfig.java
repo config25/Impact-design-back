@@ -6,6 +6,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import qtedu.Impact_design.api.util.converter.StringToFileCategoryConverter;
 import qtedu.Impact_design.api.util.security.UserArgumentResolver;
 
 import java.util.List;
@@ -17,6 +18,11 @@ public class WebConfig implements WebMvcConfigurer {
 
     public WebConfig(UserArgumentResolver userArgumentResolver) {
         this.userArgumentResolver = userArgumentResolver;
+    }
+
+    @Override
+    public void addFormatters(FormatterRegistry registry) {
+        registry.addConverter(new StringToFileCategoryConverter());
     }
 
     @Override

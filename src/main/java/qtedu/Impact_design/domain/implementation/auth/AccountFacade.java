@@ -1,4 +1,4 @@
-package qtedu.Impact_design.domain.implementation;
+package qtedu.Impact_design.domain.implementation.auth;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,7 +19,7 @@ import qtedu.Impact_design.storage.jpaentity.User;
 
 @Component
 @RequiredArgsConstructor
-public class AuthImplementation {
+public class AccountFacade {
 
     private final UserinfoRepository userinfoRepository;
     private final LoggedInRepository loggedInRepository;
