@@ -1,10 +1,12 @@
 package qtedu.Impact_design.api.util.security;
 
-import ch.qos.logback.core.joran.sanity.Pair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import qtedu.Impact_design.common.error.AuthorizationException;
 import qtedu.Impact_design.common.error.ErrorCode;
+import qtedu.Impact_design.domain.model.JwtToken;
+import qtedu.Impact_design.domain.model.RefreshToken;
 import qtedu.Impact_design.domain.model.UserId;
 
 import io.jsonwebtoken.*;
@@ -52,7 +54,7 @@ public class JwtTokenUtil {
     }
 
     public RefreshToken createRefreshToken(UserId userId) {
-        Claims claims = Jwts.claims().setSubject(userId.getId());
+        Claims claims = Jwts.claims().setSubject(String.valueOf(userId.getId())); // 🔥 String으로
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + refreshExpiration);
 
@@ -83,7 +85,8 @@ public class JwtTokenUtil {
 
     public UserId getUserIdFromToken(String token) {
         Claims claims = getClaimsFromToken(cleanedToken(token));
-        return UserId.of(claims.getSubject());
+        Long userId = Long.valueOf(claims.getSubject()); // 🔥 String → Long
+        return UserId.of(userId);
     }
 
     private Claims getClaimsFromToken(String token) {

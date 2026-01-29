@@ -18,6 +18,7 @@ public enum ErrorCode {
     TOKEN_EXPIRED("AUTH_2", "토큰이 만료되었습니다."),
     INVALID_TOKEN("AUTH_3", "토큰을 확인해주세요"),
     WRONG_PASSWORD("AUTH_4", "비밀번호가 틀렸습니다."),
+    ACCESS_DENIED("AUTH_5", "권한이 없습니다."),
 
     // Common
     PATH_WRONG("COMMON_1", "잘못된 메세드입니다."), // 코드, 메시지 순
