@@ -42,7 +42,10 @@ public enum ErrorCode {
     USER_ALREADY_CREATED("USER_3", "이미 가입된 사용자입니다."),
     USER_NOT_CREATED("USER_4", "가입되지 않은 사용자입니다."),
     USER_PUSH_TOKEN_NOT_FOUND("USER_5", "푸시 토큰을 찾을 수 없음."),
-    USER_NICKNAME_EXISTS("USER_6", "이미 존재하는 유저 닉네임입니다.");
+    USER_NICKNAME_EXISTS("USER_6", "이미 존재하는 유저 닉네임입니다."),
+
+    // Team
+    CODE_NOT_FOUND("TEAM_1", "코드가 존재하지 않습니다.");
 
 
 

@@ -9,4 +9,5 @@ public class SignupRequest {
     private String loginId;
     private String password;
     private String code;
+    private Integer teamId;
 }

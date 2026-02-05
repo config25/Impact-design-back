@@ -5,8 +5,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import qtedu.Impact_design.api.dto.request.auth.LoginRequest;
 import qtedu.Impact_design.api.dto.request.auth.SignupRequest;
+import qtedu.Impact_design.api.dto.response.auth.TeamInfoResponse;
 import qtedu.Impact_design.api.dto.response.auth.TokenResponse;
 import qtedu.Impact_design.api.util.ResponseHelper;
+
+import java.util.List;
 import qtedu.Impact_design.api.util.security.CurrentUser;
 import qtedu.Impact_design.common.response.HttpResponse;
 import qtedu.Impact_design.common.response.SuccessOnlyResponse;
@@ -52,11 +55,27 @@ public class AuthController {
         return ResponseHelper.success(response);
     }
 
+    @GetMapping("/check-code")
+    public ResponseEntity<HttpResponse<List<TeamInfoResponse>>> checkCode(
+            @RequestParam String code
+    ) {
+        List<TeamInfoResponse> response = authService.checkCode(code);
+        return ResponseHelper.success(response);
+    }
+
+    @GetMapping("/check-id")
+    public ResponseEntity<HttpResponse<SuccessOnlyResponse>> checkLoginId(
+            @RequestParam String loginId
+    ) {
+        authService.checkLoginIdDuplicate(loginId);
+        return ResponseHelper.successOnly();
+    }
+
     @PostMapping("/signup")
     public ResponseEntity<HttpResponse<SuccessOnlyResponse>> signup(
             @RequestBody SignupRequest request
     ) {
-        authService.signup(request.getLoginId(), request.getPassword(), request.getCode());
+        authService.signup(request.getLoginId(), request.getPassword(), request.getCode(), request.getTeamId());
         return ResponseHelper.successOnly();
     }
 

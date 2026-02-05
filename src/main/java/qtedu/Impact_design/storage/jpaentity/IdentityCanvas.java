@@ -58,6 +58,26 @@ public class IdentityCanvas {
     @Column(name = "new_value", length = 255)
     private String newValue;
 
-    @Column(name = "user_id", nullable = false)
+    @Column(name = "user_id", nullable = false, unique = true)
     private Long userId;
+
+    public void update(String mission, String vision, String value,
+                       String macro, String tech, String customer, String competitor,
+                       String capability, String culture, String structure, String etc,
+                       String newMission, String newVision, String newValue) {
+        this.mission = mission;
+        this.vision = vision;
+        this.value = value;
+        this.macro = macro;
+        this.tech = tech;
+        this.customer = customer;
+        this.competitor = competitor;
+        this.capability = capability;
+        this.culture = culture;
+        this.structure = structure;
+        this.etc = etc;
+        this.newMission = newMission;
+        this.newVision = newVision;
+        this.newValue = newValue;
+    }
 }

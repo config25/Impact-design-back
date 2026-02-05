@@ -64,6 +64,28 @@ public class ImpactCheck {
     @Column(name = "q16_text", columnDefinition = "TEXT")
     private String q16Text;
 
-    @Column(name = "user_id", nullable = false)
+    @Column(name = "user_id", nullable = false, unique = true)
     private Long userId;
+
+    public void update(Integer q1Score, Integer q2Score, Integer q3Score, Integer q4Score,
+                       Integer q5Score, Integer q6Score, Integer q7Score, Integer q8Score,
+                       Integer q9Score, Integer q10Score, Integer q11Score, Integer q12Score,
+                       String q13Text, String q14Text, String q15Text, String q16Text) {
+        this.q1Score = q1Score;
+        this.q2Score = q2Score;
+        this.q3Score = q3Score;
+        this.q4Score = q4Score;
+        this.q5Score = q5Score;
+        this.q6Score = q6Score;
+        this.q7Score = q7Score;
+        this.q8Score = q8Score;
+        this.q9Score = q9Score;
+        this.q10Score = q10Score;
+        this.q11Score = q11Score;
+        this.q12Score = q12Score;
+        this.q13Text = q13Text;
+        this.q14Text = q14Text;
+        this.q15Text = q15Text;
+        this.q16Text = q16Text;
+    }
 }

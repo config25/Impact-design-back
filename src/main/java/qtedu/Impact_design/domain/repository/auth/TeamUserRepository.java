@@ -1,0 +1,12 @@
+package qtedu.Impact_design.domain.repository.auth;
+
+import qtedu.Impact_design.domain.model.team.TeamUserModel;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface TeamUserRepository {
+    TeamUserModel save(TeamUserModel teamUserModel);
+    List<TeamUserModel> findByTeamId(Integer teamId);
+    Optional<TeamUserModel> findByUserId(Long userId);
+}
