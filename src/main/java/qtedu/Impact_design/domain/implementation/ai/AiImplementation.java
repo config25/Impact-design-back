@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import qtedu.Impact_design.api.dto.response.report.ReportResponse.FrequencyAnalysis;
 import qtedu.Impact_design.api.dto.response.report.ReportResponse.FrequencyItem;
-import qtedu.Impact_design.api.dto.response.report.ReportResponse.GoalAnalysis;
 import qtedu.Impact_design.api.dto.response.report.ReportResponse.VisionMissionValue;
 import qtedu.Impact_design.domain.implementation.ai.prompt.ReportPromptBuilder;
 import qtedu.Impact_design.domain.model.ai.AiModel;
@@ -19,7 +18,6 @@ import qtedu.Impact_design.external.ai.AiClientFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -47,116 +45,131 @@ public class AiImplementation {
         return client.chat(request);
     }
 
-    // ── 리포트 AI 분석 ──
+    // ── 리포트 통합 AI 분석 (1회 호출) ──
 
-    public FrequencyAnalysis analyzeFrequency(List<String> data, String category) {
-        FrequencyAnalysis fallback = FrequencyAnalysis.builder()
-                .allData(data)
-                .top4(Collections.emptyList())
-                .keywords(Collections.emptyList())
-                .aiSummary(Collections.emptyList())
-                .build();
+    public FullReportAiResult analyzeFullReport(
+            List<String> externalThreats,
+            List<String> internalLimitations,
+            List<String> visions,
+            List<String> missions,
+            List<String> values,
+            List<String> goalTitles,
+            List<String> tacticalPairs,
+            List<String> strategicActivityPairs
+    ) {
+        int totalData = externalThreats.size() + internalLimitations.size() +
+                visions.size() + missions.size() + values.size() +
+                goalTitles.size() + tacticalPairs.size() + strategicActivityPairs.size();
 
-        if (data.size() <= MIN_DATA_FOR_AI) {
-            return fallback;
+        if (totalData <= MIN_DATA_FOR_AI) {
+            return buildEmptyResult(externalThreats, internalLimitations,
+                    tacticalPairs.size(), strategicActivityPairs.size());
         }
 
         try {
-            JsonNode root = requestJson(ReportPromptBuilder.frequency(data, category));
+            String prompt = ReportPromptBuilder.fullReport(
+                    externalThreats, internalLimitations,
+                    visions, missions, values,
+                    goalTitles, tacticalPairs, strategicActivityPairs
+            );
 
+            // max_tokens 4096으로 충분한 응답 공간 확보
+            AiResponse response = chatWithOptions(AiModel.GPT_4_1_MINI, AI_JSON_SYSTEM_PROMPT, prompt, 0.3, 4096);
+            String rawContent = response.getContent();
+
+            JsonNode root = objectMapper.readTree(extractJson(rawContent));
+
+            return FullReportAiResult.builder()
+                    .externalThreats(parseFrequencyAnalysis(root, "externalThreats", externalThreats))
+                    .internalLimitations(parseFrequencyAnalysis(root, "internalLimitations", internalLimitations))
+                    .visionMissionValue(parseVisionMissionValue(root))
+                    .goalKeywords(parseStringList(root, "goalKeywords"))
+                    .tacticalOrder(parseIntList(root, "tacticalOrder", tacticalPairs.size()))
+                    .strategicActivityOrder(parseIntList(root, "strategicActivityOrder", strategicActivityPairs.size()))
+                    .build();
+
+        } catch (Exception e) {
+            log.warn("AI 통합 분석 실패: {}", e.getMessage());
+            return buildEmptyResult(externalThreats, internalLimitations,
+                    tacticalPairs.size(), strategicActivityPairs.size());
+        }
+    }
+
+    private FullReportAiResult buildEmptyResult(List<String> externalThreats, List<String> internalLimitations,
+                                                 int tacticalSize, int strategicActivitySize) {
+        // 기본 순서: 0, 1, 2, 3, ...
+        List<Integer> defaultTacticalOrder = new ArrayList<>();
+        for (int i = 0; i < tacticalSize; i++) defaultTacticalOrder.add(i);
+
+        List<Integer> defaultStrategicOrder = new ArrayList<>();
+        for (int i = 0; i < strategicActivitySize; i++) defaultStrategicOrder.add(i);
+
+        return FullReportAiResult.builder()
+                .externalThreats(FrequencyAnalysis.builder()
+                        .allData(externalThreats)
+                        .top4(Collections.emptyList())
+                        .keywords(Collections.emptyList())
+                        .aiSummary(Collections.emptyList())
+                        .build())
+                .internalLimitations(FrequencyAnalysis.builder()
+                        .allData(internalLimitations)
+                        .top4(Collections.emptyList())
+                        .keywords(Collections.emptyList())
+                        .aiSummary(Collections.emptyList())
+                        .build())
+                .visionMissionValue(VisionMissionValue.builder()
+                        .visionTop4(Collections.emptyList())
+                        .missionTop4(Collections.emptyList())
+                        .valueTop4(Collections.emptyList())
+                        .aiVision("").aiMission("").aiValue("")
+                        .build())
+                .goalKeywords(Collections.emptyList())
+                .tacticalOrder(defaultTacticalOrder)
+                .strategicActivityOrder(defaultStrategicOrder)
+                .build();
+    }
+
+    private FrequencyAnalysis parseFrequencyAnalysis(JsonNode root, String fieldName, List<String> allData) {
+        JsonNode node = root.get(fieldName);
+        if (node == null) {
             return FrequencyAnalysis.builder()
-                    .allData(data)
-                    .top4(parseFrequencyItems(root, "top4"))
-                    .keywords(parseStringList(root, "keywords"))
-                    .aiSummary(parseStringList(root, "summary"))
+                    .allData(allData)
+                    .top4(Collections.emptyList())
+                    .keywords(Collections.emptyList())
+                    .aiSummary(Collections.emptyList())
                     .build();
-        } catch (Exception e) {
-            log.warn("AI 빈도 분석 실패 [{}]: {}", category, e.getMessage());
-            return fallback;
         }
+
+        return FrequencyAnalysis.builder()
+                .allData(allData)
+                .top4(parseFrequencyItems(node, "top4"))
+                .keywords(parseStringList(node, "keywords"))
+                .aiSummary(parseStringList(node, "aiSummary"))
+                .build();
     }
 
-    public VisionMissionValue analyzeVisionMissionValue(List<String> visions, List<String> missions, List<String> values) {
-        VisionMissionValue fallback = VisionMissionValue.builder()
-                .visionTop4(Collections.emptyList())
-                .missionTop4(Collections.emptyList())
-                .valueTop4(Collections.emptyList())
-                .aiVision("").aiMission("").aiValue("")
-                .build();
-
-        int totalCount = visions.size() + missions.size() + values.size();
-        if (totalCount <= MIN_DATA_FOR_AI) {
-            return fallback;
-        }
-
-        try {
-            JsonNode root = requestJson(ReportPromptBuilder.visionMissionValue(visions, missions, values));
-
+    private VisionMissionValue parseVisionMissionValue(JsonNode root) {
+        JsonNode node = root.get("visionMissionValue");
+        if (node == null) {
             return VisionMissionValue.builder()
-                    .visionTop4(parseFrequencyItems(root, "visionTop4"))
-                    .missionTop4(parseFrequencyItems(root, "missionTop4"))
-                    .valueTop4(parseFrequencyItems(root, "valueTop4"))
-                    .aiVision(root.has("aiVision") ? root.get("aiVision").asText() : "")
-                    .aiMission(root.has("aiMission") ? root.get("aiMission").asText() : "")
-                    .aiValue(root.has("aiValue") ? root.get("aiValue").asText() : "")
+                    .visionTop4(Collections.emptyList())
+                    .missionTop4(Collections.emptyList())
+                    .valueTop4(Collections.emptyList())
+                    .aiVision("").aiMission("").aiValue("")
                     .build();
-        } catch (Exception e) {
-            log.warn("AI 비전/미션/가치 분석 실패: {}", e.getMessage());
-            return fallback;
         }
-    }
 
-    public GoalAnalysis analyzeGoals(List<String> goalData) {
-        GoalAnalysis fallback = GoalAnalysis.builder()
-                .goals(Collections.emptyList())
-                .keywords(Collections.emptyList())
+        return VisionMissionValue.builder()
+                .visionTop4(parseFrequencyItems(node, "visionTop4"))
+                .missionTop4(parseFrequencyItems(node, "missionTop4"))
+                .valueTop4(parseFrequencyItems(node, "valueTop4"))
+                .aiVision(node.has("aiVision") ? node.get("aiVision").asText() : "")
+                .aiMission(node.has("aiMission") ? node.get("aiMission").asText() : "")
+                .aiValue(node.has("aiValue") ? node.get("aiValue").asText() : "")
                 .build();
-
-        if (goalData.size() <= MIN_DATA_FOR_AI) {
-            return fallback;
-        }
-
-        try {
-            JsonNode root = requestJson(ReportPromptBuilder.goals(goalData));
-
-            return GoalAnalysis.builder()
-                    .goals(parseFrequencyItems(root, "goals"))
-                    .keywords(parseStringList(root, "keywords"))
-                    .build();
-        } catch (Exception e) {
-            log.warn("AI 목표 분석 실패: {}", e.getMessage());
-            return fallback;
-        }
-    }
-
-    public List<FrequencyItem> analyzeSimpleFrequency(List<String> data, String category) {
-        if (data.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        List<FrequencyItem> fallback = data.stream()
-                .map(d -> FrequencyItem.builder().content(d).count(1).build())
-                .collect(Collectors.toList());
-
-        if (data.size() <= MIN_DATA_FOR_AI) {
-            return fallback;
-        }
-
-        try {
-            JsonNode root = requestJson(ReportPromptBuilder.simpleFrequency(data, category));
-            return parseFrequencyItems(root, "items");
-        } catch (Exception e) {
-            log.warn("AI 단순 빈도 분석 실패 [{}]: {}", category, e.getMessage());
-            return fallback;
-        }
     }
 
     // ── 공통 유틸 ──
-
-    private JsonNode requestJson(String userPrompt) throws Exception {
-        AiResponse response = chat(AiModel.GPT_4_1_MINI, AI_JSON_SYSTEM_PROMPT, userPrompt);
-        return objectMapper.readTree(extractJson(response.getContent()));
-    }
 
     private String extractJson(String content) {
         int start = content.indexOf("{");
@@ -188,5 +201,33 @@ public class AiImplementation {
             }
         }
         return list;
+    }
+
+    private List<Integer> parseIntList(JsonNode root, String fieldName, int expectedSize) {
+        List<Integer> list = new ArrayList<>();
+        if (root.has(fieldName) && root.get(fieldName).isArray()) {
+            for (JsonNode node : root.get(fieldName)) {
+                list.add(node.asInt());
+            }
+        }
+        // AI가 정렬 배열을 제대로 반환하지 않았으면 기본 순서 반환
+        if (list.size() != expectedSize) {
+            list.clear();
+            for (int i = 0; i < expectedSize; i++) list.add(i);
+        }
+        return list;
+    }
+
+    // ── 통합 분석 결과 DTO ──
+
+    @lombok.Getter
+    @lombok.Builder
+    public static class FullReportAiResult {
+        private final FrequencyAnalysis externalThreats;
+        private final FrequencyAnalysis internalLimitations;
+        private final VisionMissionValue visionMissionValue;
+        private final List<String> goalKeywords;
+        private final List<Integer> tacticalOrder;
+        private final List<Integer> strategicActivityOrder;
     }
 }

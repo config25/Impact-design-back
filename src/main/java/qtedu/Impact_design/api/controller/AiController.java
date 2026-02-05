@@ -16,7 +16,7 @@ import qtedu.Impact_design.domain.service.AiService;
 public class AiController {
 
     private final AiService aiService;
-
+    // 테스트용
     @PostMapping("/chat")
     public ResponseEntity<HttpResponse<AiChatResponse>> chat(
             @RequestBody AiChatRequest request

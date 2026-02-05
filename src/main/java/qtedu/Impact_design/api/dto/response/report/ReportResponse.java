@@ -19,11 +19,9 @@ public class ReportResponse {
 
     private GoalAnalysis flowCanvasGoals;
 
-    private List<FrequencyItem> tacticalMetrics;
-    private List<FrequencyItem> tacticalGoals;
+    private List<TacticalItem> tacticals;
 
-    private List<FrequencyItem> activityMetrics;
-    private List<FrequencyItem> interCriteria;
+    private List<StrategicActivityItem> strategicActivities;
 
     private List<WinCanvasWithScore> quickWinCanvasList;
 
@@ -77,8 +75,30 @@ public class ReportResponse {
     @Getter
     @Builder
     public static class GoalAnalysis {
-        private List<FrequencyItem> goals;
+        private List<GoalItem> goals;
         private List<String> keywords;
+    }
+
+    @Getter
+    @Builder
+    public static class GoalItem {
+        private String title;
+        private String description;
+        private Integer count;
+    }
+
+    @Getter
+    @Builder
+    public static class TacticalItem {
+        private String metric;
+        private String goal;
+    }
+
+    @Getter
+    @Builder
+    public static class StrategicActivityItem {
+        private String activityMetric;
+        private String interCriteria;
     }
 
     @Getter

@@ -25,10 +25,8 @@ public class ReportFacade {
                 .internalLimitations(aiResult.getInternalLimitations())
                 .visionMissionValue(aiResult.getVisionMissionValue())
                 .flowCanvasGoals(aiResult.getFlowCanvasGoals())
-                .tacticalMetrics(aiResult.getTacticalMetrics())
-                .tacticalGoals(aiResult.getTacticalGoals())
-                .activityMetrics(aiResult.getActivityMetrics())
-                .interCriteria(aiResult.getInterCriteria())
+                .tacticals(aiResult.getTacticals())
+                .strategicActivities(aiResult.getStrategicActivities())
                 .quickWinCanvasList(scoreResult.getQuickWinCanvasList())
                 .buildWinCanvasList(scoreResult.getBuildWinCanvasList())
                 .build();

@@ -2,11 +2,8 @@ package qtedu.Impact_design.domain.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import qtedu.Impact_design.api.dto.response.report.ReportResponse.FrequencyAnalysis;
-import qtedu.Impact_design.api.dto.response.report.ReportResponse.FrequencyItem;
-import qtedu.Impact_design.api.dto.response.report.ReportResponse.GoalAnalysis;
-import qtedu.Impact_design.api.dto.response.report.ReportResponse.VisionMissionValue;
 import qtedu.Impact_design.domain.implementation.ai.AiImplementation;
+import qtedu.Impact_design.domain.implementation.ai.AiImplementation.FullReportAiResult;
 import qtedu.Impact_design.domain.model.ai.AiModel;
 import qtedu.Impact_design.domain.model.ai.AiResponse;
 
@@ -27,19 +24,20 @@ public class AiService {
         return aiImplementation.chatWithOptions(model, systemPrompt, userPrompt, temperature, maxTokens);
     }
 
-    public FrequencyAnalysis analyzeFrequency(List<String> data, String category) {
-        return aiImplementation.analyzeFrequency(data, category);
-    }
-
-    public VisionMissionValue analyzeVisionMissionValue(List<String> visions, List<String> missions, List<String> values) {
-        return aiImplementation.analyzeVisionMissionValue(visions, missions, values);
-    }
-
-    public GoalAnalysis analyzeGoals(List<String> goalData) {
-        return aiImplementation.analyzeGoals(goalData);
-    }
-
-    public List<FrequencyItem> analyzeSimpleFrequency(List<String> data, String category) {
-        return aiImplementation.analyzeSimpleFrequency(data, category);
+    public FullReportAiResult analyzeFullReport(
+            List<String> externalThreats,
+            List<String> internalLimitations,
+            List<String> visions,
+            List<String> missions,
+            List<String> values,
+            List<String> goalTitles,
+            List<String> tacticalPairs,
+            List<String> strategicActivityPairs
+    ) {
+        return aiImplementation.analyzeFullReport(
+                externalThreats, internalLimitations,
+                visions, missions, values,
+                goalTitles, tacticalPairs, strategicActivityPairs
+        );
     }
 }
