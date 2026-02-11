@@ -7,6 +7,7 @@ import qtedu.Impact_design.domain.repository.user.UserinfoRepository;
 import qtedu.Impact_design.storage.jpaentity.user.Userinfo;
 import qtedu.Impact_design.storage.jparepository.user.UserinfoJpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -35,9 +36,22 @@ public class UserinfoRepositoryImpl implements UserinfoRepository {
                 .userName(model.getUserName())
                 .code(model.getCode())
                 .userRole(model.getUserRole())
+                .writer(model.getWriter())
                 .build();
         Userinfo saved = userinfoJpaRepository.save(entity);
         return toModel(saved);
+    }
+
+    @Override
+    public Optional<UserinfoModel> findByUserId(Long userId) {
+        return userinfoJpaRepository.findById(userId)
+                .map(this::toModel);
+    }
+
+    @Override
+    public Optional<UserinfoModel> findWriterByUserIds(List<Long> userIds) {
+        return userinfoJpaRepository.findFirstByUserIdInAndWriter(userIds, "1")
+                .map(this::toModel);
     }
 
     private UserinfoModel toModel(Userinfo entity) {
@@ -48,6 +62,7 @@ public class UserinfoRepositoryImpl implements UserinfoRepository {
                 .userName(entity.getUserName())
                 .code(entity.getCode())
                 .userRole(entity.getUserRole())
+                .writer(entity.getWriter())
                 .build();
     }
 }

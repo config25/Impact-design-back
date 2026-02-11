@@ -13,8 +13,10 @@ import java.util.List;
 import qtedu.Impact_design.api.util.security.CurrentUser;
 import qtedu.Impact_design.common.response.HttpResponse;
 import qtedu.Impact_design.common.response.SuccessOnlyResponse;
+import org.apache.commons.lang3.tuple.Pair;
 import qtedu.Impact_design.domain.model.JwtToken;
 import qtedu.Impact_design.domain.model.UserId;
+import qtedu.Impact_design.domain.model.en.UserRole;
 import qtedu.Impact_design.domain.service.AuthService;
 
 @RestController
@@ -47,10 +49,12 @@ public class AuthController {
     public ResponseEntity<HttpResponse<TokenResponse>> teacherLogin(
             @RequestBody LoginRequest request
     ) {
-        JwtToken jwtToken = authService.teacherLogin(request.getLoginId(), request.getPassword());
+        Pair<JwtToken, UserRole> result = authService.teacherLogin(request.getLoginId(), request.getPassword());
+        JwtToken jwtToken = result.getLeft();
         TokenResponse response = TokenResponse.of(
                 jwtToken.getAccessToken(),
-                jwtToken.getRefreshToken().getToken()
+                jwtToken.getRefreshToken().getToken(),
+                result.getRight().name()
         );
         return ResponseHelper.success(response);
     }

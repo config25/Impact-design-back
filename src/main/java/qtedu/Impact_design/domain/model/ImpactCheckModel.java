@@ -24,4 +24,5 @@ public class ImpactCheckModel {
     private final String q15Text;
     private final String q16Text;
     private final Long userId;
+    private final Boolean submitted;
 }

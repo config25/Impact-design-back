@@ -38,4 +38,9 @@ public class FlowCanvasService {
     public List<StrategicActivityModel> getStrategicActivitiesByGoalIds(List<Long> goalIds) {
         return flowCanvasReader.readStrategicActivitiesByGoalIds(goalIds);
     }
+
+    public FlowCanvasResponse submitFlowCanvas(Long userId) {
+        flowCanvasAppender.submit(userId);
+        return flowCanvasReader.read(userId);
+    }
 }

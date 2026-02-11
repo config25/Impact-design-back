@@ -33,4 +33,9 @@ public class QuickWinCanvasService {
     public List<FLetterOfIntentModel> getEvaluationsByCanvasIds(List<Long> canvasIds) {
         return quickWinCanvasReader.readEvaluationsByCanvasIds(canvasIds);
     }
+
+    public QuickWinCanvasResponse submitQuickWinCanvas(Long userId) {
+        quickWinCanvasAppender.submit(userId);
+        return quickWinCanvasReader.read(userId);
+    }
 }

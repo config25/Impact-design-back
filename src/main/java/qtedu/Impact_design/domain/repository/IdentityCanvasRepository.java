@@ -9,4 +9,6 @@ public interface IdentityCanvasRepository {
     Optional<IdentityCanvasModel> findByUserId(Long userId);
     IdentityCanvasModel save(IdentityCanvasModel identityCanvasModel);
     List<IdentityCanvasModel> findByUserIdIn(List<Long> userIds);
+    boolean existsSubmittedByUserId(Long userId);
+    void submitByUserId(Long userId);
 }

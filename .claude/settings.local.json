@@ -20,7 +20,11 @@
       "Bash(python -c:*)",
       "Bash(where:*)",
       "Bash(git rm:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(awk:*)",
+      "Bash(grep:*)",
+      "Bash(pip install:*)",
+      "Bash(node -e:*)"
     ]
   }
 }

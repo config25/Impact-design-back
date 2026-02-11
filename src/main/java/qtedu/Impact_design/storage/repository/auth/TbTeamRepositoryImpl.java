@@ -8,6 +8,7 @@ import qtedu.Impact_design.storage.jpaentity.teach.TbTeam;
 import qtedu.Impact_design.storage.jparepository.teach.TbTeamJpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
@@ -21,6 +22,18 @@ public class TbTeamRepositoryImpl implements TbTeamRepository {
         return tbTeamJpaRepository.findByCode(code).stream()
                 .map(this::toModel)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<TbTeamModel> findByCodeExcludingTeam(String code, Integer excludeTeamId) {
+        return tbTeamJpaRepository.findByCodeAndTeamIdNot(code, excludeTeamId).stream()
+                .map(this::toModel)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<TbTeamModel> findByTeamId(Integer teamId) {
+        return tbTeamJpaRepository.findByTeamId(teamId).map(this::toModel);
     }
 
     private TbTeamModel toModel(TbTeam entity) {

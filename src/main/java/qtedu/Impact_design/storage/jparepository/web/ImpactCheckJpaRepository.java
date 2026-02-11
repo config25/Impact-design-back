@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface ImpactCheckJpaRepository extends JpaRepository<ImpactCheck, Long> {
     Optional<ImpactCheck> findByUserId(Long userId);
     List<ImpactCheck> findByUserIdIn(List<Long> userIds);
+    boolean existsByUserIdAndSubmitted(Long userId, Boolean submitted);
 }

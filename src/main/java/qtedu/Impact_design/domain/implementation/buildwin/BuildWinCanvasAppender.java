@@ -5,6 +5,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import qtedu.Impact_design.api.dto.request.buildwin.BuildWinCanvasSaveRequest;
 import qtedu.Impact_design.api.dto.response.buildwin.BuildWinCanvasResponse;
+import qtedu.Impact_design.common.error.ConflictException;
+import qtedu.Impact_design.common.error.ErrorCode;
 import qtedu.Impact_design.domain.model.en.CanvasType;
 import qtedu.Impact_design.domain.model.win_canvas.*;
 import qtedu.Impact_design.domain.repository.win_canvas.*;
@@ -25,6 +27,10 @@ public class BuildWinCanvasAppender {
 
     @Transactional
     public BuildWinCanvasResponse append(Long userId, BuildWinCanvasSaveRequest request) {
+        if (winCanvasRepository.existsSubmittedByUserIdAndCanvasType(userId, CanvasType.BUILD)) {
+            throw new ConflictException(ErrorCode.ALREADY_SUBMITTED);
+        }
+
         WinCanvasModel canvas = winCanvasRepository.findByUserIdAndCanvasType(userId, CanvasType.BUILD)
                 .map(existing -> winCanvasRepository.save(WinCanvasModel.builder()
                         .canvasId(existing.getCanvasId())
@@ -156,5 +162,13 @@ public class BuildWinCanvasAppender {
                         .build());
             }
         }
+    }
+
+    @Transactional
+    public void submit(Long userId) {
+        if (winCanvasRepository.existsSubmittedByUserIdAndCanvasType(userId, CanvasType.BUILD)) {
+            throw new ConflictException(ErrorCode.ALREADY_SUBMITTED);
+        }
+        winCanvasRepository.submitByUserIdAndCanvasType(userId, CanvasType.BUILD);
     }
 }

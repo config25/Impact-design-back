@@ -61,6 +61,10 @@ public class IdentityCanvas {
     @Column(name = "user_id", nullable = false, unique = true)
     private Long userId;
 
+    @Column(name = "submitted", nullable = false)
+    @Builder.Default
+    private Boolean submitted = false;
+
     public void update(String mission, String vision, String value,
                        String macro, String tech, String customer, String competitor,
                        String capability, String culture, String structure, String etc,
@@ -79,5 +83,9 @@ public class IdentityCanvas {
         this.newMission = newMission;
         this.newVision = newVision;
         this.newValue = newValue;
+    }
+
+    public void submit() {
+        this.submitted = true;
     }
 }

@@ -12,4 +12,6 @@ import java.util.Optional;
 public interface WinCanvasJpaRepository extends JpaRepository<WinCanvas, Long> {
     Optional<WinCanvas> findByUserIdAndCanvasType(Long userId, CanvasType canvasType);
     List<WinCanvas> findByUserIdInAndCanvasType(List<Long> userIds, CanvasType canvasType);
+    boolean existsByUserIdAndCanvasTypeAndSubmittedTrue(Long userId, CanvasType canvasType);
+    boolean existsByUserIdAndCanvasTypeAndSubmitted(Long userId, CanvasType canvasType, Boolean submitted);
 }

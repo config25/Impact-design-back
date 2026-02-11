@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import qtedu.Impact_design.api.dto.response.impactcheck.ImpactCheckResponse;
 import qtedu.Impact_design.domain.model.ImpactCheckModel;
 import qtedu.Impact_design.domain.repository.ImpactCheckRepository;
+import qtedu.Impact_design.storage.jparepository.teach.TbGameJpaRepository;
 
 import java.util.List;
 
@@ -13,10 +14,12 @@ import java.util.List;
 public class ImpactCheckReader {
 
     private final ImpactCheckRepository impactCheckRepository;
+    private final TbGameJpaRepository tbGameJpaRepository;
 
     public ImpactCheckResponse read(Long userId) {
+        String gameName = tbGameJpaRepository.findGameNameByUserId(userId);
         return impactCheckRepository.findByUserId(userId)
-                .map(ImpactCheckResponse::from)
+                .map(model -> ImpactCheckResponse.from(model, gameName))
                 .orElse(null);
     }
 

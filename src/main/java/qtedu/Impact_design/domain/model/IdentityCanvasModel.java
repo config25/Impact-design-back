@@ -22,4 +22,5 @@ public class IdentityCanvasModel {
     private final String newVision;
     private final String newValue;
     private final Long userId;
+    private final Boolean submitted;
 }

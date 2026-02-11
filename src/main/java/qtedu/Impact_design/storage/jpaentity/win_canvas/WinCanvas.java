@@ -39,6 +39,10 @@ public class WinCanvas {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
+    @Column(name = "submitted", nullable = false)
+    @Builder.Default
+    private Boolean submitted = false;
+
     public void update(String strategicGoal, String taskName, String taskDescription,
                        String crisisSignal, String painTouchPoint) {
         this.strategicGoal = strategicGoal;
@@ -46,5 +50,9 @@ public class WinCanvas {
         this.taskDescription = taskDescription;
         this.crisisSignal = crisisSignal;
         this.painTouchPoint = painTouchPoint;
+    }
+
+    public void submit() {
+        this.submitted = true;
     }
 }

@@ -23,6 +23,7 @@ public class IdentityCanvasResponse {
     private String newVision;
     private String newValue;
     private Long userId;
+    private Boolean submitted;
 
     public static IdentityCanvasResponse from(IdentityCanvasModel model) {
         return IdentityCanvasResponse.builder()
@@ -42,6 +43,7 @@ public class IdentityCanvasResponse {
                 .newVision(model.getNewVision())
                 .newValue(model.getNewValue())
                 .userId(model.getUserId())
+                .submitted(model.getSubmitted())
                 .build();
     }
 }

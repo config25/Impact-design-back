@@ -5,6 +5,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import qtedu.Impact_design.api.dto.request.quickwin.QuickWinCanvasSaveRequest;
 import qtedu.Impact_design.api.dto.response.quickwin.QuickWinCanvasResponse;
+import qtedu.Impact_design.common.error.ConflictException;
+import qtedu.Impact_design.common.error.ErrorCode;
 import qtedu.Impact_design.domain.model.en.CanvasType;
 import qtedu.Impact_design.domain.model.win_canvas.*;
 import qtedu.Impact_design.domain.repository.win_canvas.*;
@@ -25,6 +27,10 @@ public class QuickWinCanvasAppender {
 
     @Transactional
     public QuickWinCanvasResponse append(Long userId, QuickWinCanvasSaveRequest request) {
+        if (winCanvasRepository.existsSubmittedByUserIdAndCanvasType(userId, CanvasType.QUICK)) {
+            throw new ConflictException(ErrorCode.ALREADY_SUBMITTED);
+        }
+
         // WinCanvas upsert (canvasType=QUICK)
         WinCanvasModel canvas = winCanvasRepository.findByUserIdAndCanvasType(userId, CanvasType.QUICK)
                 .map(existing -> winCanvasRepository.save(WinCanvasModel.builder()
@@ -157,5 +163,13 @@ public class QuickWinCanvasAppender {
                         .build());
             }
         }
+    }
+
+    @Transactional
+    public void submit(Long userId) {
+        if (winCanvasRepository.existsSubmittedByUserIdAndCanvasType(userId, CanvasType.QUICK)) {
+            throw new ConflictException(ErrorCode.ALREADY_SUBMITTED);
+        }
+        winCanvasRepository.submitByUserIdAndCanvasType(userId, CanvasType.QUICK);
     }
 }

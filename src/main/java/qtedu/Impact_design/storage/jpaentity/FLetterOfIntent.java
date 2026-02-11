@@ -78,8 +78,9 @@ public class FLetterOfIntent {
     @Column(name = "mdfcn_dt")
     private LocalDateTime mdfcnDt;
 
-    @Column(name = "commit_yn", length = 2)
-    private String commitYn;
+    @Column(name = "submitted", nullable = false)
+    @Builder.Default
+    private Boolean submitted = false;
 
     @Column(name = "team_id")
     private Integer teamId;
@@ -92,4 +93,31 @@ public class FLetterOfIntent {
 
     @Column(name = "canvas_id")
     private Long canvasId;
+
+    public void update(String investmentPrice, Integer score1, Integer score2, Integer score3,
+                       Integer score4, Integer score5, Integer score6, Integer score7,
+                       Integer score8, Integer score9, String opinion) {
+        this.investmentPrice = investmentPrice;
+        this.score1 = score1;
+        this.score2 = score2;
+        this.score3 = score3;
+        this.score4 = score4;
+        this.score5 = score5;
+        this.score6 = score6;
+        this.score7 = score7;
+        this.score8 = score8;
+        this.score9 = score9;
+        this.opinion = opinion;
+        this.mdfcnDt = java.time.LocalDateTime.now();
+    }
+
+    public void submit() {
+        this.submitted = true;
+    }
+
+    public void softDelete(String mdfcnId) {
+        this.delYn = "Y";
+        this.mdfcnId = mdfcnId;
+        this.mdfcnDt = java.time.LocalDateTime.now();
+    }
 }

@@ -6,6 +6,8 @@ import qtedu.Impact_design.api.dto.response.flowcanvas.FlowCanvasResponse;
 import qtedu.Impact_design.domain.model.flow_canvas.FlowCanvasModel;
 import qtedu.Impact_design.domain.model.flow_canvas.StrategicActivityModel;
 import qtedu.Impact_design.domain.model.flow_canvas.TacticalModel;
+import qtedu.Impact_design.domain.model.IdentityCanvasModel;
+import qtedu.Impact_design.domain.repository.IdentityCanvasRepository;
 import qtedu.Impact_design.domain.repository.flow_canvas.FlowCanvasRepository;
 import qtedu.Impact_design.domain.repository.flow_canvas.StrategicActivityRepository;
 import qtedu.Impact_design.domain.repository.flow_canvas.TacticalRepository;
@@ -22,6 +24,7 @@ public class FlowCanvasReader {
     private final FlowCanvasRepository flowCanvasRepository;
     private final TacticalRepository tacticalRepository;
     private final StrategicActivityRepository strategicActivityRepository;
+    private final IdentityCanvasRepository identityCanvasRepository;
 
     public List<FlowCanvasModel> readByUserIds(List<Long> userIds) {
         return flowCanvasRepository.findByUserIdIn(userIds);
@@ -36,9 +39,17 @@ public class FlowCanvasReader {
     }
 
     public FlowCanvasResponse read(Long userId) {
+        String newVision = identityCanvasRepository.findByUserId(userId)
+                .map(IdentityCanvasModel::getNewVision)
+                .orElse(null);
+
         List<FlowCanvasModel> goals = flowCanvasRepository.findByUserId(userId);
         if (goals.isEmpty()) {
-            return FlowCanvasResponse.builder().goals(Collections.emptyList()).build();
+            return FlowCanvasResponse.builder()
+                    .newVision(newVision)
+                    .goals(Collections.emptyList())
+                    .submitted(false)
+                    .build();
         }
 
         List<Long> goalIds = goals.stream().map(FlowCanvasModel::getGoalId).collect(Collectors.toList());
@@ -57,6 +68,13 @@ public class FlowCanvasReader {
                 ))
                 .collect(Collectors.toList());
 
-        return FlowCanvasResponse.builder().goals(goalItems).build();
+        boolean submitted = goals.stream()
+                .anyMatch(g -> Boolean.TRUE.equals(g.getSubmitted()));
+
+        return FlowCanvasResponse.builder()
+                .newVision(newVision)
+                .goals(goalItems)
+                .submitted(submitted)
+                .build();
     }
 }

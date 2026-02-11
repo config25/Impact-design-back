@@ -1,11 +1,13 @@
 package qtedu.Impact_design.domain.service;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
 import qtedu.Impact_design.api.dto.response.auth.TeamInfoResponse;
 import qtedu.Impact_design.domain.implementation.auth.AccountFacade;
 import qtedu.Impact_design.domain.model.JwtToken;
 import qtedu.Impact_design.domain.model.UserId;
+import qtedu.Impact_design.domain.model.en.UserRole;
 
 import java.util.List;
 
@@ -19,7 +21,7 @@ public class AuthService {
         return accountFacade.login(loginId, password);
     }
 
-    public JwtToken teacherLogin(String loginId, String password) {
+    public Pair<JwtToken, UserRole> teacherLogin(String loginId, String password) {
         return accountFacade.teacherLogin(loginId, password);
     }
 

@@ -1,6 +1,7 @@
 package qtedu.Impact_design.domain.implementation.auth;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,7 +55,7 @@ public class AccountFacade {
     }
 
     @Transactional
-    public JwtToken teacherLogin(String loginId, String password) {
+    public Pair<JwtToken, UserRole> teacherLogin(String loginId, String password) {
         UserinfoModel userinfo = userinfoRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
@@ -67,7 +68,7 @@ public class AccountFacade {
             throw new AuthorizationException(ErrorCode.ACCESS_DENIED);
         }
 
-        return generateAndSaveToken(userinfo);
+        return Pair.of(generateAndSaveToken(userinfo), userinfo.getUserRole());
     }
 
     public List<TeamInfoResponse> checkCode(String code) {

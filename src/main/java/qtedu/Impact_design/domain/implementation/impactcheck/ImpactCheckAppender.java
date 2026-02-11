@@ -5,6 +5,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import qtedu.Impact_design.api.dto.request.impactcheck.ImpactCheckRequest;
 import qtedu.Impact_design.api.dto.response.impactcheck.ImpactCheckResponse;
+import qtedu.Impact_design.common.error.ConflictException;
+import qtedu.Impact_design.common.error.ErrorCode;
 import qtedu.Impact_design.domain.model.ImpactCheckModel;
 import qtedu.Impact_design.domain.repository.ImpactCheckRepository;
 
@@ -45,5 +47,13 @@ public class ImpactCheckAppender {
 
         ImpactCheckModel saved = impactCheckRepository.save(model);
         return ImpactCheckResponse.from(saved);
+    }
+
+    @Transactional
+    public void submit(Long userId) {
+        if (impactCheckRepository.existsSubmittedByUserId(userId)) {
+            throw new ConflictException(ErrorCode.ALREADY_SUBMITTED);
+        }
+        impactCheckRepository.submitByUserId(userId);
     }
 }

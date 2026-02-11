@@ -12,4 +12,7 @@ public interface FlowCanvasJpaRepository extends JpaRepository<FlowCanvas, Long>
     List<FlowCanvas> findByUserIdOrderByOrderNoAsc(Long userId);
     Optional<FlowCanvas> findByUserIdAndOrderNo(Long userId, Integer orderNo);
     List<FlowCanvas> findByUserIdIn(List<Long> userIds);
+    boolean existsByUserIdAndSubmittedTrue(Long userId);
+    boolean existsByUserIdAndSubmitted(Long userId, Boolean submitted);
+    List<FlowCanvas> findByUserId(Long userId);
 }

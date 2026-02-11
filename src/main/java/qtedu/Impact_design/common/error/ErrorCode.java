@@ -45,7 +45,14 @@ public enum ErrorCode {
     USER_NICKNAME_EXISTS("USER_6", "이미 존재하는 유저 닉네임입니다."),
 
     // Team
-    CODE_NOT_FOUND("TEAM_1", "코드가 존재하지 않습니다.");
+    CODE_NOT_FOUND("TEAM_1", "코드가 존재하지 않습니다."),
+    TEAM_NOT_FOUND("TEAM_2", "팀을 찾을 수 없습니다."),
+
+    // Game
+    GAME_NOT_FOUND("GAME_1", "게임을 찾을 수 없습니다."),
+
+    // Canvas
+    ALREADY_SUBMITTED("CANVAS_1", "이미 제출 완료된 캔버스입니다.");
 
 
 

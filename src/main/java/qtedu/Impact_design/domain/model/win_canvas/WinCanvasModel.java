@@ -15,4 +15,5 @@ public class WinCanvasModel {
     private final String crisisSignal;
     private final String painTouchPoint;
     private final Long userId;
+    private final Boolean submitted;
 }

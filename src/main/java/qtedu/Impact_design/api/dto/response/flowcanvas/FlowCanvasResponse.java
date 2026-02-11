@@ -12,7 +12,9 @@ import java.util.stream.Collectors;
 @Getter
 @Builder
 public class FlowCanvasResponse {
+    private String newVision;
     private List<GoalItem> goals;
+    private Boolean submitted;
 
     @Getter
     @Builder

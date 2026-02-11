@@ -2,9 +2,15 @@ package qtedu.Impact_design.domain.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import qtedu.Impact_design.api.dto.request.teach.ClassSaveRequest;
 import qtedu.Impact_design.api.dto.response.teach.ClassInfoResponse;
+import qtedu.Impact_design.api.dto.response.teach.StudentListResponse;
+import qtedu.Impact_design.api.dto.response.teach.TeachDetail2Response;
+import qtedu.Impact_design.api.dto.response.teach.TeachDetailResponse;
 import qtedu.Impact_design.api.dto.response.teach.TeachListResponse;
-import qtedu.Impact_design.domain.implementation.teach.TeachFacade;
+import qtedu.Impact_design.domain.implementation.teach.TeachAppender;
+import qtedu.Impact_design.domain.implementation.teach.TeachReader;
+import qtedu.Impact_design.domain.implementation.teach.TeachUpdater;
 
 import java.util.List;
 
@@ -12,13 +18,47 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TeachService {
 
-    private final TeachFacade teachFacade;
+    private final TeachReader teachReader;
+    private final TeachAppender teachAppender;
+    private final TeachUpdater teachUpdater;
 
     public List<ClassInfoResponse> getTeachIndex(Long userId) {
-        return teachFacade.getTeachIndex(userId);
+        return teachReader.getTeachIndex(userId);
     }
 
     public TeachListResponse getTeachList(Long userId) {
-        return teachFacade.getTeachList(userId);
+        return teachReader.getTeachList(userId);
+    }
+
+    public TeachDetailResponse getTeachDetail(Integer gameId) {
+        return teachReader.getTeachDetail(gameId);
+    }
+
+    public TeachDetail2Response getTeachDetail2(Long userId, Integer gameId) {
+        return teachReader.getTeachDetail2(userId, gameId);
+    }
+
+    public StudentListResponse getStudentList(Integer gameId) {
+        return teachReader.getStudentList(gameId);
+    }
+
+    public Integer createClass(Long userId, ClassSaveRequest request) {
+        return teachAppender.createClass(userId, request);
+    }
+
+    public Integer updateClass(Integer gameId, ClassSaveRequest request) {
+        return teachUpdater.updateClass(gameId, request);
+    }
+
+    public void startClass(Integer gameId) {
+        teachUpdater.startClass(gameId);
+    }
+
+    public void endClass(Integer gameId) {
+        teachUpdater.endClass(gameId);
+    }
+
+    public void restoreClass(Integer gameId) {
+        teachUpdater.restoreClass(gameId);
     }
 }

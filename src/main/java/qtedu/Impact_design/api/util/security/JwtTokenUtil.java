@@ -54,7 +54,7 @@ public class JwtTokenUtil {
     }
 
     public RefreshToken createRefreshToken(UserId userId) {
-        Claims claims = Jwts.claims().setSubject(String.valueOf(userId.getId())); // 🔥 String으로
+        Claims claims = Jwts.claims().setSubject(String.valueOf(userId.getId()));
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + refreshExpiration);
 
@@ -85,7 +85,7 @@ public class JwtTokenUtil {
 
     public UserId getUserIdFromToken(String token) {
         Claims claims = getClaimsFromToken(cleanedToken(token));
-        Long userId = Long.valueOf(claims.getSubject()); // 🔥 String → Long
+        Long userId = Long.valueOf(claims.getSubject());
         return UserId.of(userId);
     }
 
@@ -99,7 +99,6 @@ public class JwtTokenUtil {
 
     public String cleanedToken(String token) {
         return token.replaceFirst("Bearer ", "");
-        //return token.replaceFirst("(?i)^Bearer ", "").trim();
     }
 
     public Pair<JwtToken, UserId> refresh(String token) {

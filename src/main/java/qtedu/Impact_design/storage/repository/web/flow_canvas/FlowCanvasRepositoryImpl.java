@@ -64,6 +64,18 @@ public class FlowCanvasRepositoryImpl implements FlowCanvasRepository {
                 .stream().map(this::toModel).collect(Collectors.toList());
     }
 
+    @Override
+    public boolean existsSubmittedByUserId(Long userId) {
+        return flowCanvasJpaRepository.existsByUserIdAndSubmittedTrue(userId);
+    }
+
+    @Override
+    public void submitAllByUserId(Long userId) {
+        List<FlowCanvas> entities = flowCanvasJpaRepository.findByUserId(userId);
+        entities.forEach(FlowCanvas::submit);
+        flowCanvasJpaRepository.saveAll(entities);
+    }
+
     private FlowCanvasModel toModel(FlowCanvas entity) {
         return FlowCanvasModel.builder()
                 .goalId(entity.getGoalId())
@@ -71,6 +83,7 @@ public class FlowCanvasRepositoryImpl implements FlowCanvasRepository {
                 .goalDescription(entity.getGoalDescription())
                 .orderNo(entity.getOrderNo())
                 .userId(entity.getUserId())
+                .submitted(entity.getSubmitted())
                 .build();
     }
 }

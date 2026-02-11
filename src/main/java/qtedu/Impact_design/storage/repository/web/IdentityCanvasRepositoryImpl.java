@@ -68,6 +68,20 @@ public class IdentityCanvasRepositoryImpl implements IdentityCanvasRepository {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public boolean existsSubmittedByUserId(Long userId) {
+        return identityCanvasJpaRepository.existsByUserIdAndSubmittedTrue(userId);
+    }
+
+    @Override
+    public void submitByUserId(Long userId) {
+        identityCanvasJpaRepository.findByUserId(userId)
+                .ifPresent(entity -> {
+                    entity.submit();
+                    identityCanvasJpaRepository.save(entity);
+                });
+    }
+
     private IdentityCanvasModel toModel(IdentityCanvas entity) {
         return IdentityCanvasModel.builder()
                 .identityId(entity.getIdentityId())
@@ -86,6 +100,7 @@ public class IdentityCanvasRepositoryImpl implements IdentityCanvasRepository {
                 .newVision(entity.getNewVision())
                 .newValue(entity.getNewValue())
                 .userId(entity.getUserId())
+                .submitted(entity.getSubmitted())
                 .build();
     }
 }

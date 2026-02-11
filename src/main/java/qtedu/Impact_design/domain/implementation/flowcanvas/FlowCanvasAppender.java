@@ -5,6 +5,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import qtedu.Impact_design.api.dto.request.flowcanvas.FlowCanvasSaveRequest;
 import qtedu.Impact_design.api.dto.response.flowcanvas.FlowCanvasResponse;
+import qtedu.Impact_design.common.error.ConflictException;
+import qtedu.Impact_design.common.error.ErrorCode;
 import qtedu.Impact_design.domain.model.flow_canvas.FlowCanvasModel;
 import qtedu.Impact_design.domain.model.flow_canvas.StrategicActivityModel;
 import qtedu.Impact_design.domain.model.flow_canvas.TacticalModel;
@@ -28,6 +30,10 @@ public class FlowCanvasAppender {
 
     @Transactional
     public FlowCanvasResponse append(Long userId, FlowCanvasSaveRequest request) {
+        if (flowCanvasRepository.existsSubmittedByUserId(userId)) {
+            throw new ConflictException(ErrorCode.ALREADY_SUBMITTED);
+        }
+
         List<FlowCanvasSaveRequest.GoalItem> requestGoals = request.getGoals() != null
                 ? request.getGoals() : Collections.emptyList();
 
@@ -130,5 +136,13 @@ public class FlowCanvasAppender {
 
             strategicActivityRepository.save(model);
         }
+    }
+
+    @Transactional
+    public void submit(Long userId) {
+        if (flowCanvasRepository.existsSubmittedByUserId(userId)) {
+            throw new ConflictException(ErrorCode.ALREADY_SUBMITTED);
+        }
+        flowCanvasRepository.submitAllByUserId(userId);
     }
 }

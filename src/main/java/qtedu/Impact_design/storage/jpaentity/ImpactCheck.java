@@ -67,6 +67,14 @@ public class ImpactCheck {
     @Column(name = "user_id", nullable = false, unique = true)
     private Long userId;
 
+    @Column(name = "submitted", nullable = false)
+    @Builder.Default
+    private Boolean submitted = false;
+
+    public void submit() {
+        this.submitted = true;
+    }
+
     public void update(Integer q1Score, Integer q2Score, Integer q3Score, Integer q4Score,
                        Integer q5Score, Integer q6Score, Integer q7Score, Integer q8Score,
                        Integer q9Score, Integer q10Score, Integer q11Score, Integer q12Score,

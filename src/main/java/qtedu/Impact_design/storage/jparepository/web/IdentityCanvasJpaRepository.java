@@ -11,4 +11,6 @@ import java.util.Optional;
 public interface IdentityCanvasJpaRepository extends JpaRepository<IdentityCanvas, Long> {
     Optional<IdentityCanvas> findByUserId(Long userId);
     List<IdentityCanvas> findByUserIdIn(List<Long> userIds);
+    boolean existsByUserIdAndSubmittedTrue(Long userId);
+    boolean existsByUserIdAndSubmitted(Long userId, Boolean submitted);
 }

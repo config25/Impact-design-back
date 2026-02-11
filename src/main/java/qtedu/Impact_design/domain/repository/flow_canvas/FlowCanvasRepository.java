@@ -12,4 +12,6 @@ public interface FlowCanvasRepository {
     FlowCanvasModel save(FlowCanvasModel flowCanvas);
     void deleteAllByIdIn(List<Long> goalIds);
     List<FlowCanvasModel> findByUserIdIn(List<Long> userIds);
+    boolean existsSubmittedByUserId(Long userId);
+    void submitAllByUserId(Long userId);
 }

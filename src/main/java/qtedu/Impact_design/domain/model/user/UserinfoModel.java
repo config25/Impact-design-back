@@ -13,6 +13,7 @@ public class UserinfoModel {
     private final String userName;
     private final String code;
     private final UserRole userRole;
+    private final String writer;
 
     public static UserinfoModel createStudent(String loginId, String encodedPassword, String code) {
         return UserinfoModel.builder()
@@ -22,5 +23,9 @@ public class UserinfoModel {
                 .code(code)
                 .userRole(UserRole.STUDENT)
                 .build();
+    }
+
+    public boolean isWriter() {
+        return "1".equals(writer);
     }
 }

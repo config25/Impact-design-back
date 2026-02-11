@@ -33,4 +33,9 @@ public class BuildWinCanvasService {
     public List<FLetterOfIntent2Model> getEvaluationsByCanvasIds(List<Long> canvasIds) {
         return buildWinCanvasReader.readEvaluationsByCanvasIds(canvasIds);
     }
+
+    public BuildWinCanvasResponse submitBuildWinCanvas(Long userId) {
+        buildWinCanvasAppender.submit(userId);
+        return buildWinCanvasReader.read(userId);
+    }
 }

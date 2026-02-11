@@ -2,14 +2,17 @@ package qtedu.Impact_design.api.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import qtedu.Impact_design.api.dto.request.teach.ClassSaveRequest;
 import qtedu.Impact_design.api.dto.response.teach.ClassInfoResponse;
+import qtedu.Impact_design.api.dto.response.teach.StudentListResponse;
+import qtedu.Impact_design.api.dto.response.teach.TeachDetail2Response;
+import qtedu.Impact_design.api.dto.response.teach.TeachDetailResponse;
 import qtedu.Impact_design.api.dto.response.teach.TeachListResponse;
 import qtedu.Impact_design.api.util.ResponseHelper;
 import qtedu.Impact_design.api.util.security.CurrentUser;
 import qtedu.Impact_design.common.response.HttpResponse;
+import qtedu.Impact_design.common.response.SuccessOnlyResponse;
 import qtedu.Impact_design.domain.model.UserId;
 import qtedu.Impact_design.domain.service.TeachService;
 
@@ -37,4 +40,97 @@ public class TeachController {
         TeachListResponse response = teachService.getTeachList(userId.getId());
         return ResponseHelper.success(response);
     }
+
+    /**
+     * 클래스 상세 조회 (teach_detail)
+     */
+    @GetMapping("/detail")
+    public ResponseEntity<HttpResponse<TeachDetailResponse>> teachDetail(
+            @RequestParam Integer gameId
+    ) {
+        TeachDetailResponse response = teachService.getTeachDetail(gameId);
+        return ResponseHelper.success(response);
+    }
+
+    /**
+     * 클래스 상세 조회 2 (teach_detail2)
+     * gameId가 없으면 첫 번째 진행중인 클래스 사용
+     */
+    @GetMapping("/detail2")
+    public ResponseEntity<HttpResponse<TeachDetail2Response>> teachDetail2(
+            @CurrentUser UserId userId,
+            @RequestParam(required = false) Integer gameId
+    ) {
+        TeachDetail2Response response = teachService.getTeachDetail2(userId.getId(), gameId);
+        return ResponseHelper.success(response);
+    }
+
+    /**
+     * 학생 목록 조회 (student_list)
+     */
+    @GetMapping("/student-list")
+    public ResponseEntity<HttpResponse<StudentListResponse>> studentList(
+            @RequestParam Integer gameId
+    ) {
+        StudentListResponse response = teachService.getStudentList(gameId);
+        return ResponseHelper.success(response);
+    }
+
+    /**
+     * 클래스 생성 (teach_save)
+     */
+    @PostMapping("/class")
+    public ResponseEntity<HttpResponse<Integer>> createClass(
+            @CurrentUser UserId userId,
+            @RequestBody ClassSaveRequest request
+    ) {
+        Integer gameId = teachService.createClass(userId.getId(), request);
+        return ResponseHelper.success(gameId);
+    }
+
+    /**
+     * 클래스 수정 (teach_save)
+     */
+    @PutMapping("/class/{gameId}")
+    public ResponseEntity<HttpResponse<Integer>> updateClass(
+            @PathVariable Integer gameId,
+            @RequestBody ClassSaveRequest request
+    ) {
+        Integer updatedGameId = teachService.updateClass(gameId, request);
+        return ResponseHelper.success(updatedGameId);
+    }
+
+    /**
+     * 강의실 시작 (status: 1 → 10)
+     */
+    @PostMapping("/class/{gameId}/start")
+    public ResponseEntity<HttpResponse<SuccessOnlyResponse>> startClass(
+            @PathVariable Integer gameId
+    ) {
+        teachService.startClass(gameId);
+        return ResponseHelper.successOnly();
+    }
+
+    /**
+     * 강의실 종료 (status → 100, eStatus → 0)
+     */
+    @PostMapping("/class/{gameId}/end")
+    public ResponseEntity<HttpResponse<SuccessOnlyResponse>> endClass(
+            @PathVariable Integer gameId
+    ) {
+        teachService.endClass(gameId);
+        return ResponseHelper.successOnly();
+    }
+
+    /**
+     * 강의실 복원 (status: 100 → 10)
+     */
+    @PostMapping("/class/{gameId}/restore")
+    public ResponseEntity<HttpResponse<SuccessOnlyResponse>> restoreClass(
+            @PathVariable Integer gameId
+    ) {
+        teachService.restoreClass(gameId);
+        return ResponseHelper.successOnly();
+    }
+
 }

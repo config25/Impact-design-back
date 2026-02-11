@@ -29,7 +29,7 @@ public class FLetterOfIntentModel {
     private final LocalDateTime regDt;
     private final String mdfcnId;
     private final LocalDateTime mdfcnDt;
-    private final String commitYn;
+    private final Boolean submitted;
     private final Integer teamId;
     private final Integer gameId;
     private final String categoryCd;

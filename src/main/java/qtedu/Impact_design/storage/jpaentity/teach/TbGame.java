@@ -42,7 +42,7 @@ public class TbGame {
     @Column(name = "status", nullable = false)
     private Integer status;
 
-    @Column(name = "eStatus")
+    @Column(name = "e_status")
     private Integer eStatus;
 
     @Column(name = "summary", columnDefinition = "TEXT")
@@ -63,7 +63,7 @@ public class TbGame {
     @Column(name = "class_type", length = 32)
     private String classType;
 
-    @Column(name = "isDoing", nullable = false)
+    @Column(name = "is_doing", nullable = false)
     private Integer isDoing;
 
     @Column(name = "reg_date")

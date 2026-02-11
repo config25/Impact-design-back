@@ -5,6 +5,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import qtedu.Impact_design.api.dto.request.identitycanvas.IdentityCanvasRequest;
 import qtedu.Impact_design.api.dto.response.identitycanvas.IdentityCanvasResponse;
+import qtedu.Impact_design.common.error.ConflictException;
+import qtedu.Impact_design.common.error.ErrorCode;
 import qtedu.Impact_design.domain.model.IdentityCanvasModel;
 import qtedu.Impact_design.domain.repository.IdentityCanvasRepository;
 
@@ -18,6 +20,10 @@ public class IdentityCanvasAppender {
 
     @Transactional
     public IdentityCanvasResponse append(Long userId, IdentityCanvasRequest request) {
+        if (identityCanvasRepository.existsSubmittedByUserId(userId)) {
+            throw new ConflictException(ErrorCode.ALREADY_SUBMITTED);
+        }
+
         Optional<IdentityCanvasModel> existing = identityCanvasRepository.findByUserId(userId);
 
         IdentityCanvasModel model = IdentityCanvasModel.builder()
@@ -41,5 +47,13 @@ public class IdentityCanvasAppender {
 
         IdentityCanvasModel saved = identityCanvasRepository.save(model);
         return IdentityCanvasResponse.from(saved);
+    }
+
+    @Transactional
+    public void submit(Long userId) {
+        if (identityCanvasRepository.existsSubmittedByUserId(userId)) {
+            throw new ConflictException(ErrorCode.ALREADY_SUBMITTED);
+        }
+        identityCanvasRepository.submitByUserId(userId);
     }
 }

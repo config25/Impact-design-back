@@ -67,6 +67,20 @@ public class ImpactCheckRepositoryImpl implements ImpactCheckRepository {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public boolean existsSubmittedByUserId(Long userId) {
+        return impactCheckJpaRepository.existsByUserIdAndSubmitted(userId, true);
+    }
+
+    @Override
+    public void submitByUserId(Long userId) {
+        impactCheckJpaRepository.findByUserId(userId)
+                .ifPresent(entity -> {
+                    entity.submit();
+                    impactCheckJpaRepository.save(entity);
+                });
+    }
+
     private ImpactCheckModel toModel(ImpactCheck entity) {
         return ImpactCheckModel.builder()
                 .answerId(entity.getAnswerId())
@@ -87,6 +101,7 @@ public class ImpactCheckRepositoryImpl implements ImpactCheckRepository {
                 .q15Text(entity.getQ15Text())
                 .q16Text(entity.getQ16Text())
                 .userId(entity.getUserId())
+                .submitted(entity.getSubmitted())
                 .build();
     }
 }

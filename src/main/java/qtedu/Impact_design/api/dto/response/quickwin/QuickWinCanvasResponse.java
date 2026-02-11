@@ -18,6 +18,7 @@ public class QuickWinCanvasResponse {
     private String crisisSignal;
     private String painTouchPoint;
     private Long userId;
+    private Boolean submitted;
     private List<TaskInputItem> taskInputs;
     private List<TaskActivityItem> taskActivities;
     private TeamworkItem teamwork;
@@ -108,6 +109,7 @@ public class QuickWinCanvasResponse {
                 .crisisSignal(canvas.getCrisisSignal())
                 .painTouchPoint(canvas.getPainTouchPoint())
                 .userId(canvas.getUserId())
+                .submitted(canvas.getSubmitted())
                 .taskInputs(inputs.stream().map(TaskInputItem::from).collect(Collectors.toList()))
                 .taskActivities(activities.stream().map(TaskActivityItem::from).collect(Collectors.toList()))
                 .teamwork(teamwork != null ? TeamworkItem.from(teamwork) : null)

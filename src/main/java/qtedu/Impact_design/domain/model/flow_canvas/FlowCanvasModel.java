@@ -11,4 +11,5 @@ public class FlowCanvasModel {
     private final String goalDescription;
     private final Integer orderNo;
     private final Long userId;
+    private final Boolean submitted;
 }

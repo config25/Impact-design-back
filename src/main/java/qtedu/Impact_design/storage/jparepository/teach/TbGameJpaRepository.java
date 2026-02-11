@@ -49,8 +49,97 @@ public interface TbGameJpaRepository extends JpaRepository<TbGame, Integer> {
             ) M ON G.game_id = M.game_id
             WHERE A.user_id = :userId
               AND G.status = :status
-              AND G.isDoing = 1
+              AND G.is_doing = 1
             ORDER BY G.game_id DESC
             """, nativeQuery = true)
     List<ClassInfoProjection> findClassList(@Param("userId") Long userId, @Param("status") Integer status);
+
+    @Query(value = """
+            SELECT
+                G.game_id AS gameId,
+                G.name AS name,
+                G.num_team AS numTeam,
+                G.total_dd AS totalDd,
+                M.mission_id AS missionId,
+                M.sequence AS sequence,
+                M.subject AS subject,
+                M.summary AS summary,
+                M.startdate AS startdate,
+                M.enddate AS enddate,
+                M.dd_year AS ddYear,
+                M.dd_term AS ddTerm
+            FROM tbgame G
+            LEFT JOIN (
+                SELECT
+                    M1.game_id,
+                    M1.mission_id,
+                    M1.sequence,
+                    M1.subject,
+                    M1.summary,
+                    M1.startdate,
+                    M1.enddate,
+                    M1.dd_year,
+                    M1.dd_term
+                FROM tbmission M1
+                INNER JOIN (
+                    SELECT game_id, MAX(dd_year) AS max_dd_year, MAX(dd_term) AS max_dd_term
+                    FROM tbmission
+                    GROUP BY game_id
+                ) M2 ON M1.game_id = M2.game_id
+                    AND M1.dd_year = M2.max_dd_year
+                    AND M1.dd_term = M2.max_dd_term
+            ) M ON G.game_id = M.game_id
+            ORDER BY G.game_id ASC
+            """, nativeQuery = true)
+    List<ClassInfoProjection> findAllClassList();
+
+    @Query(value = """
+            SELECT
+                G.game_id AS gameId,
+                G.name AS name,
+                G.num_team AS numTeam,
+                G.total_dd AS totalDd,
+                M.mission_id AS missionId,
+                M.sequence AS sequence,
+                M.subject AS subject,
+                M.summary AS summary,
+                M.startdate AS startdate,
+                M.enddate AS enddate,
+                M.dd_year AS ddYear,
+                M.dd_term AS ddTerm
+            FROM tbgame G
+            LEFT JOIN (
+                SELECT
+                    M1.game_id,
+                    M1.mission_id,
+                    M1.sequence,
+                    M1.subject,
+                    M1.summary,
+                    M1.startdate,
+                    M1.enddate,
+                    M1.dd_year,
+                    M1.dd_term
+                FROM tbmission M1
+                INNER JOIN (
+                    SELECT game_id, MAX(dd_year) AS max_dd_year, MAX(dd_term) AS max_dd_term
+                    FROM tbmission
+                    GROUP BY game_id
+                ) M2 ON M1.game_id = M2.game_id
+                    AND M1.dd_year = M2.max_dd_year
+                    AND M1.dd_term = M2.max_dd_term
+            ) M ON G.game_id = M.game_id
+            WHERE G.status = :status
+              AND G.is_doing = 1
+            ORDER BY G.game_id DESC
+            """, nativeQuery = true)
+    List<ClassInfoProjection> findAllClassListByStatus(@Param("status") Integer status);
+
+    @Query(value = """
+            SELECT G.name FROM tbgame G
+            INNER JOIN gameteam GT ON G.game_id = GT.game_id
+            INNER JOIN teamuser TU ON GT.team_id = TU.team_id
+            WHERE TU.user_id = :userId
+            LIMIT 1
+            """, nativeQuery = true)
+    String findGameNameByUserId(@Param("userId") Long userId);
 }

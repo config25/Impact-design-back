@@ -23,15 +23,18 @@ public class Userinfo {
     @Column(name = "pwd", nullable = false, length = 128)
     private String password;
 
-    @Column(name = "userName", nullable = false, length = 128)
+    @Column(name = "user_name", nullable = false, length = 128)
     private String userName;
 
     @Column(name = "code", nullable = false, length = 128)
     private String code;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "userRole")
+    @Column(name = "user_role")
     private UserRole userRole;
+
+    @Column(name = "writer", length = 1)
+    private String writer;
 
     public static Userinfo createStudent(String loginId, String encodedPassword, String code) {
         return Userinfo.builder()

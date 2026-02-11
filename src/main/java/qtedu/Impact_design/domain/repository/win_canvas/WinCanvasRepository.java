@@ -10,4 +10,6 @@ public interface WinCanvasRepository {
     Optional<WinCanvasModel> findByUserIdAndCanvasType(Long userId, CanvasType canvasType);
     WinCanvasModel save(WinCanvasModel winCanvasModel);
     List<WinCanvasModel> findByUserIdInAndCanvasType(List<Long> userIds, CanvasType canvasType);
+    boolean existsSubmittedByUserIdAndCanvasType(Long userId, CanvasType canvasType);
+    void submitByUserIdAndCanvasType(Long userId, CanvasType canvasType);
 }

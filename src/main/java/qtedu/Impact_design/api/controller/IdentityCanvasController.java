@@ -34,4 +34,12 @@ public class IdentityCanvasController {
         IdentityCanvasResponse response = identityCanvasService.saveIdentityCanvas(userId.getId(), request);
         return ResponseHelper.success(response);
     }
+
+    @PatchMapping("/submit")
+    public ResponseEntity<HttpResponse<IdentityCanvasResponse>> submitIdentityCanvas(
+            @CurrentUser UserId userId
+    ) {
+        IdentityCanvasResponse response = identityCanvasService.submitIdentityCanvas(userId.getId());
+        return ResponseHelper.success(response);
+    }
 }

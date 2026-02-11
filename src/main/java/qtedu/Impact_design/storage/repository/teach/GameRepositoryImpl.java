@@ -18,4 +18,14 @@ public class GameRepositoryImpl implements GameRepository {
     public List<ClassInfoProjection> findClassList(Long userId, Integer status) {
         return tbGameJpaRepository.findClassList(userId, status);
     }
+
+    @Override
+    public List<ClassInfoProjection> findAllClassList() {
+        return tbGameJpaRepository.findAllClassList();
+    }
+
+    @Override
+    public List<ClassInfoProjection> findAllClassListByStatus(Integer status) {
+        return tbGameJpaRepository.findAllClassListByStatus(status);
+    }
 }

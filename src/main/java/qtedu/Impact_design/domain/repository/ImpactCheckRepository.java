@@ -9,4 +9,6 @@ public interface ImpactCheckRepository {
     Optional<ImpactCheckModel> findByUserId(Long userId);
     ImpactCheckModel save(ImpactCheckModel model);
     List<ImpactCheckModel> findByUserIdIn(List<Long> userIds);
+    boolean existsSubmittedByUserId(Long userId);
+    void submitByUserId(Long userId);
 }

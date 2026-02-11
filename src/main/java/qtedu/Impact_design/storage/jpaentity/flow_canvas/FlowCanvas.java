@@ -28,9 +28,17 @@ public class FlowCanvas {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
+    @Column(name = "submitted", nullable = false)
+    @Builder.Default
+    private Boolean submitted = false;
+
     public void update(String goalTitle, String goalDescription, Integer orderNo) {
         this.goalTitle = goalTitle;
         this.goalDescription = goalDescription;
         this.orderNo = orderNo;
+    }
+
+    public void submit() {
+        this.submitted = true;
     }
 }

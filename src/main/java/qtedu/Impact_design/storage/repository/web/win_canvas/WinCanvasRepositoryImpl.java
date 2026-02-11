@@ -51,6 +51,20 @@ public class WinCanvasRepositoryImpl implements WinCanvasRepository {
                 .stream().map(this::toModel).collect(Collectors.toList());
     }
 
+    @Override
+    public boolean existsSubmittedByUserIdAndCanvasType(Long userId, CanvasType canvasType) {
+        return winCanvasJpaRepository.existsByUserIdAndCanvasTypeAndSubmittedTrue(userId, canvasType);
+    }
+
+    @Override
+    public void submitByUserIdAndCanvasType(Long userId, CanvasType canvasType) {
+        winCanvasJpaRepository.findByUserIdAndCanvasType(userId, canvasType)
+                .ifPresent(entity -> {
+                    entity.submit();
+                    winCanvasJpaRepository.save(entity);
+                });
+    }
+
     private WinCanvasModel toModel(WinCanvas entity) {
         return WinCanvasModel.builder()
                 .canvasId(entity.getCanvasId())
@@ -61,6 +75,7 @@ public class WinCanvasRepositoryImpl implements WinCanvasRepository {
                 .crisisSignal(entity.getCrisisSignal())
                 .painTouchPoint(entity.getPainTouchPoint())
                 .userId(entity.getUserId())
+                .submitted(entity.getSubmitted())
                 .build();
     }
 }
