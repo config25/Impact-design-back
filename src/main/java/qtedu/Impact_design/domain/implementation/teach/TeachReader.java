@@ -95,7 +95,7 @@ public class TeachReader {
                 .mission(missionInfo)
                 .teams(teams)
                 .gameLogo(gameLogo)
-                .imageUrl(game.getImageUrl())
+                .imageUrl(resolveImageUrl(game.getImageUrl()))
                 .build();
     }
 
@@ -143,7 +143,7 @@ public class TeachReader {
                 .mission(missionInfo)
                 .teams(teams)
                 .gameLogo(gameLogo)
-                .imageUrl(game.getImageUrl())
+                .imageUrl(resolveImageUrl(game.getImageUrl()))
                 .classList(classList)
                 .build();
     }

@@ -97,7 +97,7 @@ public class TbGameRepositoryImpl implements TbGameRepository {
                 .isDoing(entity.getIsDoing())
                 .regDate(entity.getRegDate())
                 .popupId(entity.getPopupId())
-                .imageUrl(resolveImageUrl(entity.getImageUrl()))
+                .imageUrl(entity.getImageUrl())
                 .build();
     }
 
