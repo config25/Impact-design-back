@@ -7,10 +7,11 @@ import qtedu.Impact_design.api.dto.response.teach.DeletedTeamResponse;
 import qtedu.Impact_design.api.dto.response.teach.TeamInfoResponse;
 import qtedu.Impact_design.common.error.ErrorCode;
 import qtedu.Impact_design.common.error.NotFoundException;
-import qtedu.Impact_design.storage.jpaentity.teach.TbTeam;
-import qtedu.Impact_design.storage.jparepository.teach.TbTeamJpaRepository;
-import qtedu.Impact_design.storage.jparepository.teach.TeamUserJpaRepository;
-import qtedu.Impact_design.storage.jparepository.user.UserinfoJpaRepository;
+import qtedu.Impact_design.domain.model.team.TbTeamModel;
+import qtedu.Impact_design.domain.model.team.TeamUserModel;
+import qtedu.Impact_design.domain.repository.auth.TbTeamRepository;
+import qtedu.Impact_design.domain.repository.auth.TeamUserRepository;
+import qtedu.Impact_design.domain.repository.user.UserinfoRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,12 +21,12 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class TeachTeamReader {
 
-    private final TbTeamJpaRepository tbTeamJpaRepository;
-    private final TeamUserJpaRepository teamUserJpaRepository;
-    private final UserinfoJpaRepository userinfoJpaRepository;
+    private final TbTeamRepository tbTeamRepository;
+    private final TeamUserRepository teamUserRepository;
+    private final UserinfoRepository userinfoRepository;
 
     public List<DeletedTeamResponse> getDeletedTeams(Integer gameId) {
-        return tbTeamJpaRepository.findDeletedTeamsByGameId(gameId).stream()
+        return tbTeamRepository.findDeletedByGameId(gameId).stream()
                 .map(team -> DeletedTeamResponse.builder()
                         .teamId(team.getTeamId())
                         .teamName(team.getName())
@@ -35,16 +36,16 @@ public class TeachTeamReader {
     }
 
     public TeamInfoResponse getTeamInfo(Integer teamId) {
-        TbTeam team = tbTeamJpaRepository.findByTeamId(teamId)
+        TbTeamModel team = tbTeamRepository.findByTeamId(teamId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.TEAM_NOT_FOUND));
 
-        List<Long> userIds = teamUserJpaRepository.findByTeamId(teamId).stream()
-                .map(tu -> tu.getUserId())
+        List<Long> userIds = teamUserRepository.findByTeamId(teamId).stream()
+                .map(TeamUserModel::getUserId)
                 .collect(Collectors.toList());
 
         List<TeamInfoResponse.MemberInfo> members = userIds.isEmpty()
                 ? List.of()
-                : userinfoJpaRepository.findAllById(userIds).stream()
+                : userinfoRepository.findAllByUserIds(userIds).stream()
                         .map(user -> TeamInfoResponse.MemberInfo.builder()
                                 .userId(user.getUserId())
                                 .loginId(user.getLoginId())

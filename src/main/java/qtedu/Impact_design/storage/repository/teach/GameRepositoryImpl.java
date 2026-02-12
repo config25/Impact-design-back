@@ -3,7 +3,7 @@ package qtedu.Impact_design.storage.repository.teach;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import qtedu.Impact_design.domain.repository.teach.GameRepository;
-import qtedu.Impact_design.storage.jparepository.teach.ClassInfoProjection;
+import qtedu.Impact_design.domain.model.team.ClassInfoProjection;
 import qtedu.Impact_design.storage.jparepository.teach.TbGameJpaRepository;
 
 import java.util.List;

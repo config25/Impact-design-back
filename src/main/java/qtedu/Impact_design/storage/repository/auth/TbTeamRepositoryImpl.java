@@ -26,7 +26,7 @@ public class TbTeamRepositoryImpl implements TbTeamRepository {
 
     @Override
     public List<TbTeamModel> findByCodeExcludingTeam(String code, Integer excludeTeamId) {
-        return tbTeamJpaRepository.findByCodeAndTeamIdNot(code, excludeTeamId).stream()
+        return tbTeamJpaRepository.findByCodeExcludingDeletedTeam(code, excludeTeamId).stream()
                 .map(this::toModel)
                 .collect(Collectors.toList());
     }
@@ -34,6 +34,29 @@ public class TbTeamRepositoryImpl implements TbTeamRepository {
     @Override
     public Optional<TbTeamModel> findByTeamId(Integer teamId) {
         return tbTeamJpaRepository.findByTeamId(teamId).map(this::toModel);
+    }
+
+    @Override
+    public TbTeamModel save(TbTeamModel model) {
+        TbTeam entity = TbTeam.builder()
+                .teamId(model.getTeamId())
+                .name(model.getName())
+                .sequence(model.getSequence())
+                .status(model.getStatus())
+                .aiPlay(model.getAiPlay())
+                .code(model.getCode())
+                .isDoing(model.getIsDoing())
+                .teamGubun(model.getTeamGubun())
+                .numUser(model.getNumUser())
+                .build();
+        return toModel(tbTeamJpaRepository.save(entity));
+    }
+
+    @Override
+    public List<TbTeamModel> findDeletedByGameId(Integer gameId) {
+        return tbTeamJpaRepository.findDeletedTeamsByGameId(gameId).stream()
+                .map(this::toModel)
+                .collect(Collectors.toList());
     }
 
     private TbTeamModel toModel(TbTeam entity) {

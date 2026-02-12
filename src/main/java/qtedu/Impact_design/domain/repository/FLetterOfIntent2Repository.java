@@ -20,4 +20,6 @@ public interface FLetterOfIntent2Repository {
 
     // 내 팀을 투자 대상으로 한 모든 투자 (F3용)
     List<FLetterOfIntent2Model> findByTargetTeamId(Integer teamId);
+
+    void updateInvestmentTargetByCanvasOwner(Long userId, String teamId);
 }

@@ -3,15 +3,15 @@ package qtedu.Impact_design.domain.implementation.teach;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import qtedu.Impact_design.domain.model.en.CanvasType;
-import qtedu.Impact_design.storage.jpaentity.teach.TeamUser;
-import qtedu.Impact_design.storage.jparepository.teach.TeamUserJpaRepository;
-import qtedu.Impact_design.storage.jparepository.user.UserinfoJpaRepository;
-import qtedu.Impact_design.storage.jparepository.web.FLetterOfIntent2JpaRepository;
-import qtedu.Impact_design.storage.jparepository.web.FLetterOfIntentJpaRepository;
-import qtedu.Impact_design.storage.jparepository.web.IdentityCanvasJpaRepository;
-import qtedu.Impact_design.storage.jparepository.web.ImpactCheckJpaRepository;
-import qtedu.Impact_design.storage.jparepository.web.flow_canvas.FlowCanvasJpaRepository;
-import qtedu.Impact_design.storage.jparepository.web.win_canvas.WinCanvasJpaRepository;
+import qtedu.Impact_design.domain.model.team.TeamUserModel;
+import qtedu.Impact_design.domain.repository.FLetterOfIntent2Repository;
+import qtedu.Impact_design.domain.repository.FLetterOfIntentRepository;
+import qtedu.Impact_design.domain.repository.ImpactCheckRepository;
+import qtedu.Impact_design.domain.repository.IdentityCanvasRepository;
+import qtedu.Impact_design.domain.repository.auth.TeamUserRepository;
+import qtedu.Impact_design.domain.repository.flow_canvas.FlowCanvasRepository;
+import qtedu.Impact_design.domain.repository.user.UserinfoRepository;
+import qtedu.Impact_design.domain.repository.win_canvas.WinCanvasRepository;
 
 import java.util.List;
 
@@ -23,30 +23,30 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TeamSubmitStatusChecker {
 
-    private final TeamUserJpaRepository teamUserJpaRepository;
-    private final ImpactCheckJpaRepository impactCheckJpaRepository;
-    private final IdentityCanvasJpaRepository identityCanvasJpaRepository;
-    private final FlowCanvasJpaRepository flowCanvasJpaRepository;
-    private final WinCanvasJpaRepository winCanvasJpaRepository;
-    private final FLetterOfIntentJpaRepository fLetterOfIntentJpaRepository;
-    private final FLetterOfIntent2JpaRepository fLetterOfIntent2JpaRepository;
-    private final UserinfoJpaRepository userinfoJpaRepository;
+    private final TeamUserRepository teamUserRepository;
+    private final ImpactCheckRepository impactCheckRepository;
+    private final IdentityCanvasRepository identityCanvasRepository;
+    private final FlowCanvasRepository flowCanvasRepository;
+    private final WinCanvasRepository winCanvasRepository;
+    private final FLetterOfIntentRepository fLetterOfIntentRepository;
+    private final FLetterOfIntent2Repository fLetterOfIntent2Repository;
+    private final UserinfoRepository userinfoRepository;
 
     /**
      * 팀의 대표작성자 userId 조회
      */
     public Long findWriterUserId(Integer teamId) {
-        List<TeamUser> teamUsers = teamUserJpaRepository.findByTeamId(teamId);
+        List<TeamUserModel> teamUsers = teamUserRepository.findByTeamId(teamId);
         if (teamUsers.isEmpty()) {
             return null;
         }
 
         List<Long> userIds = teamUsers.stream()
-                .map(TeamUser::getUserId)
+                .map(TeamUserModel::getUserId)
                 .toList();
 
         // writer = 1인 사용자 찾기, 없으면 첫 번째 사용자
-        return userinfoJpaRepository.findFirstByUserIdInAndWriter(userIds, "1")
+        return userinfoRepository.findWriterByUserIds(userIds)
                 .map(user -> user.getUserId())
                 .orElse(userIds.get(0));
     }
@@ -56,7 +56,7 @@ public class TeamSubmitStatusChecker {
      */
     public String checkSubmitA(Long writerUserId) {
         if (writerUserId == null) return "미제출";
-        return impactCheckJpaRepository.existsByUserIdAndSubmitted(writerUserId, true)
+        return impactCheckRepository.existsSubmittedByUserId(writerUserId)
                 ? "제출" : "미제출";
     }
 
@@ -65,7 +65,7 @@ public class TeamSubmitStatusChecker {
      */
     public String checkSubmitB(Long writerUserId) {
         if (writerUserId == null) return "미제출";
-        return identityCanvasJpaRepository.existsByUserIdAndSubmitted(writerUserId, true)
+        return identityCanvasRepository.existsSubmittedByUserId(writerUserId)
                 ? "제출" : "미제출";
     }
 
@@ -74,7 +74,7 @@ public class TeamSubmitStatusChecker {
      */
     public String checkSubmitC(Long writerUserId) {
         if (writerUserId == null) return "미제출";
-        return flowCanvasJpaRepository.existsByUserIdAndSubmitted(writerUserId, true)
+        return flowCanvasRepository.existsSubmittedByUserId(writerUserId)
                 ? "제출" : "미제출";
     }
 
@@ -83,7 +83,7 @@ public class TeamSubmitStatusChecker {
      */
     public String checkSubmitD(Long writerUserId) {
         if (writerUserId == null) return "미제출";
-        return winCanvasJpaRepository.existsByUserIdAndCanvasTypeAndSubmitted(writerUserId, CanvasType.QUICK, true)
+        return winCanvasRepository.existsSubmittedByUserIdAndCanvasType(writerUserId, CanvasType.QUICK)
                 ? "제출" : "미제출";
     }
 
@@ -92,7 +92,7 @@ public class TeamSubmitStatusChecker {
      */
     public String checkSubmitE(Long writerUserId) {
         if (writerUserId == null) return "미제출";
-        return winCanvasJpaRepository.existsByUserIdAndCanvasTypeAndSubmitted(writerUserId, CanvasType.BUILD, true)
+        return winCanvasRepository.existsSubmittedByUserIdAndCanvasType(writerUserId, CanvasType.BUILD)
                 ? "제출" : "미제출";
     }
 
@@ -101,10 +101,8 @@ public class TeamSubmitStatusChecker {
      */
     public String checkSubmitF(Long writerUserId) {
         if (writerUserId == null) return "미제출";
-        boolean intent1 = fLetterOfIntentJpaRepository.existsByStdntNoAndSubmittedAndDelYn(
-                writerUserId.intValue(), true, "N");
-        boolean intent2 = fLetterOfIntent2JpaRepository.existsByStdntNoAndSubmittedAndDelYn(
-                writerUserId.intValue(), true, "N");
+        boolean intent1 = fLetterOfIntentRepository.existsSubmittedByUserId(writerUserId);
+        boolean intent2 = fLetterOfIntent2Repository.existsSubmittedByUserId(writerUserId);
         return (intent1 || intent2) ? "제출" : "미제출";
     }
 }

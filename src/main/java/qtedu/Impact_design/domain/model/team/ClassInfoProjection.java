@@ -1,4 +1,4 @@
-package qtedu.Impact_design.storage.jparepository.teach;
+package qtedu.Impact_design.domain.model.team;
 
 import java.time.LocalDateTime;
 

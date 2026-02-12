@@ -96,7 +96,7 @@ public class FLetterOfIntent2 {
 
     public void update(String investmentPrice, Integer score1, Integer score2, Integer score3,
                        Integer score4, Integer score5, Integer score6, Integer score7,
-                       Integer score8, Integer score9, String opinion) {
+                       Integer score8, Integer score9, String opinion, Boolean submitted) {
         this.investmentPrice = investmentPrice;
         this.score1 = score1;
         this.score2 = score2;
@@ -108,6 +108,7 @@ public class FLetterOfIntent2 {
         this.score8 = score8;
         this.score9 = score9;
         this.opinion = opinion;
+        this.submitted = Boolean.TRUE.equals(submitted);
         this.mdfcnDt = java.time.LocalDateTime.now();
     }
 

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import qtedu.Impact_design.domain.model.ai.AiRequest;
 import qtedu.Impact_design.domain.model.ai.AiResponse;
-import qtedu.Impact_design.external.ai.AiClient;
+import qtedu.Impact_design.domain.repository.ai.AiClient;
 import qtedu.Impact_design.external.ai.openai.OpenAiProperties;
 
 import java.util.List;

@@ -43,6 +43,21 @@ public class TeamUserRepositoryImpl implements TeamUserRepository {
                 .map(this::toModel);
     }
 
+    @Override
+    public void deleteByUserId(Long userId) {
+        teamUserJpaRepository.deleteByUserId(userId);
+    }
+
+    @Override
+    public void updateTeamId(Long userId, Integer teamId) {
+        teamUserJpaRepository.updateTeamIdByUserId(userId, teamId);
+    }
+
+    @Override
+    public int countByTeamId(Integer teamId) {
+        return teamUserJpaRepository.countByTeamId(teamId);
+    }
+
     private TeamUserModel toModel(TeamUser entity) {
         return TeamUserModel.builder()
                 .idx(entity.getIdx())

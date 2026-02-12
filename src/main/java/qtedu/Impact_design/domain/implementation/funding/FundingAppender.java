@@ -25,6 +25,7 @@ public class FundingAppender {
     private final FLetterOfIntent2Repository fLetterOfIntent2Repository;
     private final TeamUserRepository teamUserRepository;
     private final FundingReader fundingReader;
+    private final FundingValidator fundingValidator;
 
     @Transactional
     public FundingInvestmentResponse saveInvestment(String canvasType, Long userId, FundingInvestmentRequest request) {
@@ -32,21 +33,6 @@ public class FundingAppender {
             return saveInvestmentBuild(userId, request);
         } else {
             return saveInvestmentQuick(userId, request);
-        }
-    }
-
-    @Transactional
-    public void submit(String canvasType, Long userId) {
-        if (isBuildType(canvasType)) {
-            if (fLetterOfIntentRepository.existsSubmittedByUserId(userId)) {
-                throw new ConflictException(ErrorCode.ALREADY_SUBMITTED);
-            }
-            fLetterOfIntentRepository.submitAllByUserId(userId);
-        } else {
-            if (fLetterOfIntent2Repository.existsSubmittedByUserId(userId)) {
-                throw new ConflictException(ErrorCode.ALREADY_SUBMITTED);
-            }
-            fLetterOfIntent2Repository.submitAllByUserId(userId);
         }
     }
 
@@ -62,6 +48,12 @@ public class FundingAppender {
 
         Optional<FLetterOfIntentModel> existing = fLetterOfIntentRepository
                 .findByUserIdAndTargetTeamId(userId, request.getInvestmentTarget());
+
+        long currentTotal = fLetterOfIntentRepository.findByUserId(userId).stream()
+                .mapToLong(inv -> fundingValidator.parsePrice(inv.getInvestmentPrice()))
+                .sum();
+        long existingPrice = existing.map(inv -> fundingValidator.parsePrice(inv.getInvestmentPrice())).orElse(0L);
+        fundingValidator.validateInvestmentLimit(currentTotal - existingPrice, request.getInvestmentPrice());
 
         FLetterOfIntentModel model = FLetterOfIntentModel.builder()
                 .intentIndex(existing.map(FLetterOfIntentModel::getIntentIndex).orElse(null))
@@ -102,6 +94,12 @@ public class FundingAppender {
 
         Optional<FLetterOfIntent2Model> existing = fLetterOfIntent2Repository
                 .findByUserIdAndTargetTeamId(userId, request.getInvestmentTarget());
+
+        long currentTotal = fLetterOfIntent2Repository.findByUserId(userId).stream()
+                .mapToLong(inv -> fundingValidator.parsePrice(inv.getInvestmentPrice()))
+                .sum();
+        long existingPrice = existing.map(inv -> fundingValidator.parsePrice(inv.getInvestmentPrice())).orElse(0L);
+        fundingValidator.validateInvestmentLimit(currentTotal - existingPrice, request.getInvestmentPrice());
 
         FLetterOfIntent2Model model = FLetterOfIntent2Model.builder()
                 .intentIndex(existing.map(FLetterOfIntent2Model::getIntentIndex).orElse(null))

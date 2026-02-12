@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import qtedu.Impact_design.domain.model.team.ClassInfoProjection;
 import qtedu.Impact_design.storage.jpaentity.teach.TbGame;
 
 import java.util.List;

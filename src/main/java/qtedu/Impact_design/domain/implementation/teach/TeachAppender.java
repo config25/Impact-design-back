@@ -4,14 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import qtedu.Impact_design.api.dto.request.teach.ClassSaveRequest;
-import qtedu.Impact_design.storage.jpaentity.teach.GameAdmin;
-import qtedu.Impact_design.storage.jpaentity.teach.GameTeam;
-import qtedu.Impact_design.storage.jpaentity.teach.TbGame;
-import qtedu.Impact_design.storage.jpaentity.teach.TbTeam;
-import qtedu.Impact_design.storage.jparepository.teach.GameAdminJpaRepository;
-import qtedu.Impact_design.storage.jparepository.teach.GameTeamJpaRepository;
-import qtedu.Impact_design.storage.jparepository.teach.TbGameJpaRepository;
-import qtedu.Impact_design.storage.jparepository.teach.TbTeamJpaRepository;
+import qtedu.Impact_design.domain.model.team.TbGameModel;
+import qtedu.Impact_design.domain.model.team.TbTeamModel;
+import qtedu.Impact_design.domain.repository.auth.TbTeamRepository;
+import qtedu.Impact_design.domain.repository.teach.GameAdminRepository;
+import qtedu.Impact_design.domain.repository.teach.GameTeamRepository;
+import qtedu.Impact_design.domain.repository.teach.TbGameRepository;
 
 import java.time.LocalDateTime;
 import java.util.Random;
@@ -20,16 +18,16 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class TeachAppender {
 
-    private final TbGameJpaRepository tbGameJpaRepository;
-    private final TbTeamJpaRepository tbTeamJpaRepository;
-    private final GameAdminJpaRepository gameAdminJpaRepository;
-    private final GameTeamJpaRepository gameTeamJpaRepository;
+    private final TbGameRepository tbGameRepository;
+    private final TbTeamRepository tbTeamRepository;
+    private final GameAdminRepository gameAdminRepository;
+    private final GameTeamRepository gameTeamRepository;
 
     @Transactional
     public Integer createClass(Long userId, ClassSaveRequest request) {
         String code = generateCode();
 
-        TbGame game = TbGame.builder()
+        TbGameModel game = TbGameModel.builder()
                 .name(request.getName())
                 .code(code)
                 .numTeam(request.getNumTeam())
@@ -45,17 +43,11 @@ public class TeachAppender {
                 .regDate(LocalDateTime.now())
                 .build();
 
-        TbGame savedGame = tbGameJpaRepository.save(game);
+        TbGameModel savedGame = tbGameRepository.save(game);
         Integer gameId = savedGame.getGameId();
 
-        // GameAdmin 연결
-        GameAdmin gameAdmin = GameAdmin.builder()
-                .gameId(gameId)
-                .userId(userId)
-                .build();
-        gameAdminJpaRepository.save(gameAdmin);
+        gameAdminRepository.save(gameId, userId);
 
-        // 팀 생성
         createTeams(gameId, request.getNumTeam(), code);
 
         return gameId;
@@ -67,7 +59,7 @@ public class TeachAppender {
         for (int i = 1; i <= numTeam; i++) {
             String teamName = String.valueOf(alphabet.charAt((i - 1) % 26)) + "팀";
 
-            TbTeam team = TbTeam.builder()
+            TbTeamModel team = TbTeamModel.builder()
                     .name(teamName)
                     .sequence(i)
                     .code(code)
@@ -75,13 +67,8 @@ public class TeachAppender {
                     .isDoing(1)
                     .build();
 
-            TbTeam savedTeam = tbTeamJpaRepository.save(team);
-
-            GameTeam gameTeam = GameTeam.builder()
-                    .gameId(gameId)
-                    .teamId(savedTeam.getTeamId())
-                    .build();
-            gameTeamJpaRepository.save(gameTeam);
+            TbTeamModel savedTeam = tbTeamRepository.save(team);
+            gameTeamRepository.save(gameId, savedTeam.getTeamId());
         }
     }
 

@@ -6,14 +6,15 @@ import org.springframework.transaction.annotation.Transactional;
 import qtedu.Impact_design.api.dto.response.teach.*;
 import qtedu.Impact_design.common.error.ErrorCode;
 import qtedu.Impact_design.common.error.NotFoundException;
+import qtedu.Impact_design.domain.model.team.ContentsModel;
+import qtedu.Impact_design.domain.model.team.TbGameModel;
+import qtedu.Impact_design.domain.model.team.TbMissionModel;
 import qtedu.Impact_design.domain.model.team.TbMissionDataModel;
-import qtedu.Impact_design.domain.repository.teach.GameRepository;
-import qtedu.Impact_design.domain.repository.teach.MissionDataRepository;
-import qtedu.Impact_design.storage.jpaentity.teach.Contents;
-import qtedu.Impact_design.storage.jpaentity.teach.TbGame;
-import qtedu.Impact_design.storage.jpaentity.teach.TbMission;
-import qtedu.Impact_design.storage.jparepository.teach.*;
-import qtedu.Impact_design.storage.jparepository.user.UserinfoJpaRepository;
+import qtedu.Impact_design.domain.repository.auth.TbTeamRepository;
+import qtedu.Impact_design.domain.repository.auth.TeamUserRepository;
+import qtedu.Impact_design.domain.repository.teach.*;
+import qtedu.Impact_design.domain.repository.user.UserinfoRepository;
+import qtedu.Impact_design.domain.model.team.ClassInfoProjection;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -27,14 +28,14 @@ public class TeachReader {
 
     private final GameRepository gameRepository;
     private final MissionDataRepository missionDataRepository;
-    private final TbGameJpaRepository tbGameJpaRepository;
-    private final TbMissionJpaRepository tbMissionJpaRepository;
-    private final TbTeamJpaRepository tbTeamJpaRepository;
-    private final GameTeamJpaRepository gameTeamJpaRepository;
-    private final TeamUserJpaRepository teamUserJpaRepository;
-    private final ContentsJpaRepository contentsJpaRepository;
+    private final TbGameRepository tbGameRepository;
+    private final TbMissionRepository tbMissionRepository;
+    private final TbTeamRepository tbTeamRepository;
+    private final GameTeamRepository gameTeamRepository;
+    private final TeamUserRepository teamUserRepository;
+    private final ContentsRepository contentsRepository;
     private final TeamSubmitStatusChecker submitStatusChecker;
-    private final UserinfoJpaRepository userinfoJpaRepository;
+    private final UserinfoRepository userinfoRepository;
 
     public List<ClassInfoResponse> getTeachIndex(Long userId) {
         List<ClassInfoProjection> classList = gameRepository.findClassList(userId, 10);
@@ -60,18 +61,18 @@ public class TeachReader {
     }
 
     public TeachDetailResponse getTeachDetail(Integer gameId) {
-        TbGame game = tbGameJpaRepository.findById(gameId)
+        TbGameModel game = tbGameRepository.findById(gameId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.GAME_NOT_FOUND));
 
-        TeachDetailResponse.MissionInfo missionInfo = tbMissionJpaRepository
-                .findFirstByGameIdOrderByMissionIdDesc(gameId.longValue())
+        TeachDetailResponse.MissionInfo missionInfo = tbMissionRepository
+                .findLatestByGameId(gameId.longValue())
                 .map(this::toMissionInfo)
                 .orElse(null);
 
         List<TeachDetailResponse.TeamInfo> teams = getTeamInfoList(gameId);
 
-        TeachDetailResponse.GameLogoInfo gameLogo = contentsJpaRepository
-                .findFirstByStTpAndWorldId(1, gameId)
+        TeachDetailResponse.GameLogoInfo gameLogo = contentsRepository
+                .findGameLogo(gameId)
                 .map(this::toGameLogoInfo)
                 .orElse(null);
 
@@ -105,18 +106,18 @@ public class TeachReader {
             throw new NotFoundException(ErrorCode.GAME_NOT_FOUND);
         }
 
-        TbGame game = tbGameJpaRepository.findById(gameId)
+        TbGameModel game = tbGameRepository.findById(gameId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.GAME_NOT_FOUND));
 
-        TeachDetailResponse.MissionInfo missionInfo = tbMissionJpaRepository
-                .findFirstByGameIdOrderByMissionIdDesc(gameId.longValue())
+        TeachDetailResponse.MissionInfo missionInfo = tbMissionRepository
+                .findLatestByGameId(gameId.longValue())
                 .map(this::toMissionInfo)
                 .orElse(null);
 
         List<TeachDetailResponse.TeamInfo> teams = getTeamInfoList(gameId);
 
-        TeachDetailResponse.GameLogoInfo gameLogo = contentsJpaRepository
-                .findFirstByStTpAndWorldId(1, gameId)
+        TeachDetailResponse.GameLogoInfo gameLogo = contentsRepository
+                .findGameLogo(gameId)
                 .map(this::toGameLogoInfo)
                 .orElse(null);
 
@@ -142,12 +143,11 @@ public class TeachReader {
     }
 
     public StudentListResponse getStudentList(Integer gameId) {
-        TbGame game = tbGameJpaRepository.findById(gameId)
+        TbGameModel game = tbGameRepository.findById(gameId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.GAME_NOT_FOUND));
 
         String code = game.getCode();
 
-        // 게임 정보
         StudentListResponse.GameInfo gameInfo = StudentListResponse.GameInfo.builder()
                 .gameId(game.getGameId())
                 .name(game.getName())
@@ -159,8 +159,7 @@ public class TeachReader {
                 .step(game.getStep())
                 .build();
 
-        // 팀 목록
-        List<StudentListResponse.TeamInfo> teamList = tbTeamJpaRepository.findByCode(code).stream()
+        List<StudentListResponse.TeamInfo> teamList = tbTeamRepository.findByCode(code).stream()
                 .map(team -> StudentListResponse.TeamInfo.builder()
                         .teamId(team.getTeamId())
                         .name(team.getName())
@@ -169,8 +168,7 @@ public class TeachReader {
                         .build())
                 .collect(Collectors.toList());
 
-        // 학생 목록 (팀 이름 포함)
-        List<StudentListResponse.StudentInfo> studentList = userinfoJpaRepository
+        List<StudentListResponse.StudentInfo> studentList = userinfoRepository
                 .findStudentsWithTeamByCode(code).stream()
                 .map(s -> StudentListResponse.StudentInfo.builder()
                         .userId(s.getUserId())
@@ -189,13 +187,13 @@ public class TeachReader {
     }
 
     private List<TeachDetailResponse.TeamInfo> getTeamInfoList(Integer gameId) {
-        List<Integer> teamIds = gameTeamJpaRepository.findTeamIdsByGameId(gameId);
+        List<Integer> teamIds = gameTeamRepository.findTeamIdsByGameId(gameId);
 
         return teamIds.stream()
-                .map(teamId -> tbTeamJpaRepository.findByTeamId(teamId).orElse(null))
+                .map(teamId -> tbTeamRepository.findByTeamId(teamId).orElse(null))
                 .filter(team -> team != null && (team.getStatus() == null || team.getStatus() != -1))
                 .map(team -> {
-                    int numUser = teamUserJpaRepository.countByTeamId(team.getTeamId());
+                    int numUser = teamUserRepository.countByTeamId(team.getTeamId());
                     Long writerUserId = submitStatusChecker.findWriterUserId(team.getTeamId());
 
                     return TeachDetailResponse.TeamInfo.builder()
@@ -215,7 +213,7 @@ public class TeachReader {
                 .collect(Collectors.toList());
     }
 
-    private TeachDetailResponse.MissionInfo toMissionInfo(TbMission mission) {
+    private TeachDetailResponse.MissionInfo toMissionInfo(TbMissionModel mission) {
         return TeachDetailResponse.MissionInfo.builder()
                 .missionId(mission.getMissionId())
                 .sequence(mission.getSequence())
@@ -228,7 +226,7 @@ public class TeachReader {
                 .build();
     }
 
-    private TeachDetailResponse.GameLogoInfo toGameLogoInfo(Contents contents) {
+    private TeachDetailResponse.GameLogoInfo toGameLogoInfo(ContentsModel contents) {
         return TeachDetailResponse.GameLogoInfo.builder()
                 .idx(contents.getIdx())
                 .subject(contents.getSubject())

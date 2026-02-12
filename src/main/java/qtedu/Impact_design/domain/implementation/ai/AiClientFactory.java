@@ -1,8 +1,9 @@
-package qtedu.Impact_design.external.ai;
+package qtedu.Impact_design.domain.implementation.ai;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import qtedu.Impact_design.domain.model.ai.AiModel;
+import qtedu.Impact_design.domain.repository.ai.AiClient;
 
 import java.util.List;
 import java.util.Map;

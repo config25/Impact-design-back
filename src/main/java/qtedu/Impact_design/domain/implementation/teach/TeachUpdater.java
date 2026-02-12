@@ -6,10 +6,10 @@ import org.springframework.transaction.annotation.Transactional;
 import qtedu.Impact_design.api.dto.request.teach.ClassSaveRequest;
 import qtedu.Impact_design.common.error.ErrorCode;
 import qtedu.Impact_design.common.error.NotFoundException;
-import qtedu.Impact_design.storage.jpaentity.teach.TbGame;
-import qtedu.Impact_design.storage.jpaentity.teach.TbMission;
-import qtedu.Impact_design.storage.jparepository.teach.TbGameJpaRepository;
-import qtedu.Impact_design.storage.jparepository.teach.TbMissionJpaRepository;
+import qtedu.Impact_design.domain.model.team.TbGameModel;
+import qtedu.Impact_design.domain.model.team.TbMissionModel;
+import qtedu.Impact_design.domain.repository.teach.TbGameRepository;
+import qtedu.Impact_design.domain.repository.teach.TbMissionRepository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -18,14 +18,14 @@ import java.time.format.DateTimeFormatter;
 @RequiredArgsConstructor
 public class TeachUpdater {
 
-    private final TbGameJpaRepository tbGameJpaRepository;
-    private final TbMissionJpaRepository tbMissionJpaRepository;
+    private final TbGameRepository tbGameRepository;
+    private final TbMissionRepository tbMissionRepository;
 
     @Transactional
     public Integer updateClass(Integer gameId, ClassSaveRequest request) {
-        TbGame game = findGame(gameId);
+        TbGameModel game = findGame(gameId);
 
-        TbGame updatedGame = TbGame.builder()
+        TbGameModel updatedGame = TbGameModel.builder()
                 .gameId(game.getGameId())
                 .name(request.getName())
                 .code(game.getCode())
@@ -47,15 +47,14 @@ public class TeachUpdater {
                 .popupId(request.getPopupId() != null ? request.getPopupId() : game.getPopupId())
                 .build();
 
-        tbGameJpaRepository.save(updatedGame);
+        tbGameRepository.save(updatedGame);
 
-        // mission enddate 업데이트
         if (request.getEnddate() != null && !request.getEnddate().isBlank()) {
-            tbMissionJpaRepository.findFirstByGameIdOrderByMissionIdDesc(gameId.longValue())
+            tbMissionRepository.findLatestByGameId(gameId.longValue())
                     .ifPresent(mission -> {
                         LocalDateTime newEnddate = LocalDateTime.parse(request.getEnddate(),
                                 DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-                        TbMission updated = TbMission.builder()
+                        TbMissionModel updated = TbMissionModel.builder()
                                 .missionId(mission.getMissionId())
                                 .sequence(mission.getSequence())
                                 .subject(mission.getSubject())
@@ -68,7 +67,7 @@ public class TeachUpdater {
                                 .gameId(mission.getGameId())
                                 .toinform(mission.getToinform())
                                 .build();
-                        tbMissionJpaRepository.save(updated);
+                        tbMissionRepository.save(updated);
                     });
         }
 
@@ -77,29 +76,29 @@ public class TeachUpdater {
 
     @Transactional
     public void startClass(Integer gameId) {
-        TbGame game = findGame(gameId);
+        TbGameModel game = findGame(gameId);
         updateGameStatus(game, 10, null, null);
     }
 
     @Transactional
     public void endClass(Integer gameId) {
-        TbGame game = findGame(gameId);
+        TbGameModel game = findGame(gameId);
         updateGameStatus(game, 100, 0, LocalDateTime.now());
     }
 
     @Transactional
     public void restoreClass(Integer gameId) {
-        TbGame game = findGame(gameId);
+        TbGameModel game = findGame(gameId);
         updateGameStatus(game, 10, null, null);
     }
 
-    private TbGame findGame(Integer gameId) {
-        return tbGameJpaRepository.findById(gameId)
+    private TbGameModel findGame(Integer gameId) {
+        return tbGameRepository.findById(gameId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.GAME_NOT_FOUND));
     }
 
-    private void updateGameStatus(TbGame game, Integer status, Integer eStatus, LocalDateTime endedAt) {
-        TbGame updated = TbGame.builder()
+    private void updateGameStatus(TbGameModel game, Integer status, Integer eStatus, LocalDateTime endedAt) {
+        TbGameModel updated = TbGameModel.builder()
                 .gameId(game.getGameId())
                 .name(game.getName())
                 .code(game.getCode())
@@ -121,6 +120,6 @@ public class TeachUpdater {
                 .popupId(game.getPopupId())
                 .build();
 
-        tbGameJpaRepository.save(updated);
+        tbGameRepository.save(updated);
     }
 }

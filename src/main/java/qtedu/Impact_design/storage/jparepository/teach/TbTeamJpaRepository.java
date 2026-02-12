@@ -12,7 +12,8 @@ import java.util.Optional;
 @Repository
 public interface TbTeamJpaRepository extends JpaRepository<TbTeam, Integer> {
     List<TbTeam> findByCode(String code);
-    List<TbTeam> findByCodeAndTeamIdNot(String code, Integer teamId);
+    @Query("SELECT t FROM TbTeam t WHERE t.code = :code AND t.teamId != :teamId AND (t.status IS NULL OR t.status != -1)")
+    List<TbTeam> findByCodeExcludingDeletedTeam(@Param("code") String code, @Param("teamId") Integer teamId);
     Optional<TbTeam> findByTeamId(Integer teamId);
 
     @Query(value = """

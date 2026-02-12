@@ -8,65 +8,59 @@ import qtedu.Impact_design.common.error.NotFoundException;
 import qtedu.Impact_design.domain.model.team.TbGameModel;
 import qtedu.Impact_design.domain.model.team.TbTeamModel;
 import qtedu.Impact_design.domain.repository.auth.TbTeamRepository;
-import qtedu.Impact_design.domain.repository.teach.GameTeamRepository;
+import qtedu.Impact_design.domain.repository.auth.TeamUserRepository;
 import qtedu.Impact_design.domain.repository.teach.TbGameRepository;
+import qtedu.Impact_design.domain.repository.user.UserinfoRepository;
+
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class TeachTeamAppender {
+public class TeachTeamRemover {
 
     private final TbGameRepository tbGameRepository;
     private final TbTeamRepository tbTeamRepository;
-    private final GameTeamRepository gameTeamRepository;
+    private final TeamUserRepository teamUserRepository;
+    private final UserinfoRepository userinfoRepository;
 
     @Transactional
-    public Integer addTeam(Integer gameId) {
+    public void deleteTeam(Integer teamId, Integer gameId) {
+        TbTeamModel team = tbTeamRepository.findByTeamId(teamId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.TEAM_NOT_FOUND));
+
+        TbTeamModel updated = TbTeamModel.builder()
+                .teamId(team.getTeamId())
+                .name(team.getName())
+                .sequence(team.getSequence())
+                .status(-1)
+                .aiPlay(team.getAiPlay())
+                .code(team.getCode())
+                .isDoing(team.getIsDoing())
+                .teamGubun(team.getTeamGubun())
+                .numUser(team.getNumUser())
+                .build();
+
+        tbTeamRepository.save(updated);
+
         TbGameModel game = tbGameRepository.findById(gameId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.GAME_NOT_FOUND));
 
-        int teamCount = gameTeamRepository.countByGameId(gameId) + 1;
-        String teamName = "팀" + teamCount;
-
-        TbTeamModel team = TbTeamModel.builder()
-                .name(teamName)
-                .sequence(teamCount)
-                .code(game.getCode())
-                .status(0)
-                .isDoing(1)
-                .build();
-
-        TbTeamModel savedTeam = tbTeamRepository.save(team);
-        gameTeamRepository.save(gameId, savedTeam.getTeamId());
-
         int currentNumTeam = game.getNumTeam() != null ? game.getNumTeam() : 0;
-        updateNumTeam(game, currentNumTeam + 1);
-
-        return savedTeam.getTeamId();
+        if (currentNumTeam > 0) {
+            updateNumTeam(game, currentNumTeam - 1);
+        }
     }
 
     @Transactional
-    public Integer addEvaluationTeam(Integer gameId) {
-        TbGameModel game = tbGameRepository.findById(gameId)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.GAME_NOT_FOUND));
-
-        int teamCount = gameTeamRepository.countByGameId(gameId) + 1;
-
-        TbTeamModel team = TbTeamModel.builder()
-                .name("평가팀")
-                .sequence(teamCount)
-                .code(game.getCode())
-                .status(0)
-                .isDoing(1)
-                .teamGubun(1)
-                .build();
-
-        TbTeamModel savedTeam = tbTeamRepository.save(team);
-        gameTeamRepository.save(gameId, savedTeam.getTeamId());
-
-        int currentNumTeam = game.getNumTeam() != null ? game.getNumTeam() : 0;
-        updateNumTeam(game, currentNumTeam + 1);
-
-        return savedTeam.getTeamId();
+    public void deleteTeamMembers(List<Long> userIds) {
+        for (Long userId : userIds) {
+            userinfoRepository.findByUserId(userId).ifPresent(user -> {
+                if ("1".equals(user.getWriter())) {
+                    userinfoRepository.setWriter(userId);
+                }
+            });
+            teamUserRepository.deleteByUserId(userId);
+        }
     }
 
     private void updateNumTeam(TbGameModel game, int newNumTeam) {

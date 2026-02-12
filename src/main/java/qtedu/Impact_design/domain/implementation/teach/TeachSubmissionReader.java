@@ -16,9 +16,9 @@ import qtedu.Impact_design.domain.implementation.funding.FundingReader;
 import qtedu.Impact_design.domain.implementation.identitycanvas.IdentityCanvasReader;
 import qtedu.Impact_design.domain.implementation.impactcheck.ImpactCheckReader;
 import qtedu.Impact_design.domain.implementation.quickwin.QuickWinCanvasReader;
-import qtedu.Impact_design.storage.jparepository.teach.GameTeamJpaRepository;
-import qtedu.Impact_design.storage.jparepository.teach.TbTeamJpaRepository;
-import qtedu.Impact_design.storage.jparepository.teach.TeamUserJpaRepository;
+import qtedu.Impact_design.domain.repository.auth.TbTeamRepository;
+import qtedu.Impact_design.domain.repository.auth.TeamUserRepository;
+import qtedu.Impact_design.domain.repository.teach.GameTeamRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,9 +28,9 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class TeachSubmissionReader {
 
-    private final GameTeamJpaRepository gameTeamJpaRepository;
-    private final TbTeamJpaRepository tbTeamJpaRepository;
-    private final TeamUserJpaRepository teamUserJpaRepository;
+    private final GameTeamRepository gameTeamRepository;
+    private final TbTeamRepository tbTeamRepository;
+    private final TeamUserRepository teamUserRepository;
     private final TeamSubmitStatusChecker submitStatusChecker;
 
     // 기존 Reader들 재사용
@@ -42,13 +42,13 @@ public class TeachSubmissionReader {
     private final FundingReader fundingReader;
 
     public List<TeamSubmissionListResponse> getSubmissionList(Integer gameId) {
-        List<Integer> teamIds = gameTeamJpaRepository.findTeamIdsByGameId(gameId);
+        List<Integer> teamIds = gameTeamRepository.findTeamIdsByGameId(gameId);
 
         return teamIds.stream()
-                .map(teamId -> tbTeamJpaRepository.findByTeamId(teamId).orElse(null))
+                .map(teamId -> tbTeamRepository.findByTeamId(teamId).orElse(null))
                 .filter(team -> team != null && (team.getStatus() == null || team.getStatus() != -1))
                 .map(team -> {
-                    int numUser = teamUserJpaRepository.countByTeamId(team.getTeamId());
+                    int numUser = teamUserRepository.countByTeamId(team.getTeamId());
                     Long writerUserId = submitStatusChecker.findWriterUserId(team.getTeamId());
 
                     return TeamSubmissionListResponse.builder()

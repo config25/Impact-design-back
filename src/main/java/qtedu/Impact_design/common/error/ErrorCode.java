@@ -52,7 +52,10 @@ public enum ErrorCode {
     GAME_NOT_FOUND("GAME_1", "게임을 찾을 수 없습니다."),
 
     // Canvas
-    ALREADY_SUBMITTED("CANVAS_1", "이미 제출 완료된 캔버스입니다.");
+    ALREADY_SUBMITTED("CANVAS_1", "이미 제출 완료된 캔버스입니다."),
+
+    // Funding
+    INVESTMENT_LIMIT_EXCEEDED("FUNDING_1", "총 투자 금액이 1억을 초과할 수 없습니다.");
 
 
 

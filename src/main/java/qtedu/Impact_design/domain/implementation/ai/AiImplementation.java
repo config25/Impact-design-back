@@ -12,8 +12,7 @@ import qtedu.Impact_design.domain.implementation.ai.prompt.ReportPromptBuilder;
 import qtedu.Impact_design.domain.model.ai.AiModel;
 import qtedu.Impact_design.domain.model.ai.AiRequest;
 import qtedu.Impact_design.domain.model.ai.AiResponse;
-import qtedu.Impact_design.external.ai.AiClient;
-import qtedu.Impact_design.external.ai.AiClientFactory;
+import qtedu.Impact_design.domain.repository.ai.AiClient;
 
 import java.util.ArrayList;
 import java.util.Collections;

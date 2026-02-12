@@ -9,4 +9,7 @@ public interface TeamUserRepository {
     TeamUserModel save(TeamUserModel teamUserModel);
     List<TeamUserModel> findByTeamId(Integer teamId);
     Optional<TeamUserModel> findByUserId(Long userId);
+    void deleteByUserId(Long userId);
+    void updateTeamId(Long userId, Integer teamId);
+    int countByTeamId(Integer teamId);
 }

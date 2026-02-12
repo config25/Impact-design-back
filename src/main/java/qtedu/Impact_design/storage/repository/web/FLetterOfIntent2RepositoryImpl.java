@@ -51,7 +51,7 @@ public class FLetterOfIntent2RepositoryImpl implements FLetterOfIntent2Repositor
                     model.getScore1(), model.getScore2(), model.getScore3(),
                     model.getScore4(), model.getScore5(), model.getScore6(),
                     model.getScore7(), model.getScore8(), model.getScore9(),
-                    model.getOpinion()
+                    model.getOpinion(), model.getSubmitted()
             );
         } else {
             entity = FLetterOfIntent2.builder()
@@ -73,7 +73,7 @@ public class FLetterOfIntent2RepositoryImpl implements FLetterOfIntent2Repositor
                     .delYn("N")
                     .regId(String.valueOf(model.getStdntNo()))
                     .regDt(LocalDateTime.now())
-                    .submitted(false)
+                    .submitted(Boolean.TRUE.equals(model.getSubmitted()))
                     .teamId(model.getTeamId())
                     .gameId(model.getGameId())
                     .build();
@@ -97,10 +97,15 @@ public class FLetterOfIntent2RepositoryImpl implements FLetterOfIntent2Repositor
     @Override
     public List<FLetterOfIntent2Model> findByTargetTeamId(Integer teamId) {
         return jpaRepository
-                .findByInvestmentTargetAndDelYnAndSubmitted(String.valueOf(teamId), "N", true)
+                .findByInvestmentTargetAndDelYn(String.valueOf(teamId), "N")
                 .stream()
                 .map(this::toModel)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void updateInvestmentTargetByCanvasOwner(Long userId, String teamId) {
+        jpaRepository.updateInvestmentTargetByCanvasOwner(userId, teamId);
     }
 
     private FLetterOfIntent2Model toModel(FLetterOfIntent2 entity) {

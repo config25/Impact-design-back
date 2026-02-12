@@ -22,9 +22,7 @@ public class FundingController {
      * 투자 대상 팀 목록 조회 (내 팀 제외)
      * canvasType: build 또는 quick
      */
-    @GetMapping("/{canvasT" +
-            "" +
-            "ype}/teams")
+    @GetMapping("/{canvasType}/teams")
     public ResponseEntity<HttpResponse<FundingTeamListResponse>> getTeamList(
             @PathVariable String canvasType,
             @CurrentUser UserId userId

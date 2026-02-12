@@ -1,6 +1,9 @@
 package qtedu.Impact_design.storage.jparepository.web;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import qtedu.Impact_design.storage.jpaentity.FLetterOfIntent;
 
@@ -25,4 +28,9 @@ public interface FLetterOfIntentJpaRepository extends JpaRepository<FLetterOfInt
 
     // 내 팀을 투자 대상으로 한 모든 투자 (F3용)
     List<FLetterOfIntent> findByInvestmentTargetAndDelYnAndSubmitted(String investmentTarget, String delYn, Boolean submitted);
+
+    // 팀 이동 시 investment_target 일괄 업데이트
+    @Modifying
+    @Query(value = "UPDATE f_letter_of_intent SET investment_target = :teamId WHERE canvas_id IN (SELECT canvas_id FROM win_canvas WHERE user_id = :userId)", nativeQuery = true)
+    void updateInvestmentTargetByCanvasOwner(@Param("userId") Long userId, @Param("teamId") String teamId);
 }

@@ -12,7 +12,7 @@ import qtedu.Impact_design.domain.model.en.UserRole;
 import qtedu.Impact_design.domain.model.user.UserinfoModel;
 import qtedu.Impact_design.domain.repository.teach.GameRepository;
 import qtedu.Impact_design.domain.repository.user.UserinfoRepository;
-import qtedu.Impact_design.storage.jparepository.teach.ClassInfoProjection;
+import qtedu.Impact_design.domain.model.team.ClassInfoProjection;
 
 import java.util.List;
 import java.util.stream.Collectors;

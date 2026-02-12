@@ -1,4 +1,4 @@
-package qtedu.Impact_design.external.ai;
+package qtedu.Impact_design.domain.repository.ai;
 
 import qtedu.Impact_design.domain.model.ai.AiRequest;
 import qtedu.Impact_design.domain.model.ai.AiResponse;
