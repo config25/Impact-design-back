@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import qtedu.Impact_design.api.dto.response.buildwin.BuildWinCanvasResponse;
 import qtedu.Impact_design.api.dto.response.flowcanvas.FlowCanvasResponse;
 import qtedu.Impact_design.api.dto.response.funding.FundingInvestmentResponse;
+import qtedu.Impact_design.api.dto.response.funding.FundingMyResultResponse;
 import qtedu.Impact_design.api.dto.response.identitycanvas.IdentityCanvasResponse;
 import qtedu.Impact_design.api.dto.response.impactcheck.ImpactCheckResponse;
 import qtedu.Impact_design.api.dto.response.quickwin.QuickWinCanvasResponse;
@@ -43,7 +44,11 @@ public class TeachSubmissionService {
         return teachSubmissionReader.getBuildWinCanvas(teamId);
     }
 
-    public List<FundingInvestmentResponse> getFunding(Integer teamId) {
-        return teachSubmissionReader.getFunding(teamId);
+    public List<FundingInvestmentResponse> getFunding(String canvasType, Integer teamId) {
+        return teachSubmissionReader.getFunding(canvasType, teamId);
+    }
+
+    public FundingMyResultResponse getFundingResult(Integer teamId) {
+        return teachSubmissionReader.getFundingResult(teamId);
     }
 }

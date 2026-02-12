@@ -2,6 +2,7 @@ package qtedu.Impact_design.domain.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import qtedu.Impact_design.api.dto.request.teach.ClassSaveRequest;
 import qtedu.Impact_design.api.dto.response.teach.ClassInfoResponse;
 import qtedu.Impact_design.api.dto.response.teach.StudentListResponse;
@@ -42,12 +43,12 @@ public class TeachService {
         return teachReader.getStudentList(gameId);
     }
 
-    public Integer createClass(Long userId, ClassSaveRequest request) {
-        return teachAppender.createClass(userId, request);
+    public Integer createClass(Long userId, ClassSaveRequest request, MultipartFile image) {
+        return teachAppender.createClass(userId, request, image);
     }
 
-    public Integer updateClass(Integer gameId, ClassSaveRequest request) {
-        return teachUpdater.updateClass(gameId, request);
+    public Integer updateClass(Integer gameId, ClassSaveRequest request, MultipartFile image) {
+        return teachUpdater.updateClass(gameId, request, image);
     }
 
     public void startClass(Integer gameId) {

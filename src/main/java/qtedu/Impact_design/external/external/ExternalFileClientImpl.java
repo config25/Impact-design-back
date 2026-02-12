@@ -4,6 +4,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import qtedu.Impact_design.common.error.ConflictException;
 import qtedu.Impact_design.common.error.ErrorCode;
@@ -12,6 +13,7 @@ import qtedu.Impact_design.domain.model.media.FileData;
 import qtedu.Impact_design.domain.model.media.Media;
 
 @Component
+@ConditionalOnProperty(name = "file.storage", havingValue = "s3")
 @RequiredArgsConstructor
 public class ExternalFileClientImpl implements ExternalFileClient {
 

@@ -22,8 +22,9 @@ public class ClassInfoResponse {
     private Integer ddYear;
     private Integer ddTerm;
     private Integer statusCeo;
+    private String imageUrl;
 
-    public static ClassInfoResponse from(ClassInfoProjection projection, Integer statusCeo) {
+    public static ClassInfoResponse from(ClassInfoProjection projection, Integer statusCeo, String imageUrl) {
         return ClassInfoResponse.builder()
                 .gameId(projection.getGameId())
                 .name(projection.getName())
@@ -38,6 +39,7 @@ public class ClassInfoResponse {
                 .ddYear(projection.getDdYear())
                 .ddTerm(projection.getDdTerm())
                 .statusCeo(statusCeo)
+                .imageUrl(imageUrl)
                 .build();
     }
 }

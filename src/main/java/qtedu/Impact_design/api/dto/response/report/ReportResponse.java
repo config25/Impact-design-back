@@ -9,6 +9,8 @@ import java.util.List;
 @Builder
 public class ReportResponse {
 
+    private String imageUrl;
+
     private List<ImpactCheckScoreItem> impactCheckScores;
 
     private FrequencyAnalysis externalThreats;

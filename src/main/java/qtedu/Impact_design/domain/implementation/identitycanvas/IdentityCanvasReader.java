@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import qtedu.Impact_design.api.dto.response.identitycanvas.IdentityCanvasResponse;
 import qtedu.Impact_design.domain.model.IdentityCanvasModel;
 import qtedu.Impact_design.domain.repository.IdentityCanvasRepository;
+import qtedu.Impact_design.domain.repository.teach.TbGameRepository;
 
 import java.util.List;
 
@@ -13,10 +14,12 @@ import java.util.List;
 public class IdentityCanvasReader {
 
     private final IdentityCanvasRepository identityCanvasRepository;
+    private final TbGameRepository tbGameRepository;
 
     public IdentityCanvasResponse read(Long userId) {
+        String imageUrl = tbGameRepository.findGameImageUrlByUserId(userId);
         return identityCanvasRepository.findByUserId(userId)
-                .map(IdentityCanvasResponse::from)
+                .map(model -> IdentityCanvasResponse.from(model, imageUrl))
                 .orElse(null);
     }
 

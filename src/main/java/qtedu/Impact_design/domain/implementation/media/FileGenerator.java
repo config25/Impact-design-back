@@ -17,21 +17,18 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class FileGenerator {
 
-    @Value("${cloud.aws.s3.base-url}")
+    @Value("${file.base-url:${cloud.aws.s3.base-url:}}")
     private String baseUrl;
 
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucket;
-
     public Media generateMedia(FileData file, UserId userId, FileCategory category) {
-        return Media.upload(baseUrl, bucket, category, userId, file.getName(), file.getContentType());
+        return Media.upload(baseUrl, "", category, userId, file.getName(), file.getContentType());
     }
 
     public List<Map.Entry<FileData, Media>> generateMedias(List<FileData> files, UserId userId, FileCategory category) {
         return files.stream()
                 .map(file -> new AbstractMap.SimpleEntry<>(
                         file,
-                        Media.upload(baseUrl, bucket, category, userId, file.getName(), file.getContentType())
+                        Media.upload(baseUrl, "", category, userId, file.getName(), file.getContentType())
                 ))
                 .collect(Collectors.toList());
     }

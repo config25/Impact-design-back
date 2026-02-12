@@ -1,6 +1,7 @@
 package qtedu.Impact_design.domain.implementation.admin;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import qtedu.Impact_design.api.dto.response.teach.ClassInfoResponse;
@@ -24,6 +25,9 @@ public class AdminTeachReader {
 
     private final UserinfoRepository userinfoRepository;
     private final GameRepository gameRepository;
+
+    @Value("${file.base-url:}")
+    private String fileBaseUrl;
 
     public List<ClassInfoResponse> getAllClassList(Long userId) {
         validateAdmin(userId);
@@ -56,7 +60,12 @@ public class AdminTeachReader {
 
     private List<ClassInfoResponse> toResponseList(List<ClassInfoProjection> projections) {
         return projections.stream()
-                .map(c -> ClassInfoResponse.from(c, null))
+                .map(c -> ClassInfoResponse.from(c, null, resolveImageUrl(c.getImageUrl())))
                 .collect(Collectors.toList());
+    }
+
+    private String resolveImageUrl(String path) {
+        if (path == null || path.isBlank()) return null;
+        return fileBaseUrl + "/" + path;
     }
 }

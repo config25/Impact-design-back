@@ -32,11 +32,24 @@ public class Media {
     ) {
         String randomId = UUID.randomUUID().toString();
         String path = String.format("%s/%s/%s/%s", category.name(), userId.getId(), randomId, fileName);
-        String url = String.format("%s/%s/%s", baseUrl, bucketName, path);
+        String url;
+        if (bucketName == null || bucketName.isBlank()) {
+            url = String.format("%s/%s", baseUrl, path);
+        } else {
+            url = String.format("%s/%s/%s", baseUrl, bucketName, path);
+        }
         int index = extractIndexFromFileName(fileName);
 
         return new Media(category, url, type, index, path);
     }
+
+    public static Media forClass(String baseUrl, Integer gameId, String fileName, MediaType type) {
+        String path = String.format("class/%d/%s", gameId, fileName);
+        String url = String.format("%s/%s", baseUrl, path);
+        return new Media(FileCategory.GAME, url, type, 0, path);
+    }
+
+
 
 
     public static Media of(FileCategory category, String imagePath, int index, MediaType type) {

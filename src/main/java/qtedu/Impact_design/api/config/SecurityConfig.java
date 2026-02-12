@@ -51,6 +51,7 @@ public class SecurityConfig {
                                 "/api/auth/encode",
                                 "/api/ai/**",
                                 "/docs/**",
+                                "/uploads/**",
                                 "/health",
 
                                 // Swagger / OpenAPI

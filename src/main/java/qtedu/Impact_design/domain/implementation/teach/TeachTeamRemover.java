@@ -5,8 +5,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import qtedu.Impact_design.common.error.ErrorCode;
 import qtedu.Impact_design.common.error.NotFoundException;
-import qtedu.Impact_design.domain.model.team.TbGameModel;
 import qtedu.Impact_design.domain.model.team.TbTeamModel;
+import qtedu.Impact_design.domain.model.team.TeamUserModel;
 import qtedu.Impact_design.domain.repository.auth.TbTeamRepository;
 import qtedu.Impact_design.domain.repository.auth.TeamUserRepository;
 import qtedu.Impact_design.domain.repository.teach.TbGameRepository;
@@ -41,14 +41,7 @@ public class TeachTeamRemover {
                 .build();
 
         tbTeamRepository.save(updated);
-
-        TbGameModel game = tbGameRepository.findById(gameId)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.GAME_NOT_FOUND));
-
-        int currentNumTeam = game.getNumTeam() != null ? game.getNumTeam() : 0;
-        if (currentNumTeam > 0) {
-            updateNumTeam(game, currentNumTeam - 1);
-        }
+        tbGameRepository.decrementNumTeam(gameId);
     }
 
     @Transactional
@@ -56,36 +49,23 @@ public class TeachTeamRemover {
         for (Long userId : userIds) {
             userinfoRepository.findByUserId(userId).ifPresent(user -> {
                 if ("1".equals(user.getWriter())) {
-                    userinfoRepository.setWriter(userId);
+                    // writer가 삭제되면 같은 팀의 남는 멤버에게 writer 이전
+                    teamUserRepository.findByUserId(userId).ifPresent(teamUser -> {
+                        List<Long> remainingMemberIds = teamUserRepository.findByTeamId(teamUser.getTeamId())
+                                .stream()
+                                .map(TeamUserModel::getUserId)
+                                .filter(id -> !userIds.contains(id))
+                                .toList();
+
+                        if (!remainingMemberIds.isEmpty()) {
+                            userinfoRepository.setWriter(remainingMemberIds.get(0));
+                        }
+                    });
+                    // 삭제되는 유저의 writer 해제
+                    userinfoRepository.clearWriterByUserIds(List.of(userId));
                 }
             });
             teamUserRepository.deleteByUserId(userId);
         }
-    }
-
-    private void updateNumTeam(TbGameModel game, int newNumTeam) {
-        TbGameModel updated = TbGameModel.builder()
-                .gameId(game.getGameId())
-                .name(game.getName())
-                .code(game.getCode())
-                .num(game.getNum())
-                .numTeam(newNumTeam)
-                .numMember(game.getNumMember())
-                .createdAt(game.getCreatedAt())
-                .endedAt(game.getEndedAt())
-                .status(game.getStatus())
-                .eStatus(game.getEStatus())
-                .summary(game.getSummary())
-                .totalDd(game.getTotalDd())
-                .lang(game.getLang())
-                .worldType(game.getWorldType())
-                .step(game.getStep())
-                .classType(game.getClassType())
-                .isDoing(game.getIsDoing())
-                .regDate(game.getRegDate())
-                .popupId(game.getPopupId())
-                .build();
-
-        tbGameRepository.save(updated);
     }
 }

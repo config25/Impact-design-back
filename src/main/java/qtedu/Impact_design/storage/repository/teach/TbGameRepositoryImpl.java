@@ -1,6 +1,7 @@
 package qtedu.Impact_design.storage.repository.teach;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import qtedu.Impact_design.domain.model.team.TbGameModel;
 import qtedu.Impact_design.domain.repository.teach.TbGameRepository;
@@ -14,6 +15,9 @@ import java.util.Optional;
 public class TbGameRepositoryImpl implements TbGameRepository {
 
     private final TbGameJpaRepository tbGameJpaRepository;
+
+    @Value("${file.base-url:}")
+    private String fileBaseUrl;
 
     @Override
     public Optional<TbGameModel> findById(Integer gameId) {
@@ -42,6 +46,7 @@ public class TbGameRepositoryImpl implements TbGameRepository {
                 .isDoing(model.getIsDoing())
                 .regDate(model.getRegDate())
                 .popupId(model.getPopupId())
+                .imageUrl(model.getImageUrl())
                 .build();
         return toModel(tbGameJpaRepository.save(entity));
     }
@@ -49,6 +54,26 @@ public class TbGameRepositoryImpl implements TbGameRepository {
     @Override
     public String findGameNameByUserId(Long userId) {
         return tbGameJpaRepository.findGameNameByUserId(userId);
+    }
+
+    @Override
+    public String findGameImageUrlByUserId(Long userId) {
+        return resolveImageUrl(tbGameJpaRepository.findGameImageUrlByUserId(userId));
+    }
+
+    @Override
+    public void incrementNumTeam(Integer gameId) {
+        tbGameJpaRepository.incrementNumTeam(gameId);
+    }
+
+    @Override
+    public void decrementNumTeam(Integer gameId) {
+        tbGameJpaRepository.decrementNumTeam(gameId);
+    }
+
+    @Override
+    public void updateImageUrl(Integer gameId, String imageUrl) {
+        tbGameJpaRepository.updateImageUrl(gameId, imageUrl);
     }
 
     private TbGameModel toModel(TbGame entity) {
@@ -72,6 +97,12 @@ public class TbGameRepositoryImpl implements TbGameRepository {
                 .isDoing(entity.getIsDoing())
                 .regDate(entity.getRegDate())
                 .popupId(entity.getPopupId())
+                .imageUrl(resolveImageUrl(entity.getImageUrl()))
                 .build();
+    }
+
+    private String resolveImageUrl(String path) {
+        if (path == null || path.isBlank()) return null;
+        return fileBaseUrl + "/" + path;
     }
 }

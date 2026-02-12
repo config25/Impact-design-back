@@ -30,6 +30,9 @@ public class TeachDetailResponse {
     // GameLogo
     private GameLogoInfo gameLogo;
 
+    // 강의실 이미지
+    private String imageUrl;
+
     @Getter
     @Builder
     public static class MissionInfo {

@@ -11,6 +11,7 @@ import qtedu.Impact_design.domain.repository.IdentityCanvasRepository;
 import qtedu.Impact_design.domain.repository.flow_canvas.FlowCanvasRepository;
 import qtedu.Impact_design.domain.repository.flow_canvas.StrategicActivityRepository;
 import qtedu.Impact_design.domain.repository.flow_canvas.TacticalRepository;
+import qtedu.Impact_design.domain.repository.teach.TbGameRepository;
 
 import java.util.Collections;
 import java.util.List;
@@ -25,6 +26,7 @@ public class FlowCanvasReader {
     private final TacticalRepository tacticalRepository;
     private final StrategicActivityRepository strategicActivityRepository;
     private final IdentityCanvasRepository identityCanvasRepository;
+    private final TbGameRepository tbGameRepository;
 
     public List<FlowCanvasModel> readByUserIds(List<Long> userIds) {
         return flowCanvasRepository.findByUserIdIn(userIds);
@@ -42,6 +44,7 @@ public class FlowCanvasReader {
         String newVision = identityCanvasRepository.findByUserId(userId)
                 .map(IdentityCanvasModel::getNewVision)
                 .orElse(null);
+        String imageUrl = tbGameRepository.findGameImageUrlByUserId(userId);
 
         List<FlowCanvasModel> goals = flowCanvasRepository.findByUserId(userId);
         if (goals.isEmpty()) {
@@ -49,6 +52,7 @@ public class FlowCanvasReader {
                     .newVision(newVision)
                     .goals(Collections.emptyList())
                     .submitted(false)
+                    .imageUrl(imageUrl)
                     .build();
         }
 
@@ -75,6 +79,7 @@ public class FlowCanvasReader {
                 .newVision(newVision)
                 .goals(goalItems)
                 .submitted(submitted)
+                .imageUrl(imageUrl)
                 .build();
     }
 }

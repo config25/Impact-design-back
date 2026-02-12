@@ -71,4 +71,7 @@ public class TbGame {
 
     @Column(name = "popup_id")
     private Integer popupId;
+
+    @Column(name = "image_url")
+    private String imageUrl;
 }

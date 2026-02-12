@@ -112,43 +112,46 @@ public class FundingReader {
         TeamUserModel teamUser = teamUserRepository.findByUserId(userId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.TEAM_NOT_FOUND));
 
-        Integer myTeamId = teamUser.getTeamId();
+        return getResultByTeamId(teamUser.getTeamId());
+    }
 
+    /**
+     * 특정 팀의 결과 조회 (F3 - BUILD/QUICK 모두, 강사용)
+     */
+    public FundingMyResultResponse getResultByTeamId(Integer teamId) {
         return FundingMyResultResponse.from(
-                scoreAggregator.aggregateResult(fLetterOfIntentRepository.findByTargetTeamId(myTeamId)),
-                scoreAggregator.aggregateResult2(fLetterOfIntent2Repository.findByTargetTeamId(myTeamId))
+                scoreAggregator.aggregateResult(fLetterOfIntentRepository.findByTargetTeamId(teamId)),
+                scoreAggregator.aggregateResult2(fLetterOfIntent2Repository.findByTargetTeamId(teamId))
         );
     }
 
     /**
-     * 강사용 - 특정 사용자의 모든 투자 의향서 조회
+     * 강사용 - 특정 사용자의 투자 의향서 조회 (canvasType으로 BUILD/QUICK 선택)
      */
-    public List<FundingInvestmentResponse> readByUserId(Long userId) {
-        List<FundingInvestmentResponse> result = new java.util.ArrayList<>();
-
-        // F1 (BUILD)
-        fLetterOfIntentRepository.findByUserId(userId).stream()
-                .map(model -> {
-                    Integer targetTeamId = Integer.parseInt(model.getInvestmentTarget());
-                    String teamName = tbTeamRepository.findByTeamId(targetTeamId)
-                            .map(TbTeamModel::getName)
-                            .orElse("Unknown");
-                    return FundingInvestmentResponse.from(model, teamName, null);
-                })
-                .forEach(result::add);
-
-        // F2 (QUICK)
-        fLetterOfIntent2Repository.findByUserId(userId).stream()
-                .map(model -> {
-                    Integer targetTeamId = Integer.parseInt(model.getInvestmentTarget());
-                    String teamName = tbTeamRepository.findByTeamId(targetTeamId)
-                            .map(TbTeamModel::getName)
-                            .orElse("Unknown");
-                    return FundingInvestmentResponse.from(model, teamName, null);
-                })
-                .forEach(result::add);
-
-        return result;
+    public List<FundingInvestmentResponse> readByUserId(String canvasType, Long userId) {
+        if (isBuildType(canvasType)) {
+            return fLetterOfIntentRepository.findByUserId(userId).stream()
+                    .map(model -> {
+                        Integer targetTeamId = Integer.parseInt(model.getInvestmentTarget());
+                        String teamName = tbTeamRepository.findByTeamId(targetTeamId)
+                                .map(TbTeamModel::getName)
+                                .orElse("Unknown");
+                        String businessName = businessNameResolver.resolve(canvasType, targetTeamId);
+                        return FundingInvestmentResponse.from(model, teamName, businessName);
+                    })
+                    .collect(Collectors.toList());
+        } else {
+            return fLetterOfIntent2Repository.findByUserId(userId).stream()
+                    .map(model -> {
+                        Integer targetTeamId = Integer.parseInt(model.getInvestmentTarget());
+                        String teamName = tbTeamRepository.findByTeamId(targetTeamId)
+                                .map(TbTeamModel::getName)
+                                .orElse("Unknown");
+                        String businessName = businessNameResolver.resolve(canvasType, targetTeamId);
+                        return FundingInvestmentResponse.from(model, teamName, businessName);
+                    })
+                    .collect(Collectors.toList());
+        }
     }
 
     private boolean isBuildType(String canvasType) {

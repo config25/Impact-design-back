@@ -1,6 +1,7 @@
 package qtedu.Impact_design.domain.implementation.teach;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import qtedu.Impact_design.api.dto.response.teach.*;
@@ -37,12 +38,15 @@ public class TeachReader {
     private final TeamSubmitStatusChecker submitStatusChecker;
     private final UserinfoRepository userinfoRepository;
 
+    @Value("${file.base-url:}")
+    private String fileBaseUrl;
+
     public List<ClassInfoResponse> getTeachIndex(Long userId) {
         List<ClassInfoProjection> classList = gameRepository.findClassList(userId, 10);
 
         return classList.stream().map(c -> {
             Integer statusCeo = calculateMinStatusCeo(c.getMissionId());
-            return ClassInfoResponse.from(c, statusCeo);
+            return ClassInfoResponse.from(c, statusCeo, resolveImageUrl(c.getImageUrl()));
         }).collect(Collectors.toList());
     }
 
@@ -91,6 +95,7 @@ public class TeachReader {
                 .mission(missionInfo)
                 .teams(teams)
                 .gameLogo(gameLogo)
+                .imageUrl(game.getImageUrl())
                 .build();
     }
 
@@ -138,6 +143,7 @@ public class TeachReader {
                 .mission(missionInfo)
                 .teams(teams)
                 .gameLogo(gameLogo)
+                .imageUrl(game.getImageUrl())
                 .classList(classList)
                 .build();
     }
@@ -259,7 +265,12 @@ public class TeachReader {
 
     private List<ClassInfoResponse> toResponseList(List<ClassInfoProjection> projections) {
         return projections.stream()
-                .map(c -> ClassInfoResponse.from(c, null))
+                .map(c -> ClassInfoResponse.from(c, null, resolveImageUrl(c.getImageUrl())))
                 .collect(Collectors.toList());
+    }
+
+    private String resolveImageUrl(String path) {
+        if (path == null || path.isBlank()) return null;
+        return fileBaseUrl + "/" + path;
     }
 }

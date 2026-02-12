@@ -24,12 +24,12 @@ public class TeachTeamAppender {
         TbGameModel game = tbGameRepository.findById(gameId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.GAME_NOT_FOUND));
 
-        int teamCount = gameTeamRepository.countByGameId(gameId) + 1;
-        String teamName = "팀" + teamCount;
+        int nextSequence = tbTeamRepository.findMaxSequenceByGameId(gameId) + 1;
+        String teamName = "팀" + nextSequence;
 
         TbTeamModel team = TbTeamModel.builder()
                 .name(teamName)
-                .sequence(teamCount)
+                .sequence(nextSequence)
                 .code(game.getCode())
                 .status(0)
                 .isDoing(1)
@@ -37,9 +37,7 @@ public class TeachTeamAppender {
 
         TbTeamModel savedTeam = tbTeamRepository.save(team);
         gameTeamRepository.save(gameId, savedTeam.getTeamId());
-
-        int currentNumTeam = game.getNumTeam() != null ? game.getNumTeam() : 0;
-        updateNumTeam(game, currentNumTeam + 1);
+        tbGameRepository.incrementNumTeam(gameId);
 
         return savedTeam.getTeamId();
     }
@@ -49,11 +47,11 @@ public class TeachTeamAppender {
         TbGameModel game = tbGameRepository.findById(gameId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.GAME_NOT_FOUND));
 
-        int teamCount = gameTeamRepository.countByGameId(gameId) + 1;
+        int nextSequence = tbTeamRepository.findMaxSequenceByGameId(gameId) + 1;
 
         TbTeamModel team = TbTeamModel.builder()
                 .name("평가팀")
-                .sequence(teamCount)
+                .sequence(nextSequence)
                 .code(game.getCode())
                 .status(0)
                 .isDoing(1)
@@ -62,36 +60,8 @@ public class TeachTeamAppender {
 
         TbTeamModel savedTeam = tbTeamRepository.save(team);
         gameTeamRepository.save(gameId, savedTeam.getTeamId());
-
-        int currentNumTeam = game.getNumTeam() != null ? game.getNumTeam() : 0;
-        updateNumTeam(game, currentNumTeam + 1);
+        tbGameRepository.incrementNumTeam(gameId);
 
         return savedTeam.getTeamId();
-    }
-
-    private void updateNumTeam(TbGameModel game, int newNumTeam) {
-        TbGameModel updated = TbGameModel.builder()
-                .gameId(game.getGameId())
-                .name(game.getName())
-                .code(game.getCode())
-                .num(game.getNum())
-                .numTeam(newNumTeam)
-                .numMember(game.getNumMember())
-                .createdAt(game.getCreatedAt())
-                .endedAt(game.getEndedAt())
-                .status(game.getStatus())
-                .eStatus(game.getEStatus())
-                .summary(game.getSummary())
-                .totalDd(game.getTotalDd())
-                .lang(game.getLang())
-                .worldType(game.getWorldType())
-                .step(game.getStep())
-                .classType(game.getClassType())
-                .isDoing(game.getIsDoing())
-                .regDate(game.getRegDate())
-                .popupId(game.getPopupId())
-                .build();
-
-        tbGameRepository.save(updated);
     }
 }

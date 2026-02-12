@@ -26,6 +26,11 @@ openai:
   base-url: https://api.openai.com/v1
 
 
+file:
+  storage: local
+  upload-dir: ./uploads
+  base-url: http://localhost:8080/uploads
+
 cloud:
   aws:
     credentials:

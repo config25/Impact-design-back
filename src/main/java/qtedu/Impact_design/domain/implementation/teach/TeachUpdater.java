@@ -1,16 +1,23 @@
 package qtedu.Impact_design.domain.implementation.teach;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import qtedu.Impact_design.api.dto.request.teach.ClassSaveRequest;
 import qtedu.Impact_design.common.error.ErrorCode;
 import qtedu.Impact_design.common.error.NotFoundException;
+import qtedu.Impact_design.domain.external.ExternalFileClient;
+import qtedu.Impact_design.domain.model.media.FileData;
+import qtedu.Impact_design.domain.model.media.Media;
+import qtedu.Impact_design.domain.model.media.MediaType;
 import qtedu.Impact_design.domain.model.team.TbGameModel;
 import qtedu.Impact_design.domain.model.team.TbMissionModel;
 import qtedu.Impact_design.domain.repository.teach.TbGameRepository;
 import qtedu.Impact_design.domain.repository.teach.TbMissionRepository;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -20,9 +27,13 @@ public class TeachUpdater {
 
     private final TbGameRepository tbGameRepository;
     private final TbMissionRepository tbMissionRepository;
+    private final ExternalFileClient fileClient;
+
+    @Value("${file.base-url:}")
+    private String fileBaseUrl;
 
     @Transactional
-    public Integer updateClass(Integer gameId, ClassSaveRequest request) {
+    public Integer updateClass(Integer gameId, ClassSaveRequest request, MultipartFile image) {
         TbGameModel game = findGame(gameId);
 
         TbGameModel updatedGame = TbGameModel.builder()
@@ -45,9 +56,21 @@ public class TeachUpdater {
                 .isDoing(game.getIsDoing())
                 .regDate(game.getRegDate())
                 .popupId(request.getPopupId() != null ? request.getPopupId() : game.getPopupId())
+                .imageUrl(game.getImageUrl())
                 .build();
 
         tbGameRepository.save(updatedGame);
+
+        if (image != null && !image.isEmpty()) {
+            // 기존 이미지 삭제
+            if (game.getImageUrl() != null) {
+                Media oldMedia = Media.forClass(fileBaseUrl, gameId, game.getImageUrl(), MediaType.IMAGE_PNG);
+                try { fileClient.removeFile(oldMedia); } catch (Exception ignored) {}
+            }
+            // 새 이미지 저장
+            String imageUrl = saveClassImage(gameId, image);
+            tbGameRepository.updateImageUrl(gameId, imageUrl);
+        }
 
         if (request.getEnddate() != null && !request.getEnddate().isBlank()) {
             tbMissionRepository.findLatestByGameId(gameId.longValue())
@@ -92,6 +115,22 @@ public class TeachUpdater {
         updateGameStatus(game, 10, null, null);
     }
 
+    private String saveClassImage(Integer gameId, MultipartFile image) {
+        try {
+            String originalName = image.getOriginalFilename();
+            MediaType mediaType = MediaType.fromType(image.getContentType());
+            if (mediaType == null) mediaType = MediaType.IMAGE_PNG;
+
+            Media media = Media.forClass(fileBaseUrl, gameId, originalName, mediaType);
+            FileData fileData = FileData.of(image.getInputStream(), mediaType, originalName, image.getSize());
+            fileClient.uploadFile(fileData, media);
+
+            return media.getPath();
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to save class image", e);
+        }
+    }
+
     private TbGameModel findGame(Integer gameId) {
         return tbGameRepository.findById(gameId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.GAME_NOT_FOUND));
@@ -118,6 +157,7 @@ public class TeachUpdater {
                 .isDoing(game.getIsDoing())
                 .regDate(game.getRegDate())
                 .popupId(game.getPopupId())
+                .imageUrl(game.getImageUrl())
                 .build();
 
         tbGameRepository.save(updated);

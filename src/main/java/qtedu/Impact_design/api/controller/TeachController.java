@@ -1,8 +1,10 @@
 package qtedu.Impact_design.api.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import qtedu.Impact_design.api.dto.request.teach.ClassSaveRequest;
 import qtedu.Impact_design.api.dto.response.teach.ClassInfoResponse;
 import qtedu.Impact_design.api.dto.response.teach.StudentListResponse;
@@ -79,24 +81,26 @@ public class TeachController {
     /**
      * 클래스 생성 (teach_save)
      */
-    @PostMapping("/class")
+    @PostMapping(value = "/class", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<HttpResponse<Integer>> createClass(
             @CurrentUser UserId userId,
-            @RequestBody ClassSaveRequest request
+            @RequestPart("request") ClassSaveRequest request,
+            @RequestPart(value = "image", required = false) MultipartFile image
     ) {
-        Integer gameId = teachService.createClass(userId.getId(), request);
+        Integer gameId = teachService.createClass(userId.getId(), request, image);
         return ResponseHelper.success(gameId);
     }
 
     /**
      * 클래스 수정 (teach_save)
      */
-    @PutMapping("/class/{gameId}")
+    @PutMapping(value = "/class/{gameId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<HttpResponse<Integer>> updateClass(
             @PathVariable Integer gameId,
-            @RequestBody ClassSaveRequest request
+            @RequestPart("request") ClassSaveRequest request,
+            @RequestPart(value = "image", required = false) MultipartFile image
     ) {
-        Integer updatedGameId = teachService.updateClass(gameId, request);
+        Integer updatedGameId = teachService.updateClass(gameId, request, image);
         return ResponseHelper.success(updatedGameId);
     }
 

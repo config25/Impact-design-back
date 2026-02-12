@@ -27,4 +27,5 @@ public class TbGameModel {
     private final Integer isDoing;
     private final LocalDateTime regDate;
     private final Integer popupId;
+    private final String imageUrl;
 }

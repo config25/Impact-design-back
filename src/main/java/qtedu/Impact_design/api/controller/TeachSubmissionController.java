@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import qtedu.Impact_design.api.dto.response.buildwin.BuildWinCanvasResponse;
 import qtedu.Impact_design.api.dto.response.flowcanvas.FlowCanvasResponse;
 import qtedu.Impact_design.api.dto.response.funding.FundingInvestmentResponse;
+import qtedu.Impact_design.api.dto.response.funding.FundingMyResultResponse;
 import qtedu.Impact_design.api.dto.response.identitycanvas.IdentityCanvasResponse;
 import qtedu.Impact_design.api.dto.response.impactcheck.ImpactCheckResponse;
 import qtedu.Impact_design.api.dto.response.quickwin.QuickWinCanvasResponse;
@@ -94,12 +95,25 @@ public class TeachSubmissionController {
 
     /**
      * F: 실행과제 검증 (FLetterOfIntent) 열람
+     * canvasType: build(F-1) 또는 quick(F-2)
      */
-    @GetMapping("/funding")
+    @GetMapping("/funding/{canvasType}")
     public ResponseEntity<HttpResponse<List<FundingInvestmentResponse>>> getFunding(
+            @PathVariable String canvasType,
             @RequestParam Integer teamId
     ) {
-        List<FundingInvestmentResponse> response = teachSubmissionService.getFunding(teamId);
+        List<FundingInvestmentResponse> response = teachSubmissionService.getFunding(canvasType, teamId);
+        return ResponseHelper.success(response);
+    }
+
+    /**
+     * F-3: 팀별 결과 열람 (BUILD/QUICK 모두)
+     */
+    @GetMapping("/funding/result")
+    public ResponseEntity<HttpResponse<FundingMyResultResponse>> getFundingResult(
+            @RequestParam Integer teamId
+    ) {
+        FundingMyResultResponse response = teachSubmissionService.getFundingResult(teamId);
         return ResponseHelper.success(response);
     }
 }

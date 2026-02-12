@@ -23,6 +23,7 @@ public class QuickWinCanvasResponse {
     private List<TaskActivityItem> taskActivities;
     private TeamworkItem teamwork;
     private List<TaskOutcomeItem> taskOutcomes;
+    private String imageUrl;
 
     @Getter
     @Builder
@@ -100,7 +101,8 @@ public class QuickWinCanvasResponse {
                                               List<TaskInputModel> inputs,
                                               List<TaskActivityModel> activities,
                                               TeamworkModel teamwork,
-                                              List<TaskOutcomeModel> outcomes) {
+                                              List<TaskOutcomeModel> outcomes,
+                                              String imageUrl) {
         return QuickWinCanvasResponse.builder()
                 .canvasId(canvas.getCanvasId())
                 .strategicGoal(canvas.getStrategicGoal())
@@ -114,6 +116,7 @@ public class QuickWinCanvasResponse {
                 .taskActivities(activities.stream().map(TaskActivityItem::from).collect(Collectors.toList()))
                 .teamwork(teamwork != null ? TeamworkItem.from(teamwork) : null)
                 .taskOutcomes(outcomes.stream().map(TaskOutcomeItem::from).collect(Collectors.toList()))
+                .imageUrl(imageUrl)
                 .build();
     }
 }

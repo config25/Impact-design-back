@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import qtedu.Impact_design.api.dto.response.buildwin.BuildWinCanvasResponse;
 import qtedu.Impact_design.api.dto.response.flowcanvas.FlowCanvasResponse;
 import qtedu.Impact_design.api.dto.response.funding.FundingInvestmentResponse;
+import qtedu.Impact_design.api.dto.response.funding.FundingMyResultResponse;
 import qtedu.Impact_design.api.dto.response.identitycanvas.IdentityCanvasResponse;
 import qtedu.Impact_design.api.dto.response.impactcheck.ImpactCheckResponse;
 import qtedu.Impact_design.api.dto.response.quickwin.QuickWinCanvasResponse;
@@ -97,9 +98,13 @@ public class TeachSubmissionReader {
         return buildWinCanvasReader.read(writerUserId);
     }
 
-    public List<FundingInvestmentResponse> getFunding(Integer teamId) {
+    public List<FundingInvestmentResponse> getFunding(String canvasType, Integer teamId) {
         Long writerUserId = submitStatusChecker.findWriterUserId(teamId);
         if (writerUserId == null) return List.of();
-        return fundingReader.readByUserId(writerUserId);
+        return fundingReader.readByUserId(canvasType, writerUserId);
+    }
+
+    public FundingMyResultResponse getFundingResult(Integer teamId) {
+        return fundingReader.getResultByTeamId(teamId);
     }
 }

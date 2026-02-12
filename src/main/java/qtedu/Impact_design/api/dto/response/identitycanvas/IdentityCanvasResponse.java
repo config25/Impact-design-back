@@ -24,8 +24,9 @@ public class IdentityCanvasResponse {
     private String newValue;
     private Long userId;
     private Boolean submitted;
+    private String imageUrl;
 
-    public static IdentityCanvasResponse from(IdentityCanvasModel model) {
+    public static IdentityCanvasResponse from(IdentityCanvasModel model, String imageUrl) {
         return IdentityCanvasResponse.builder()
                 .identityId(model.getIdentityId())
                 .mission(model.getMission())
@@ -44,6 +45,7 @@ public class IdentityCanvasResponse {
                 .newValue(model.getNewValue())
                 .userId(model.getUserId())
                 .submitted(model.getSubmitted())
+                .imageUrl(imageUrl)
                 .build();
     }
 }

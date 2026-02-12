@@ -15,4 +15,5 @@ public interface ClassInfoProjection {
     LocalDateTime getEnddate();
     Integer getDdYear();
     Integer getDdTerm();
+    String getImageUrl();
 }

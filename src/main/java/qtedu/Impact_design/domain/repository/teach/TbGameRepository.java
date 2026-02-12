@@ -8,4 +8,8 @@ public interface TbGameRepository {
     Optional<TbGameModel> findById(Integer gameId);
     TbGameModel save(TbGameModel model);
     String findGameNameByUserId(Long userId);
+    String findGameImageUrlByUserId(Long userId);
+    void incrementNumTeam(Integer gameId);
+    void decrementNumTeam(Integer gameId);
+    void updateImageUrl(Integer gameId, String imageUrl);
 }

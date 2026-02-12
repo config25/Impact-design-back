@@ -30,6 +30,9 @@ public class TeachDetail2Response {
     // GameLogo
     private TeachDetailResponse.GameLogoInfo gameLogo;
 
+    // 강의실 이미지
+    private String imageUrl;
+
     // 교사의 진행중인 클래스 목록 (teach_detail2 전용)
     private List<ClassInfoResponse> classList;
 }

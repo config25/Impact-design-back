@@ -23,4 +23,11 @@ public interface TbTeamJpaRepository extends JpaRepository<TbTeam, Integer> {
         ORDER BY t.sequence ASC
         """, nativeQuery = true)
     List<TbTeam> findDeletedTeamsByGameId(@Param("gameId") Integer gameId);
+
+    @Query(value = """
+        SELECT COALESCE(MAX(t.sequence), 0) FROM tbteam t
+        JOIN gameteam gt ON t.team_id = gt.team_id
+        WHERE gt.game_id = :gameId
+        """, nativeQuery = true)
+    int findMaxSequenceByGameId(@Param("gameId") Integer gameId);
 }

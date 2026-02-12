@@ -54,6 +54,7 @@ public class TeachTeamUpdater {
                 .isDoing(game.getIsDoing())
                 .regDate(game.getRegDate())
                 .popupId(game.getPopupId())
+                .imageUrl(game.getImageUrl())
                 .build();
 
         tbGameRepository.save(updated);
@@ -63,6 +64,11 @@ public class TeachTeamUpdater {
     public void restoreTeam(Integer teamId, Integer gameId) {
         TbTeamModel team = tbTeamRepository.findByTeamId(teamId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.TEAM_NOT_FOUND));
+
+        // 이미 활성 상태인 팀은 복원하지 않음 (numTeam 중복 증가 방지)
+        if (team.getStatus() != null && team.getStatus() != -1) {
+            return;
+        }
 
         TbTeamModel updated = TbTeamModel.builder()
                 .teamId(team.getTeamId())
@@ -77,12 +83,7 @@ public class TeachTeamUpdater {
                 .build();
 
         tbTeamRepository.save(updated);
-
-        TbGameModel game = tbGameRepository.findById(gameId)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.GAME_NOT_FOUND));
-
-        int currentNumTeam = game.getNumTeam() != null ? game.getNumTeam() : 0;
-        updateNumTeam(game, currentNumTeam + 1);
+        tbGameRepository.incrementNumTeam(gameId);
     }
 
     @Transactional
@@ -99,10 +100,12 @@ public class TeachTeamUpdater {
                 .map(TeamUserModel::getUserId)
                 .collect(Collectors.toList());
 
-        if (!teamUserIds.isEmpty()) {
-            userinfoRepository.clearWriterByUserIds(teamUserIds);
+        // 해당 유저가 팀 소속인지 검증
+        if (!teamUserIds.contains(userId)) {
+            throw new NotFoundException(ErrorCode.TEAM_NOT_FOUND);
         }
 
+        userinfoRepository.clearWriterByUserIds(teamUserIds);
         userinfoRepository.setWriter(userId);
     }
 
@@ -124,31 +127,5 @@ public class TeachTeamUpdater {
                 .build();
 
         tbTeamRepository.save(updated);
-    }
-
-    private void updateNumTeam(TbGameModel game, int newNumTeam) {
-        TbGameModel updated = TbGameModel.builder()
-                .gameId(game.getGameId())
-                .name(game.getName())
-                .code(game.getCode())
-                .num(game.getNum())
-                .numTeam(newNumTeam)
-                .numMember(game.getNumMember())
-                .createdAt(game.getCreatedAt())
-                .endedAt(game.getEndedAt())
-                .status(game.getStatus())
-                .eStatus(game.getEStatus())
-                .summary(game.getSummary())
-                .totalDd(game.getTotalDd())
-                .lang(game.getLang())
-                .worldType(game.getWorldType())
-                .step(game.getStep())
-                .classType(game.getClassType())
-                .isDoing(game.getIsDoing())
-                .regDate(game.getRegDate())
-                .popupId(game.getPopupId())
-                .build();
-
-        tbGameRepository.save(updated);
     }
 }

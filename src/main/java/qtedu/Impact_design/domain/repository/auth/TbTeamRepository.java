@@ -11,4 +11,5 @@ public interface TbTeamRepository {
     Optional<TbTeamModel> findByTeamId(Integer teamId);
     TbTeamModel save(TbTeamModel model);
     List<TbTeamModel> findDeletedByGameId(Integer gameId);
+    int findMaxSequenceByGameId(Integer gameId);
 }
