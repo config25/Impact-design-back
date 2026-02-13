@@ -47,6 +47,8 @@ public class TbGameRepositoryImpl implements TbGameRepository {
                 .regDate(model.getRegDate())
                 .popupId(model.getPopupId())
                 .imageUrl(model.getImageUrl())
+                .target(model.getTarget())
+                .projectDate(model.getProjectDate())
                 .build();
         return toModel(tbGameJpaRepository.save(entity));
     }
@@ -69,6 +71,11 @@ public class TbGameRepositoryImpl implements TbGameRepository {
     @Override
     public void decrementNumTeam(Integer gameId) {
         tbGameJpaRepository.decrementNumTeam(gameId);
+    }
+
+    @Override
+    public Optional<TbGameModel> findByUserId(Long userId) {
+        return tbGameJpaRepository.findByUserId(userId).map(this::toModel);
     }
 
     @Override
@@ -98,6 +105,8 @@ public class TbGameRepositoryImpl implements TbGameRepository {
                 .regDate(entity.getRegDate())
                 .popupId(entity.getPopupId())
                 .imageUrl(entity.getImageUrl())
+                .target(entity.getTarget())
+                .projectDate(entity.getProjectDate())
                 .build();
     }
 

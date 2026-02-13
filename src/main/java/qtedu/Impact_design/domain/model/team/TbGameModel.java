@@ -28,4 +28,6 @@ public class TbGameModel {
     private final LocalDateTime regDate;
     private final Integer popupId;
     private final String imageUrl;
+    private final String target;
+    private final String projectDate;
 }

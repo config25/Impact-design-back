@@ -165,6 +165,15 @@ public interface TbGameJpaRepository extends JpaRepository<TbGame, Integer> {
             """, nativeQuery = true)
     String findGameImageUrlByUserId(@Param("userId") Long userId);
 
+    @Query(value = """
+            SELECT G.* FROM tbgame G
+            INNER JOIN gameteam GT ON G.game_id = GT.game_id
+            INNER JOIN teamuser TU ON GT.team_id = TU.team_id
+            WHERE TU.user_id = :userId
+            LIMIT 1
+            """, nativeQuery = true)
+    java.util.Optional<TbGame> findByUserId(@Param("userId") Long userId);
+
     @Modifying
     @Query("UPDATE TbGame g SET g.imageUrl = :imageUrl WHERE g.gameId = :gameId")
     void updateImageUrl(@Param("gameId") Integer gameId, @Param("imageUrl") String imageUrl);

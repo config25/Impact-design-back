@@ -9,6 +9,12 @@ import java.util.List;
 @Builder
 public class ReportResponse {
 
+    private String className;
+
+    private String target;
+
+    private String projectDate;
+
     private String imageUrl;
 
     private List<ImpactCheckScoreItem> impactCheckScores;

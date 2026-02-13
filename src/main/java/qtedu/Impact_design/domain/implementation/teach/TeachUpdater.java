@@ -57,6 +57,8 @@ public class TeachUpdater {
                 .regDate(game.getRegDate())
                 .popupId(request.getPopupId() != null ? request.getPopupId() : game.getPopupId())
                 .imageUrl(game.getImageUrl())
+                .target(request.getTarget() != null ? request.getTarget() : game.getTarget())
+                .projectDate(request.getProjectDate() != null ? request.getProjectDate() : game.getProjectDate())
                 .build();
 
         tbGameRepository.save(updatedGame);
@@ -158,8 +160,11 @@ public class TeachUpdater {
                 .regDate(game.getRegDate())
                 .popupId(game.getPopupId())
                 .imageUrl(game.getImageUrl())
+                .target(game.getTarget())
+                .projectDate(game.getProjectDate())
                 .build();
 
         tbGameRepository.save(updated);
     }
+
 }

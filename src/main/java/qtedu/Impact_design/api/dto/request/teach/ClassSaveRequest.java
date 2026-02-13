@@ -12,4 +12,6 @@ public class ClassSaveRequest {
     private String summary;
     private String classType;
     private String enddate;
+    private String target;
+    private String projectDate;
 }

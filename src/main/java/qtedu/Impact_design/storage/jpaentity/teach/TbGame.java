@@ -74,4 +74,10 @@ public class TbGame {
 
     @Column(name = "image_url")
     private String imageUrl;
+
+    @Column(name = "target", length = 100)
+    private String target;
+
+    @Column(name = "project_date", length = 20)
+    private String projectDate;
 }

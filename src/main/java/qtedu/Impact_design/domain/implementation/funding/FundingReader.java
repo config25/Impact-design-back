@@ -82,14 +82,20 @@ public class FundingReader {
     }
 
     public FundingScoresResponse getScores(String canvasType, Long userId) {
+        TeamUserModel teamUser = teamUserRepository.findByUserId(userId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.TEAM_NOT_FOUND));
+        String myTeamId = String.valueOf(teamUser.getTeamId());
+
         List<FundingScoresResponse.TeamScoreItem> scoreItems;
 
         if (isBuildType(canvasType)) {
             scoreItems = fLetterOfIntentRepository.findByUserId(userId).stream()
+                    .filter(inv -> !myTeamId.equals(inv.getInvestmentTarget()))
                     .map(scoreAggregator::createScoreItem)
                     .collect(Collectors.toList());
         } else {
             scoreItems = fLetterOfIntent2Repository.findByUserId(userId).stream()
+                    .filter(inv -> !myTeamId.equals(inv.getInvestmentTarget()))
                     .map(scoreAggregator::createScoreItem)
                     .collect(Collectors.toList());
         }

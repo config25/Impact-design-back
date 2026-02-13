@@ -24,7 +24,8 @@
       "Bash(awk:*)",
       "Bash(grep:*)",
       "Bash(pip install:*)",
-      "Bash(node -e:*)"
+      "Bash(node -e:*)",
+      "Bash(find:*)"
     ]
   }
 }

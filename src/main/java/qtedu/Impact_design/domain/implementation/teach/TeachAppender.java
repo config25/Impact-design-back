@@ -47,6 +47,8 @@ public class TeachAppender {
                 .popupId(request.getPopupId() != null ? request.getPopupId() : 0)
                 .summary(request.getSummary())
                 .classType(request.getClassType())
+                .target(request.getTarget())
+                .projectDate(request.getProjectDate())
                 .totalDd(16)
                 .status(1)
                 .isDoing(1)
@@ -85,10 +87,8 @@ public class TeachAppender {
     }
 
     private void createTeams(Integer gameId, Integer numTeam, String code) {
-        String alphabet = "abcdefghijklmnopqrstuvwxyz";
-
         for (int i = 1; i <= numTeam; i++) {
-            String teamName = String.valueOf(alphabet.charAt((i - 1) % 26)) + "팀";
+            String teamName = "팀" + i;
 
             TbTeamModel team = TbTeamModel.builder()
                     .name(teamName)
@@ -118,4 +118,5 @@ public class TeachAppender {
 
         return sb.toString();
     }
+
 }
