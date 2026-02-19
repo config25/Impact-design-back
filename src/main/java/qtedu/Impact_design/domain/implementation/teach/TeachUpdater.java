@@ -14,12 +14,16 @@ import qtedu.Impact_design.domain.model.media.Media;
 import qtedu.Impact_design.domain.model.media.MediaType;
 import qtedu.Impact_design.domain.model.team.TbGameModel;
 import qtedu.Impact_design.domain.model.team.TbMissionModel;
+import qtedu.Impact_design.domain.repository.teach.GameTeamRepository;
+import qtedu.Impact_design.domain.repository.teach.MissionDataRepository;
 import qtedu.Impact_design.domain.repository.teach.TbGameRepository;
 import qtedu.Impact_design.domain.repository.teach.TbMissionRepository;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -27,6 +31,8 @@ public class TeachUpdater {
 
     private final TbGameRepository tbGameRepository;
     private final TbMissionRepository tbMissionRepository;
+    private final GameTeamRepository gameTeamRepository;
+    private final MissionDataRepository missionDataRepository;
     private final ExternalFileClient fileClient;
 
     @Value("${file.base-url:}")
@@ -115,6 +121,59 @@ public class TeachUpdater {
     public void restoreClass(Integer gameId) {
         TbGameModel game = findGame(gameId);
         updateGameStatus(game, 10, null, null);
+    }
+
+    @Transactional
+    public void startNextStage(Integer gameId, String enddate) {
+        TbGameModel game = findGame(gameId);
+
+        // 1. 현재 최신 미션 조회
+        Optional<TbMissionModel> latestMission = tbMissionRepository.findLatestByGameId(gameId.longValue());
+
+        // 2. 다음 dd_year, dd_term, sequence 계산
+        int nextYear;
+        int nextTerm;
+        int nextSequence;
+
+        if (latestMission.isPresent()) {
+            TbMissionModel current = latestMission.get();
+            nextSequence = current.getSequence() + 1;
+            if (current.getDdTerm() < 4) {
+                nextYear = current.getDdYear();
+                nextTerm = current.getDdTerm() + 1;
+            } else {
+                nextYear = current.getDdYear() + 1;
+                nextTerm = 1;
+            }
+        } else {
+            nextYear = 1;
+            nextTerm = 1;
+            nextSequence = 1;
+        }
+
+        // 3. 새 미션 INSERT
+        LocalDateTime enddateTime = LocalDateTime.parse(enddate,
+                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+
+        TbMissionModel newMission = TbMissionModel.builder()
+                .sequence(nextSequence)
+                .startdate(LocalDateTime.now())
+                .enddate(enddateTime)
+                .ddYear(nextYear)
+                .ddTerm(nextTerm)
+                .gameId(gameId.longValue())
+                .build();
+
+        TbMissionModel savedMission = tbMissionRepository.save(newMission);
+
+        // 4. 새 미션에 모든 팀 연결 (tbmissiondata INSERT)
+        List<Integer> teamIds = gameTeamRepository.findTeamIdsByGameId(gameId);
+        if (!teamIds.isEmpty()) {
+            missionDataRepository.saveAll(savedMission.getMissionId().longValue(), teamIds);
+        }
+
+        // 5. 게임 상태 업데이트 (status=10, eStatus=0)
+        updateGameStatus(game, 10, 0, null);
     }
 
     private String saveClassImage(Integer gameId, MultipartFile image) {

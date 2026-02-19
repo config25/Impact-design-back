@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface MissionDataRepository {
     List<TbMissionDataModel> findByMissionId(Long missionId);
+    void saveAll(Long missionId, List<Integer> teamIds);
 }

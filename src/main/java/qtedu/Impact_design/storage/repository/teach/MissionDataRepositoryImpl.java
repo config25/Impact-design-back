@@ -23,6 +23,17 @@ public class MissionDataRepositoryImpl implements MissionDataRepository {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public void saveAll(Long missionId, List<Integer> teamIds) {
+        List<TbMissionData> entities = teamIds.stream()
+                .map(teamId -> TbMissionData.builder()
+                        .missionId(missionId)
+                        .teamId(teamId.longValue())
+                        .build())
+                .collect(Collectors.toList());
+        tbMissionDataJpaRepository.saveAll(entities);
+    }
+
     private TbMissionDataModel toModel(TbMissionData entity) {
         return TbMissionDataModel.builder()
                 .idx(entity.getIdx())

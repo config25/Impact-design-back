@@ -62,4 +62,8 @@ public class TeachService {
     public void restoreClass(Integer gameId) {
         teachUpdater.restoreClass(gameId);
     }
+
+    public void startNextStage(Integer gameId, String enddate) {
+        teachUpdater.startNextStage(gameId, enddate);
+    }
 }

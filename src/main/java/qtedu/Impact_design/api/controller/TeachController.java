@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import qtedu.Impact_design.api.dto.request.teach.ClassSaveRequest;
+import qtedu.Impact_design.api.dto.request.teach.NextStageRequest;
 import qtedu.Impact_design.api.dto.response.teach.ClassInfoResponse;
 import qtedu.Impact_design.api.dto.response.teach.StudentListResponse;
 import qtedu.Impact_design.api.dto.response.teach.TeachDetail2Response;
@@ -134,6 +135,19 @@ public class TeachController {
             @PathVariable Integer gameId
     ) {
         teachService.restoreClass(gameId);
+        return ResponseHelper.successOnly();
+    }
+
+    /**
+     * 다음 단계 시작 (새 미션 분기 생성 + 팀 연결 + 게임 상태 업데이트)
+     * 아직 미연결(필터링으로 백엔드 다 뜯어고쳐야함)
+     */
+    @PostMapping("/class/{gameId}/next-stage")
+    public ResponseEntity<HttpResponse<SuccessOnlyResponse>> startNextStage(
+            @PathVariable Integer gameId,
+            @RequestBody NextStageRequest request
+    ) {
+        teachService.startNextStage(gameId, request.getEnddate());
         return ResponseHelper.successOnly();
     }
 
