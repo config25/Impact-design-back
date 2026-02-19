@@ -13,4 +13,5 @@ public interface TbGameRepository {
     void decrementNumTeam(Integer gameId);
     void updateImageUrl(Integer gameId, String imageUrl);
     Optional<TbGameModel> findByUserId(Long userId);
+    String findStepByUserId(Long userId);
 }

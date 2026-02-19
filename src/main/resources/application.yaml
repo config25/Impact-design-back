@@ -31,16 +31,3 @@ file:
   upload-dir: ./uploads
   base-url: http://localhost:8080/uploads
 
-cloud:
-  aws:
-    credentials:
-      access-key: ${AWS_ACCESS_KEY:REDACTED_AWS_ACCESS_KEY}
-      secret-key: ${AWS_SECRET_KEY:REDACTED_AWS_SECRET_KEY}
-    region:
-      static: ap-northeast-2
-      auto: false
-    stack:
-      auto: false
-    s3:
-      bucket: ${S3_BUCKET:futurefinder-bucket}
-      base-url: https://s3.ap-northeast-2.amazonaws.com

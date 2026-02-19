@@ -83,6 +83,12 @@ public class TbGameRepositoryImpl implements TbGameRepository {
         tbGameJpaRepository.updateImageUrl(gameId, imageUrl);
     }
 
+    @Override
+    public String findStepByUserId(Long userId) {
+        String step = tbGameJpaRepository.findStepByUserId(userId);
+        return step != null ? step : "";
+    }
+
     private TbGameModel toModel(TbGame entity) {
         return TbGameModel.builder()
                 .gameId(entity.getGameId())
