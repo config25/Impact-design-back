@@ -20,7 +20,7 @@ public class TeamUserRepositoryImpl implements TeamUserRepository {
     @Override
     public TeamUserModel save(TeamUserModel model) {
         TeamUser entity = TeamUser.builder()
-                .idx(model.getIdx())
+                .teamUserId(model.getTeamUserId())
                 .userId(model.getUserId())
                 .teamId(model.getTeamId())
                 .userlevel(model.getUserlevel())
@@ -60,7 +60,7 @@ public class TeamUserRepositoryImpl implements TeamUserRepository {
 
     private TeamUserModel toModel(TeamUser entity) {
         return TeamUserModel.builder()
-                .idx(entity.getIdx())
+                .teamUserId(entity.getTeamUserId())
                 .userId(entity.getUserId())
                 .teamId(entity.getTeamId())
                 .userlevel(entity.getUserlevel())

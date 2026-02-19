@@ -57,6 +57,18 @@ public class TeachTeamController {
     }
 
     /**
+     * 팀원 추가 (아이디/비번 자동생성, 동일값)
+     */
+    @PostMapping("/team/{teamId}/members")
+    public ResponseEntity<HttpResponse<String>> addTeamMember(
+            @PathVariable Integer teamId,
+            @RequestParam Integer gameId
+    ) {
+        String loginId = teachTeamService.addTeamMember(teamId, gameId);
+        return ResponseHelper.success(loginId);
+    }
+
+    /**
      * 팀 삭제 (소프트 삭제)
      */
     @DeleteMapping("/team/{teamId}")

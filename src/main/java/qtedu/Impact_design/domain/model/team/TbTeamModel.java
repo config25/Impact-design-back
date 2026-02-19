@@ -13,6 +13,6 @@ public class TbTeamModel {
     private final Integer aiPlay;
     private final String code;
     private final Integer isDoing;
-    private final Integer teamGubun;
+    private final Integer teamCategory;
     private final Integer numUser;
 }

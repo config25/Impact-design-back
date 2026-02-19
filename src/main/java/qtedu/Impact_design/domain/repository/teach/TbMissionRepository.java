@@ -5,6 +5,6 @@ import qtedu.Impact_design.domain.model.team.TbMissionModel;
 import java.util.Optional;
 
 public interface TbMissionRepository {
-    Optional<TbMissionModel> findLatestByGameId(Long gameId);
+    Optional<TbMissionModel> findLatestByGameId(Integer gameId);
     TbMissionModel save(TbMissionModel model);
 }

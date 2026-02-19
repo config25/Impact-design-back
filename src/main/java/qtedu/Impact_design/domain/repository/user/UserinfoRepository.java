@@ -25,4 +25,6 @@ public interface UserinfoRepository {
     void clearWriterByUserIds(List<Long> userIds);
 
     List<StudentWithTeamProjection> findStudentsWithTeamByCode(String code);
+
+    Optional<String> findLastLoginIdByPattern(String pattern);
 }

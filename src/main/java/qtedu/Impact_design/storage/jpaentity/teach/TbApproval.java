@@ -13,8 +13,8 @@ public class TbApproval {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idx")
-    private Integer idx;
+    @Column(name = "approval_id")
+    private Integer approvalId;
 
     @Column(name = "status")
     private Integer status;

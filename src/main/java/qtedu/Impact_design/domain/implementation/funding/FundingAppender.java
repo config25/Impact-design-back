@@ -57,7 +57,7 @@ public class FundingAppender {
 
         FLetterOfIntentModel model = FLetterOfIntentModel.builder()
                 .intentIndex(existing.map(FLetterOfIntentModel::getIntentIndex).orElse(null))
-                .stdntNo(userId.intValue())
+                .stdntNo(userId)
                 .investmentTarget(String.valueOf(request.getInvestmentTarget()))
                 .investmentPrice(request.getInvestmentPrice())
                 .score1(request.getScore1())
@@ -103,7 +103,7 @@ public class FundingAppender {
 
         FLetterOfIntent2Model model = FLetterOfIntent2Model.builder()
                 .intentIndex(existing.map(FLetterOfIntent2Model::getIntentIndex).orElse(null))
-                .stdntNo(userId.intValue())
+                .stdntNo(userId)
                 .investmentTarget(String.valueOf(request.getInvestmentTarget()))
                 .investmentPrice(request.getInvestmentPrice())
                 .score1(request.getScore1())

@@ -13,8 +13,8 @@ public class BcMissionGame {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idx")
-    private Integer idx;
+    @Column(name = "bc_mission_game_id")
+    private Integer bcMissionGameId;
 
     @Column(name = "ceo_mission", length = 50)
     private String ceoMission;

@@ -20,8 +20,8 @@ public class ReportDataLoader {
     private final QuickWinCanvasService quickWinCanvasService;
     private final BuildWinCanvasService buildWinCanvasService;
 
-    public ReportRawData load(Long userId) {
-        List<Long> userIds = teamService.getTeamMemberUserIds(userId);
+    public ReportRawData load(Integer teamId) {
+        List<Long> userIds = teamService.getTeamMemberUserIdsByTeamId(teamId);
 
         List<FlowCanvasModel> flowCanvases = flowCanvasService.getFlowCanvasesByUserIds(userIds);
         List<Long> goalIds = flowCanvases.stream()

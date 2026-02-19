@@ -10,5 +10,5 @@ import java.util.Optional;
 public interface TbMissionJpaRepository extends JpaRepository<TbMission, Integer> {
 
     // 최신 mission 조회 (mission_id DESC)
-    Optional<TbMission> findFirstByGameIdOrderByMissionIdDesc(Long gameId);
+    Optional<TbMission> findFirstByGameIdOrderByMissionIdDesc(Integer gameId);
 }

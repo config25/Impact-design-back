@@ -36,7 +36,7 @@ public class TeachTeamRemover {
                 .aiPlay(team.getAiPlay())
                 .code(team.getCode())
                 .isDoing(team.getIsDoing())
-                .teamGubun(team.getTeamGubun())
+                .teamCategory(team.getTeamCategory())
                 .numUser(team.getNumUser())
                 .build();
 

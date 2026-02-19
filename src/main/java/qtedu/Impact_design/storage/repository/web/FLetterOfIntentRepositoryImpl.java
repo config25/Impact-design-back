@@ -27,7 +27,7 @@ public class FLetterOfIntentRepositoryImpl implements FLetterOfIntentRepository 
 
     @Override
     public List<FLetterOfIntentModel> findByUserId(Long userId) {
-        return fLetterOfIntentJpaRepository.findByStdntNoAndDelYn(userId.intValue(), "N").stream()
+        return fLetterOfIntentJpaRepository.findByStdntNoAndDelYn(userId, "N").stream()
                 .map(this::toModel)
                 .collect(Collectors.toList());
     }
@@ -35,7 +35,7 @@ public class FLetterOfIntentRepositoryImpl implements FLetterOfIntentRepository 
     @Override
     public Optional<FLetterOfIntentModel> findByUserIdAndTargetTeamId(Long userId, Integer targetTeamId) {
         return fLetterOfIntentJpaRepository
-                .findByStdntNoAndInvestmentTargetAndDelYn(userId.intValue(), String.valueOf(targetTeamId), "N")
+                .findByStdntNoAndInvestmentTargetAndDelYn(userId, String.valueOf(targetTeamId), "N")
                 .map(this::toModel);
     }
 
@@ -84,12 +84,12 @@ public class FLetterOfIntentRepositoryImpl implements FLetterOfIntentRepository 
 
     @Override
     public boolean existsSubmittedByUserId(Long userId) {
-        return fLetterOfIntentJpaRepository.existsByStdntNoAndSubmittedAndDelYn(userId.intValue(), true, "N");
+        return fLetterOfIntentJpaRepository.existsByStdntNoAndSubmittedAndDelYn(userId, true, "N");
     }
 
     @Override
     public void submitAllByUserId(Long userId) {
-        List<FLetterOfIntent> entities = fLetterOfIntentJpaRepository.findByStdntNoAndDelYn(userId.intValue(), "N");
+        List<FLetterOfIntent> entities = fLetterOfIntentJpaRepository.findByStdntNoAndDelYn(userId, "N");
         entities.forEach(FLetterOfIntent::submit);
         fLetterOfIntentJpaRepository.saveAll(entities);
     }
@@ -129,8 +129,8 @@ public class FLetterOfIntentRepositoryImpl implements FLetterOfIntentRepository 
                 .delYn(entity.getDelYn())
                 .regId(entity.getRegId())
                 .regDt(entity.getRegDt())
-                .mdfcnId(entity.getMdfcnId())
-                .mdfcnDt(entity.getMdfcnDt())
+                .modifiedBy(entity.getModifiedBy())
+                .modifiedAt(entity.getModifiedAt())
                 .submitted(entity.getSubmitted())
                 .teamId(entity.getTeamId())
                 .gameId(entity.getGameId())

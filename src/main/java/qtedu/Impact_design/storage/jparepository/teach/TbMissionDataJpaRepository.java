@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface TbMissionDataJpaRepository extends JpaRepository<TbMissionData, Integer> {
 
-    List<TbMissionData> findByMissionId(Long missionId);
+    List<TbMissionData> findByMissionId(Integer missionId);
 }

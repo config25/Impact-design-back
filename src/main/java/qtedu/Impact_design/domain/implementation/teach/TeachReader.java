@@ -69,7 +69,7 @@ public class TeachReader {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.GAME_NOT_FOUND));
 
         TeachDetailResponse.MissionInfo missionInfo = tbMissionRepository
-                .findLatestByGameId(gameId.longValue())
+                .findLatestByGameId(gameId)
                 .map(this::toMissionInfo)
                 .orElse(null);
 
@@ -115,7 +115,7 @@ public class TeachReader {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.GAME_NOT_FOUND));
 
         TeachDetailResponse.MissionInfo missionInfo = tbMissionRepository
-                .findLatestByGameId(gameId.longValue())
+                .findLatestByGameId(gameId)
                 .map(this::toMissionInfo)
                 .orElse(null);
 
@@ -234,11 +234,11 @@ public class TeachReader {
 
     private TeachDetailResponse.GameLogoInfo toGameLogoInfo(ContentsModel contents) {
         return TeachDetailResponse.GameLogoInfo.builder()
-                .idx(contents.getIdx())
+                .contentsId(contents.getContentsId())
                 .subject(contents.getSubject())
                 .extDir(contents.getExtDir())
-                .orgFilenm(contents.getOrgFilenm())
-                .newFilenm(contents.getNewFilenm())
+                .orgFilename(contents.getOrgFilename())
+                .newFilename(contents.getNewFilename())
                 .build();
     }
 
@@ -253,7 +253,7 @@ public class TeachReader {
         if (missionId == null) {
             return 20;
         }
-        List<TbMissionDataModel> dataList = missionDataRepository.findByMissionId(missionId.longValue());
+        List<TbMissionDataModel> dataList = missionDataRepository.findByMissionId(missionId);
         int minStatus = 20;
         for (TbMissionDataModel data : dataList) {
             if (data.getStatusCeo() != null && data.getStatusCeo() < minStatus) {

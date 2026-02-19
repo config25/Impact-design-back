@@ -6,9 +6,9 @@ import lombok.Getter;
 @Getter
 @Builder
 public class ContentsModel {
-    private final Integer idx;
+    private final Integer contentsId;
     private final String subject;
     private final String extDir;
-    private final String orgFilenm;
-    private final String newFilenm;
+    private final String orgFilename;
+    private final String newFilename;
 }

@@ -27,7 +27,7 @@ public class FLetterOfIntent2RepositoryImpl implements FLetterOfIntent2Repositor
 
     @Override
     public List<FLetterOfIntent2Model> findByUserId(Long userId) {
-        return jpaRepository.findByStdntNoAndDelYn(userId.intValue(), "N").stream()
+        return jpaRepository.findByStdntNoAndDelYn(userId, "N").stream()
                 .map(this::toModel)
                 .collect(Collectors.toList());
     }
@@ -35,7 +35,7 @@ public class FLetterOfIntent2RepositoryImpl implements FLetterOfIntent2Repositor
     @Override
     public Optional<FLetterOfIntent2Model> findByUserIdAndTargetTeamId(Long userId, Integer targetTeamId) {
         return jpaRepository
-                .findByStdntNoAndInvestmentTargetAndDelYn(userId.intValue(), String.valueOf(targetTeamId), "N")
+                .findByStdntNoAndInvestmentTargetAndDelYn(userId, String.valueOf(targetTeamId), "N")
                 .map(this::toModel);
     }
 
@@ -84,12 +84,12 @@ public class FLetterOfIntent2RepositoryImpl implements FLetterOfIntent2Repositor
 
     @Override
     public boolean existsSubmittedByUserId(Long userId) {
-        return jpaRepository.existsByStdntNoAndSubmittedAndDelYn(userId.intValue(), true, "N");
+        return jpaRepository.existsByStdntNoAndSubmittedAndDelYn(userId, true, "N");
     }
 
     @Override
     public void submitAllByUserId(Long userId) {
-        List<FLetterOfIntent2> entities = jpaRepository.findByStdntNoAndDelYn(userId.intValue(), "N");
+        List<FLetterOfIntent2> entities = jpaRepository.findByStdntNoAndDelYn(userId, "N");
         entities.forEach(FLetterOfIntent2::submit);
         jpaRepository.saveAll(entities);
     }
@@ -129,8 +129,8 @@ public class FLetterOfIntent2RepositoryImpl implements FLetterOfIntent2Repositor
                 .delYn(entity.getDelYn())
                 .regId(entity.getRegId())
                 .regDt(entity.getRegDt())
-                .mdfcnId(entity.getMdfcnId())
-                .mdfcnDt(entity.getMdfcnDt())
+                .modifiedBy(entity.getModifiedBy())
+                .modifiedAt(entity.getModifiedAt())
                 .submitted(entity.getSubmitted())
                 .teamId(entity.getTeamId())
                 .gameId(entity.getGameId())

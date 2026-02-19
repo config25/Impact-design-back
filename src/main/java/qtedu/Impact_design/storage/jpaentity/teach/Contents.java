@@ -15,8 +15,8 @@ public class Contents {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idx")
-    private Integer idx;
+    @Column(name = "contents_id")
+    private Integer contentsId;
 
     @Column(name = "team_id")
     private Integer teamId;
@@ -33,7 +33,7 @@ public class Contents {
     @Column(name = "detail", columnDefinition = "TEXT")
     private String detail;
 
-    @Column(name = "regDate")
+    @Column(name = "reg_date")
     private LocalDate regDate;
 
     @Column(name = "writer", length = 100)
@@ -43,13 +43,13 @@ public class Contents {
     private String extDir;
 
     @Column(name = "orgfilenm", length = 255)
-    private String orgFilenm;
+    private String orgFilename;
 
     @Column(name = "newfilenm", length = 255)
-    private String newFilenm;
+    private String newFilename;
 
     @Column(name = "st_tp")
-    private Integer stTp;
+    private Integer statusType;
 
     @Column(name = "world_id")
     private Integer worldId;

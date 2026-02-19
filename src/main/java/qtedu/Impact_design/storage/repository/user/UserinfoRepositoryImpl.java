@@ -79,6 +79,11 @@ public class UserinfoRepositoryImpl implements UserinfoRepository {
         return userinfoJpaRepository.findStudentsWithTeamByCode(code);
     }
 
+    @Override
+    public Optional<String> findLastLoginIdByPattern(String pattern) {
+        return userinfoJpaRepository.findLastLoginIdByPattern(pattern);
+    }
+
     private UserinfoModel toModel(Userinfo entity) {
         return UserinfoModel.builder()
                 .userId(entity.getUserId())

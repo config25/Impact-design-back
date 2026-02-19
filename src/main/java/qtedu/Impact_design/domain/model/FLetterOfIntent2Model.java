@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Builder
 public class FLetterOfIntent2Model {
     private final Integer intentIndex;
-    private final Integer stdntNo;
+    private final Long stdntNo;
     private final String courseCd;
     private final String investmentTarget;
     private final String investmentPrice;
@@ -27,8 +27,8 @@ public class FLetterOfIntent2Model {
     private final String delYn;
     private final String regId;
     private final LocalDateTime regDt;
-    private final String mdfcnId;
-    private final LocalDateTime mdfcnDt;
+    private final String modifiedBy;
+    private final LocalDateTime modifiedAt;
     private final Boolean submitted;
     private final Integer teamId;
     private final Integer gameId;

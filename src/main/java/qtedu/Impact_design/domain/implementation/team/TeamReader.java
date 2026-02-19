@@ -23,4 +23,10 @@ public class TeamReader {
                 .map(TeamUserModel::getUserId)
                 .collect(Collectors.toList());
     }
+
+    public List<Long> readTeamMemberUserIdsByTeamId(Integer teamId) {
+        return teamUserRepository.findByTeamId(teamId).stream()
+                .map(TeamUserModel::getUserId)
+                .collect(Collectors.toList());
+    }
 }

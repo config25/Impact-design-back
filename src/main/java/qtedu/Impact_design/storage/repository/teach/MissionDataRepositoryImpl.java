@@ -17,18 +17,18 @@ public class MissionDataRepositoryImpl implements MissionDataRepository {
     private final TbMissionDataJpaRepository tbMissionDataJpaRepository;
 
     @Override
-    public List<TbMissionDataModel> findByMissionId(Long missionId) {
+    public List<TbMissionDataModel> findByMissionId(Integer missionId) {
         return tbMissionDataJpaRepository.findByMissionId(missionId).stream()
                 .map(this::toModel)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public void saveAll(Long missionId, List<Integer> teamIds) {
+    public void saveAll(Integer missionId, List<Integer> teamIds) {
         List<TbMissionData> entities = teamIds.stream()
                 .map(teamId -> TbMissionData.builder()
                         .missionId(missionId)
-                        .teamId(teamId.longValue())
+                        .teamId(teamId)
                         .build())
                 .collect(Collectors.toList());
         tbMissionDataJpaRepository.saveAll(entities);
@@ -36,7 +36,7 @@ public class MissionDataRepositoryImpl implements MissionDataRepository {
 
     private TbMissionDataModel toModel(TbMissionData entity) {
         return TbMissionDataModel.builder()
-                .idx(entity.getIdx())
+                .missionDataId(entity.getMissionDataId())
                 .statusCeo(entity.getStatusCeo())
                 .statusMar(entity.getStatusMar())
                 .statusPro(entity.getStatusPro())

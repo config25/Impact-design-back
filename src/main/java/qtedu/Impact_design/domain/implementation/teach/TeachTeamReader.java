@@ -59,7 +59,7 @@ public class TeachTeamReader {
                 .teamName(team.getName())
                 .sequence(team.getSequence())
                 .isDoing(team.getIsDoing())
-                .teamGubun(team.getTeamGubun())
+                .teamCategory(team.getTeamCategory())
                 .numUser(members.size())
                 .members(members)
                 .build();

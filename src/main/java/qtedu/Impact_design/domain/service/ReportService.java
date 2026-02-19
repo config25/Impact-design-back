@@ -11,7 +11,7 @@ public class ReportService {
 
     private final ReportFacade reportFacade;
 
-    public ReportResponse getReport(Long userId) {
-        return reportFacade.getReport(userId);
+    public ReportResponse getReport(Integer teamId) {
+        return reportFacade.getReport(teamId);
     }
 }

@@ -17,6 +17,6 @@ public class TbMissionModel {
     private final Integer ddYear;
     private final Integer ddTerm;
     private final Integer mlevel;
-    private final Long gameId;
+    private final Integer gameId;
     private final String toinform;
 }

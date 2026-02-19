@@ -14,11 +14,11 @@ import java.util.Optional;
 public interface FLetterOfIntent2JpaRepository extends JpaRepository<FLetterOfIntent2, Integer> {
     List<FLetterOfIntent2> findByCanvasIdIn(List<Long> canvasIds);
 
-    List<FLetterOfIntent2> findByStdntNoAndDelYn(Integer stdntNo, String delYn);
+    List<FLetterOfIntent2> findByStdntNoAndDelYn(Long stdntNo, String delYn);
 
-    Optional<FLetterOfIntent2> findByStdntNoAndInvestmentTargetAndDelYn(Integer stdntNo, String investmentTarget, String delYn);
+    Optional<FLetterOfIntent2> findByStdntNoAndInvestmentTargetAndDelYn(Long stdntNo, String investmentTarget, String delYn);
 
-    boolean existsByStdntNoAndSubmittedAndDelYn(Integer stdntNo, Boolean submitted, String delYn);
+    boolean existsByStdntNoAndSubmittedAndDelYn(Long stdntNo, Boolean submitted, String delYn);
 
     // 특정 팀이 받은 모든 투자
     List<FLetterOfIntent2> findByInvestmentTargetAndDelYn(String investmentTarget, String delYn);

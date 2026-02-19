@@ -148,24 +148,6 @@ public interface TbGameJpaRepository extends JpaRepository<TbGame, Integer> {
     void decrementNumTeam(@Param("gameId") Integer gameId);
 
     @Query(value = """
-            SELECT G.name FROM tbgame G
-            INNER JOIN gameteam GT ON G.game_id = GT.game_id
-            INNER JOIN teamuser TU ON GT.team_id = TU.team_id
-            WHERE TU.user_id = :userId
-            LIMIT 1
-            """, nativeQuery = true)
-    String findGameNameByUserId(@Param("userId") Long userId);
-
-    @Query(value = """
-            SELECT G.image_url FROM tbgame G
-            INNER JOIN gameteam GT ON G.game_id = GT.game_id
-            INNER JOIN teamuser TU ON GT.team_id = TU.team_id
-            WHERE TU.user_id = :userId
-            LIMIT 1
-            """, nativeQuery = true)
-    String findGameImageUrlByUserId(@Param("userId") Long userId);
-
-    @Query(value = """
             SELECT G.* FROM tbgame G
             INNER JOIN gameteam GT ON G.game_id = GT.game_id
             INNER JOIN teamuser TU ON GT.team_id = TU.team_id
@@ -174,17 +156,16 @@ public interface TbGameJpaRepository extends JpaRepository<TbGame, Integer> {
             """, nativeQuery = true)
     java.util.Optional<TbGame> findByUserId(@Param("userId") Long userId);
 
+    @Query(value = """
+            SELECT G.* FROM tbgame G
+            INNER JOIN gameteam GT ON G.game_id = GT.game_id
+            WHERE GT.team_id = :teamId
+            LIMIT 1
+            """, nativeQuery = true)
+    java.util.Optional<TbGame> findByTeamId(@Param("teamId") Integer teamId);
+
     @Modifying
     @Query("UPDATE TbGame g SET g.imageUrl = :imageUrl WHERE g.gameId = :gameId")
     void updateImageUrl(@Param("gameId") Integer gameId, @Param("imageUrl") String imageUrl);
 
-    @Query(value = """
-            SELECT G.step FROM tbgame G
-            INNER JOIN gameteam GT ON G.game_id = GT.game_id
-            INNER JOIN teamuser TU ON GT.team_id = TU.team_id
-            WHERE TU.user_id = :userId
-            ORDER BY G.game_id DESC
-            LIMIT 1
-            """, nativeQuery = true)
-    String findStepByUserId(@Param("userId") Long userId);
 }

@@ -65,10 +65,10 @@ public class TeachDetailResponse {
     @Getter
     @Builder
     public static class GameLogoInfo {
-        private Integer idx;
+        private Integer contentsId;
         private String subject;
         private String extDir;
-        private String orgFilenm;
-        private String newFilenm;
+        private String orgFilename;
+        private String newFilename;
     }
 }

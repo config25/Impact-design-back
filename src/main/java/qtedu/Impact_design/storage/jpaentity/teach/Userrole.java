@@ -13,8 +13,8 @@ public class Userrole {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idx")
-    private Integer idx;
+    @Column(name = "user_role_id")
+    private Integer userRoleId;
 
     @Column(name = "isDoing", nullable = false)
     private Integer isDoing;

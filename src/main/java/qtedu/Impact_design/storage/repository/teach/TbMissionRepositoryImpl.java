@@ -16,7 +16,7 @@ public class TbMissionRepositoryImpl implements TbMissionRepository {
     private final TbMissionJpaRepository tbMissionJpaRepository;
 
     @Override
-    public Optional<TbMissionModel> findLatestByGameId(Long gameId) {
+    public Optional<TbMissionModel> findLatestByGameId(Integer gameId) {
         return tbMissionJpaRepository.findFirstByGameIdOrderByMissionIdDesc(gameId)
                 .map(this::toModel);
     }

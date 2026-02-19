@@ -10,5 +10,5 @@ import java.util.Optional;
 public interface ContentsJpaRepository extends JpaRepository<Contents, Integer> {
 
     // gameLogo 조회: st_tp = 1이고 world_id가 game_id와 일치하는 첫 번째 레코드
-    Optional<Contents> findFirstByStTpAndWorldId(Integer stTp, Integer worldId);
+    Optional<Contents> findFirstByStatusTypeAndWorldId(Integer statusType, Integer worldId);
 }

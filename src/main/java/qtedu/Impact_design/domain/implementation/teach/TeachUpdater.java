@@ -81,7 +81,7 @@ public class TeachUpdater {
         }
 
         if (request.getEnddate() != null && !request.getEnddate().isBlank()) {
-            tbMissionRepository.findLatestByGameId(gameId.longValue())
+            tbMissionRepository.findLatestByGameId(gameId)
                     .ifPresent(mission -> {
                         LocalDateTime newEnddate = LocalDateTime.parse(request.getEnddate(),
                                 DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
@@ -128,7 +128,7 @@ public class TeachUpdater {
         TbGameModel game = findGame(gameId);
 
         // 1. 현재 최신 미션 조회
-        Optional<TbMissionModel> latestMission = tbMissionRepository.findLatestByGameId(gameId.longValue());
+        Optional<TbMissionModel> latestMission = tbMissionRepository.findLatestByGameId(gameId);
 
         // 2. 다음 dd_year, dd_term, sequence 계산
         int nextYear;
@@ -161,7 +161,7 @@ public class TeachUpdater {
                 .enddate(enddateTime)
                 .ddYear(nextYear)
                 .ddTerm(nextTerm)
-                .gameId(gameId.longValue())
+                .gameId(gameId)
                 .build();
 
         TbMissionModel savedMission = tbMissionRepository.save(newMission);
@@ -169,7 +169,7 @@ public class TeachUpdater {
         // 4. 새 미션에 모든 팀 연결 (tbmissiondata INSERT)
         List<Integer> teamIds = gameTeamRepository.findTeamIdsByGameId(gameId);
         if (!teamIds.isEmpty()) {
-            missionDataRepository.saveAll(savedMission.getMissionId().longValue(), teamIds);
+            missionDataRepository.saveAll(savedMission.getMissionId(), teamIds);
         }
 
         // 5. 게임 상태 업데이트 (status=10, eStatus=0)

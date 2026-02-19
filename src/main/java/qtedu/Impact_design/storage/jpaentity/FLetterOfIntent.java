@@ -19,7 +19,7 @@ public class FLetterOfIntent {
     private Integer intentIndex;
 
     @Column(name = "stdntNo", nullable = false)
-    private Integer stdntNo;
+    private Long stdntNo;
 
     @Column(name = "courseCd", nullable = false, length = 32)
     private String courseCd;
@@ -73,10 +73,10 @@ public class FLetterOfIntent {
     private LocalDateTime regDt;
 
     @Column(name = "mdfcn_id", length = 32)
-    private String mdfcnId;
+    private String modifiedBy;
 
     @Column(name = "mdfcn_dt")
-    private LocalDateTime mdfcnDt;
+    private LocalDateTime modifiedAt;
 
     @Column(name = "submitted", nullable = false)
     @Builder.Default
@@ -109,16 +109,16 @@ public class FLetterOfIntent {
         this.score9 = score9;
         this.opinion = opinion;
         this.submitted = Boolean.TRUE.equals(submitted);
-        this.mdfcnDt = java.time.LocalDateTime.now();
+        this.modifiedAt = java.time.LocalDateTime.now();
     }
 
     public void submit() {
         this.submitted = true;
     }
 
-    public void softDelete(String mdfcnId) {
+    public void softDelete(String modifiedBy) {
         this.delYn = "Y";
-        this.mdfcnId = mdfcnId;
-        this.mdfcnDt = java.time.LocalDateTime.now();
+        this.modifiedBy = modifiedBy;
+        this.modifiedAt = java.time.LocalDateTime.now();
     }
 }

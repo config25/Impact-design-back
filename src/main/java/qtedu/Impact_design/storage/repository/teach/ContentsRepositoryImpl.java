@@ -17,17 +17,17 @@ public class ContentsRepositoryImpl implements ContentsRepository {
 
     @Override
     public Optional<ContentsModel> findGameLogo(Integer gameId) {
-        return contentsJpaRepository.findFirstByStTpAndWorldId(1, gameId)
+        return contentsJpaRepository.findFirstByStatusTypeAndWorldId(1, gameId)
                 .map(this::toModel);
     }
 
     private ContentsModel toModel(Contents entity) {
         return ContentsModel.builder()
-                .idx(entity.getIdx())
+                .contentsId(entity.getContentsId())
                 .subject(entity.getSubject())
                 .extDir(entity.getExtDir())
-                .orgFilenm(entity.getOrgFilenm())
-                .newFilenm(entity.getNewFilenm())
+                .orgFilename(entity.getOrgFilename())
+                .newFilename(entity.getNewFilename())
                 .build();
     }
 }

@@ -55,12 +55,17 @@ public class TbGameRepositoryImpl implements TbGameRepository {
 
     @Override
     public String findGameNameByUserId(Long userId) {
-        return tbGameJpaRepository.findGameNameByUserId(userId);
+        return tbGameJpaRepository.findByUserId(userId)
+                .map(TbGame::getName)
+                .orElse(null);
     }
 
     @Override
     public String findGameImageUrlByUserId(Long userId) {
-        return resolveImageUrl(tbGameJpaRepository.findGameImageUrlByUserId(userId));
+        return tbGameJpaRepository.findByUserId(userId)
+                .map(TbGame::getImageUrl)
+                .map(this::resolveImageUrl)
+                .orElse(null);
     }
 
     @Override
@@ -79,14 +84,20 @@ public class TbGameRepositoryImpl implements TbGameRepository {
     }
 
     @Override
+    public Optional<TbGameModel> findByTeamId(Integer teamId) {
+        return tbGameJpaRepository.findByTeamId(teamId).map(this::toModel);
+    }
+
+    @Override
     public void updateImageUrl(Integer gameId, String imageUrl) {
         tbGameJpaRepository.updateImageUrl(gameId, imageUrl);
     }
 
     @Override
     public String findStepByUserId(Long userId) {
-        String step = tbGameJpaRepository.findStepByUserId(userId);
-        return step != null ? step : "";
+        return tbGameJpaRepository.findByUserId(userId)
+                .map(TbGame::getStep)
+                .orElse("");
     }
 
     private TbGameModel toModel(TbGame entity) {

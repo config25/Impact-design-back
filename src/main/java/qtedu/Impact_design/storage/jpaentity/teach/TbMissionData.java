@@ -13,8 +13,8 @@ public class TbMissionData {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idx")
-    private Integer idx;
+    @Column(name = "mission_data_id")
+    private Integer missionDataId;
 
     @Column(name = "status_ceo")
     private Integer statusCeo;
@@ -32,8 +32,8 @@ public class TbMissionData {
     private Integer statusCho;
 
     @Column(name = "team_id", nullable = false)
-    private Long teamId;
+    private Integer teamId;
 
     @Column(name = "mission_id", nullable = false)
-    private Long missionId;
+    private Integer missionId;
 }

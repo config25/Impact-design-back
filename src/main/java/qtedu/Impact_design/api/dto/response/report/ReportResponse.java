@@ -124,7 +124,7 @@ public class ReportResponse {
     @Builder
     public static class ScoreDetail {
         private Integer intentIndex;
-        private Integer stdntNo;
+        private Long stdntNo;
         private Integer score1;
         private Integer score2;
         private Integer score3;

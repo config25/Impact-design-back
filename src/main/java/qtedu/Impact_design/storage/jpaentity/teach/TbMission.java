@@ -43,7 +43,7 @@ public class TbMission {
     private Integer mlevel;
 
     @Column(name = "game_id")
-    private Long gameId;
+    private Integer gameId;
 
     @Column(name = "toinform", length = 50)
     private String toinform;

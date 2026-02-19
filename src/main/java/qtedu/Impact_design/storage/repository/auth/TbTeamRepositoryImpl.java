@@ -46,7 +46,7 @@ public class TbTeamRepositoryImpl implements TbTeamRepository {
                 .aiPlay(model.getAiPlay())
                 .code(model.getCode())
                 .isDoing(model.getIsDoing())
-                .teamGubun(model.getTeamGubun())
+                .teamCategory(model.getTeamCategory())
                 .numUser(model.getNumUser())
                 .build();
         return toModel(tbTeamJpaRepository.save(entity));
@@ -73,7 +73,7 @@ public class TbTeamRepositoryImpl implements TbTeamRepository {
                 .aiPlay(entity.getAiPlay())
                 .code(entity.getCode())
                 .isDoing(entity.getIsDoing())
-                .teamGubun(entity.getTeamGubun())
+                .teamCategory(entity.getTeamCategory())
                 .numUser(entity.getNumUser())
                 .build();
     }

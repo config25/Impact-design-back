@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class TeamUserModel {
-    private final Integer idx;
+    private final Integer teamUserId;
     private final Long userId;
     private final Integer teamId;
     private final Integer userlevel;

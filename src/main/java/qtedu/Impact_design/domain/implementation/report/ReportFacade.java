@@ -21,11 +21,11 @@ public class ReportFacade {
     private String fileBaseUrl;
 
     @Transactional(readOnly = true)
-    public ReportResponse getReport(Long userId) {
-        ReportRawData raw = reportDataLoader.load(userId);
+    public ReportResponse getReport(Integer teamId) {
+        ReportRawData raw = reportDataLoader.load(teamId);
         ReportAiResult aiResult = reportAnalysisService.analyze(raw);
         ReportScoreResult scoreResult = winCanvasScoreCalculator.calculate(raw);
-        TbGameModel game = tbGameRepository.findByUserId(userId).orElse(null);
+        TbGameModel game = tbGameRepository.findByTeamId(teamId).orElse(null);
 
         String imageUrl = null;
         String className = null;

@@ -32,6 +32,9 @@ public interface UserinfoJpaRepository extends JpaRepository<Userinfo, Long> {
         """, nativeQuery = true)
     List<StudentWithTeamProjection> findStudentsWithTeamByCode(@Param("code") String code);
 
+    @Query(value = "SELECT u.id FROM userinfo u WHERE u.id LIKE :pattern ORDER BY u.id DESC LIMIT 1", nativeQuery = true)
+    Optional<String> findLastLoginIdByPattern(@Param("pattern") String pattern);
+
     @Modifying
     @Query("UPDATE Userinfo u SET u.writer = null WHERE u.userId IN :userIds")
     void clearWriterByUserIds(@Param("userIds") List<Long> userIds);

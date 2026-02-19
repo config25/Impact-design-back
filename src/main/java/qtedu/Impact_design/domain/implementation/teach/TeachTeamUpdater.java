@@ -3,6 +3,7 @@ package qtedu.Impact_design.domain.implementation.teach;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import qtedu.Impact_design.common.error.ConflictException;
 import qtedu.Impact_design.common.error.ErrorCode;
 import qtedu.Impact_design.common.error.NotFoundException;
 import qtedu.Impact_design.domain.model.team.TbGameModel;
@@ -78,7 +79,7 @@ public class TeachTeamUpdater {
                 .aiPlay(team.getAiPlay())
                 .code(team.getCode())
                 .isDoing(team.getIsDoing())
-                .teamGubun(team.getTeamGubun())
+                .teamCategory(team.getTeamCategory())
                 .numUser(team.getNumUser())
                 .build();
 
@@ -88,6 +89,10 @@ public class TeachTeamUpdater {
 
     @Transactional
     public void updateTeamMember(Long userId, Integer teamId) {
+        userinfoRepository.findByUserId(userId)
+                .filter(user -> user.isWriter())
+                .ifPresent(user -> { throw new ConflictException(ErrorCode.WRITER_CANNOT_MOVE); });
+
         teamUserRepository.updateTeamId(userId, teamId);
         String teamIdStr = String.valueOf(teamId);
         fLetterOfIntentRepository.updateInvestmentTargetByCanvasOwner(userId, teamIdStr);
@@ -122,7 +127,7 @@ public class TeachTeamUpdater {
                 .aiPlay(aiPlay != null ? aiPlay : team.getAiPlay())
                 .code(team.getCode())
                 .isDoing(isDoing != null ? isDoing : team.getIsDoing())
-                .teamGubun(team.getTeamGubun())
+                .teamCategory(team.getTeamCategory())
                 .numUser(team.getNumUser())
                 .build();
 

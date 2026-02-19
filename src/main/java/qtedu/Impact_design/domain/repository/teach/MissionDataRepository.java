@@ -5,6 +5,6 @@ import qtedu.Impact_design.domain.model.team.TbMissionDataModel;
 import java.util.List;
 
 public interface MissionDataRepository {
-    List<TbMissionDataModel> findByMissionId(Long missionId);
-    void saveAll(Long missionId, List<Integer> teamIds);
+    List<TbMissionDataModel> findByMissionId(Integer missionId);
+    void saveAll(Integer missionId, List<Integer> teamIds);
 }

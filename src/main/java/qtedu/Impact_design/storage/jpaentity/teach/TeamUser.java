@@ -13,8 +13,8 @@ public class TeamUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idx")
-    private Integer idx;
+    @Column(name = "team_user_id")
+    private Integer teamUserId;
 
     @Column(name = "user_id")
     private Long userId;

@@ -35,7 +35,7 @@ public class TbTeam {
     private Integer isDoing;
 
     @Column(name = "team_gubun")
-    private Integer teamGubun;
+    private Integer teamCategory;
 
     @Column(name = "num_user")
     private Integer numUser;

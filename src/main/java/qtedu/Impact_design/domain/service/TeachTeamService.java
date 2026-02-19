@@ -33,6 +33,10 @@ public class TeachTeamService {
         return teachTeamAppender.addEvaluationTeam(gameId);
     }
 
+    public String addTeamMember(Integer teamId, Integer gameId) {
+        return teachTeamAppender.addTeamMember(teamId, gameId);
+    }
+
     public void deleteTeam(Integer teamId, Integer gameId) {
         teachTeamRemover.deleteTeam(teamId, gameId);
     }

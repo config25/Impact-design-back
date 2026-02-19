@@ -15,4 +15,8 @@ public class TeamService {
     public List<Long> getTeamMemberUserIds(Long userId) {
         return teamReader.readTeamMemberUserIds(userId);
     }
+
+    public List<Long> getTeamMemberUserIdsByTeamId(Integer teamId) {
+        return teamReader.readTeamMemberUserIdsByTeamId(teamId);
+    }
 }

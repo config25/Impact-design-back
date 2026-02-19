@@ -47,6 +47,7 @@ public enum ErrorCode {
     // Team
     CODE_NOT_FOUND("TEAM_1", "코드가 존재하지 않습니다."),
     TEAM_NOT_FOUND("TEAM_2", "팀을 찾을 수 없습니다."),
+    WRITER_CANNOT_MOVE("TEAM_3", "대표작성자는 팀을 이동할 수 없습니다."),
 
     // Game
     GAME_NOT_FOUND("GAME_1", "게임을 찾을 수 없습니다."),

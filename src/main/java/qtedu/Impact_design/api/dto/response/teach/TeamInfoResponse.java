@@ -12,7 +12,7 @@ public class TeamInfoResponse {
     private String teamName;
     private Integer sequence;
     private Integer isDoing;
-    private Integer teamGubun;
+    private Integer teamCategory;
     private Integer numUser;
     private List<MemberInfo> members;
 

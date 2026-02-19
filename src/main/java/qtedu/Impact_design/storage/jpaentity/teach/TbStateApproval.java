@@ -13,8 +13,8 @@ public class TbStateApproval {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idx")
-    private Integer idx;
+    @Column(name = "state_approval_id")
+    private Integer stateApprovalId;
 
     @Column(name = "status")
     private Integer status;
@@ -32,8 +32,8 @@ public class TbStateApproval {
     private Integer role;
 
     @Column(name = "game_id")
-    private Long gameId;
+    private Integer gameId;
 
     @Column(name = "team_id")
-    private Long teamId;
+    private Integer teamId;
 }
