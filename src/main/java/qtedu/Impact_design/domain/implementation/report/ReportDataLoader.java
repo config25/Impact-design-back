@@ -4,8 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import qtedu.Impact_design.domain.model.flow_canvas.FlowCanvasModel;
 import qtedu.Impact_design.domain.model.win_canvas.WinCanvasModel;
+import qtedu.Impact_design.domain.repository.FLetterOfIntentRepository;
+import qtedu.Impact_design.domain.repository.FLetterOfIntent2Repository;
 import qtedu.Impact_design.domain.service.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,6 +22,8 @@ public class ReportDataLoader {
     private final FlowCanvasService flowCanvasService;
     private final QuickWinCanvasService quickWinCanvasService;
     private final BuildWinCanvasService buildWinCanvasService;
+    private final FLetterOfIntentRepository fLetterOfIntentRepository;
+    private final FLetterOfIntent2Repository fLetterOfIntent2Repository;
 
     public ReportRawData load(Integer teamId) {
         List<Long> userIds = teamService.getTeamMemberUserIdsByTeamId(teamId);
@@ -42,8 +47,12 @@ public class ReportDataLoader {
                 .strategicActivities(flowCanvasService.getStrategicActivitiesByGoalIds(goalIds))
                 .quickCanvases(quickCanvases)
                 .buildCanvases(buildCanvases)
-                .quickIntents(quickWinCanvasService.getEvaluationsByCanvasIds(quickCanvasIds))
-                .buildIntents(buildWinCanvasService.getEvaluationsByCanvasIds(buildCanvasIds))
+                // QUICK 캔버스 평가는 f_letter_of_intent2에 저장됨
+                .quickIntents(quickCanvasIds.isEmpty() ? Collections.emptyList()
+                        : fLetterOfIntent2Repository.findByCanvasIdIn(quickCanvasIds))
+                // BUILD 캔버스 평가는 f_letter_of_intent에 저장됨
+                .buildIntents(buildCanvasIds.isEmpty() ? Collections.emptyList()
+                        : fLetterOfIntentRepository.findByCanvasIdIn(buildCanvasIds))
                 .build();
     }
 }

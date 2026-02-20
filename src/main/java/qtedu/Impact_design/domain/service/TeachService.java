@@ -51,16 +51,16 @@ public class TeachService {
         return teachUpdater.updateClass(gameId, request, image);
     }
 
-    public void startClass(Integer gameId) {
-        teachUpdater.startClass(gameId);
+    public void startClass(Integer gameId, String enddate) {
+        teachUpdater.startClass(gameId, enddate);
     }
 
     public void endClass(Integer gameId) {
         teachUpdater.endClass(gameId);
     }
 
-    public void restoreClass(Integer gameId) {
-        teachUpdater.restoreClass(gameId);
+    public void restoreClass(Integer gameId, String enddate) {
+        teachUpdater.restoreClass(gameId, enddate);
     }
 
     public void startNextStage(Integer gameId, String enddate) {

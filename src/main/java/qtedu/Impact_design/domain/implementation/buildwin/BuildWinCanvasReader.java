@@ -27,9 +27,10 @@ public class BuildWinCanvasReader {
     private final TbGameRepository tbGameRepository;
 
     public BuildWinCanvasResponse read(Long userId) {
+        String imageUrl = tbGameRepository.findGameImageUrlByUserId(userId);
         Optional<WinCanvasModel> canvasOpt = winCanvasRepository.findByUserIdAndCanvasType(userId, CanvasType.BUILD);
         if (canvasOpt.isEmpty()) {
-            return null;
+            return BuildWinCanvasResponse.builder().imageUrl(imageUrl).build();
         }
 
         WinCanvasModel canvas = canvasOpt.get();
@@ -39,7 +40,6 @@ public class BuildWinCanvasReader {
         List<TaskActivityModel> activities = taskActivityRepository.findByCanvasId(canvasId);
         TeamworkModel teamwork = teamworkRepository.findByCanvasId(canvasId).orElse(null);
         List<TaskOutcomeModel> outcomes = taskOutcomeRepository.findByCanvasId(canvasId);
-        String imageUrl = tbGameRepository.findGameImageUrlByUserId(userId);
 
         return BuildWinCanvasResponse.from(canvas, inputs, activities, teamwork, outcomes, imageUrl);
     }

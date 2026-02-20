@@ -41,8 +41,6 @@ public enum ErrorCode {
     USER_NOT_ACCESS("USER_2", "사용자가 활성화되지 않았습니다."),
     USER_ALREADY_CREATED("USER_3", "이미 가입된 사용자입니다."),
     USER_NOT_CREATED("USER_4", "가입되지 않은 사용자입니다."),
-    USER_PUSH_TOKEN_NOT_FOUND("USER_5", "푸시 토큰을 찾을 수 없음."),
-    USER_NICKNAME_EXISTS("USER_6", "이미 존재하는 유저 닉네임입니다."),
 
     // Team
     CODE_NOT_FOUND("TEAM_1", "코드가 존재하지 않습니다."),
@@ -54,6 +52,10 @@ public enum ErrorCode {
 
     // Canvas
     ALREADY_SUBMITTED("CANVAS_1", "이미 제출 완료된 캔버스입니다."),
+
+    // Date
+    INVALID_DATE("DATE_1", "유효하지 않은 날짜입니다."),
+    DATE_IN_PAST("DATE_2", "제출기한은 현재 시간 이후여야 합니다."),
 
     // Funding
     INVESTMENT_LIMIT_EXCEEDED("FUNDING_1", "총 투자 금액이 1억을 초과할 수 없습니다.");

@@ -20,8 +20,8 @@ public class WinCanvasScoreCalculator {
                 .impactCheckScores(raw.getImpactChecks().stream()
                         .map(this::toScoreItem)
                         .collect(Collectors.toList()))
-                .quickWinCanvasList(buildScores(raw.getQuickCanvases(), raw.getQuickIntents()))
-                .buildWinCanvasList(buildScoresFromIntent2(raw.getBuildCanvases(), raw.getBuildIntents()))
+                .quickWinCanvasList(buildScoresFromIntent2(raw.getQuickCanvases(), raw.getQuickIntents()))
+                .buildWinCanvasList(buildScores(raw.getBuildCanvases(), raw.getBuildIntents()))
                 .build();
     }
 

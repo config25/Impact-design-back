@@ -23,6 +23,6 @@ public class ReportRawData {
     private final List<StrategicActivityModel> strategicActivities;
     private final List<WinCanvasModel> quickCanvases;
     private final List<WinCanvasModel> buildCanvases;
-    private final List<FLetterOfIntentModel> quickIntents;
-    private final List<FLetterOfIntent2Model> buildIntents;
+    private final List<FLetterOfIntent2Model> quickIntents;
+    private final List<FLetterOfIntentModel> buildIntents;
 }

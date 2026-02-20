@@ -22,6 +22,7 @@ public class UserinfoModel {
                 .userName(loginId)
                 .code(code)
                 .userRole(UserRole.STUDENT)
+                .writer("0")
                 .build();
     }
 

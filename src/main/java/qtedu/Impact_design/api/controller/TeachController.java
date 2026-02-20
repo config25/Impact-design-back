@@ -110,9 +110,10 @@ public class TeachController {
      */
     @PostMapping("/class/{gameId}/start")
     public ResponseEntity<HttpResponse<SuccessOnlyResponse>> startClass(
-            @PathVariable Integer gameId
+            @PathVariable Integer gameId,
+            @RequestBody NextStageRequest request
     ) {
-        teachService.startClass(gameId);
+        teachService.startClass(gameId, request.getEnddate());
         return ResponseHelper.successOnly();
     }
 
@@ -132,9 +133,10 @@ public class TeachController {
      */
     @PostMapping("/class/{gameId}/restore")
     public ResponseEntity<HttpResponse<SuccessOnlyResponse>> restoreClass(
-            @PathVariable Integer gameId
+            @PathVariable Integer gameId,
+            @RequestBody NextStageRequest request
     ) {
-        teachService.restoreClass(gameId);
+        teachService.restoreClass(gameId, request.getEnddate());
         return ResponseHelper.successOnly();
     }
 

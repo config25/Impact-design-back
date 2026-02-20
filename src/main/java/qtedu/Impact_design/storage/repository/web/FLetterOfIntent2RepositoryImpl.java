@@ -76,6 +76,7 @@ public class FLetterOfIntent2RepositoryImpl implements FLetterOfIntent2Repositor
                     .submitted(Boolean.TRUE.equals(model.getSubmitted()))
                     .teamId(model.getTeamId())
                     .gameId(model.getGameId())
+                    .canvasId(model.getCanvasId())
                     .build();
         }
 

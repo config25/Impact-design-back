@@ -36,10 +36,11 @@ public interface UserinfoJpaRepository extends JpaRepository<Userinfo, Long> {
     Optional<String> findLastLoginIdByPattern(@Param("pattern") String pattern);
 
     @Modifying
-    @Query("UPDATE Userinfo u SET u.writer = null WHERE u.userId IN :userIds")
+    @Query("UPDATE Userinfo u SET u.writer = '0' WHERE u.userId IN :userIds")
     void clearWriterByUserIds(@Param("userIds") List<Long> userIds);
 
     @Modifying
     @Query("UPDATE Userinfo u SET u.writer = '1' WHERE u.userId = :userId")
     void setWriter(@Param("userId") Long userId);
+
 }

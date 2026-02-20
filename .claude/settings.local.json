@@ -25,7 +25,8 @@
       "Bash(grep:*)",
       "Bash(pip install:*)",
       "Bash(node -e:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(./gradlew build:*)"
     ]
   }
 }

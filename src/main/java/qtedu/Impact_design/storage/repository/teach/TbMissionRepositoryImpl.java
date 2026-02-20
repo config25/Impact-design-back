@@ -7,6 +7,7 @@ import qtedu.Impact_design.domain.repository.teach.TbMissionRepository;
 import qtedu.Impact_design.storage.jpaentity.teach.TbMission;
 import qtedu.Impact_design.storage.jparepository.teach.TbMissionJpaRepository;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Repository
@@ -37,6 +38,11 @@ public class TbMissionRepositoryImpl implements TbMissionRepository {
                 .toinform(model.getToinform())
                 .build();
         return toModel(tbMissionJpaRepository.save(entity));
+    }
+
+    @Override
+    public void updateEnddate(Integer missionId, LocalDateTime enddate) {
+        tbMissionJpaRepository.updateEnddate(missionId, enddate);
     }
 
     private TbMissionModel toModel(TbMission entity) {

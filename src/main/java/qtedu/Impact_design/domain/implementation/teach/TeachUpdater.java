@@ -19,9 +19,14 @@ import qtedu.Impact_design.domain.repository.teach.MissionDataRepository;
 import qtedu.Impact_design.domain.repository.teach.TbGameRepository;
 import qtedu.Impact_design.domain.repository.teach.TbMissionRepository;
 
+import qtedu.Impact_design.common.error.ErrorCode;
+import qtedu.Impact_design.common.error.InvalidDateException;
+
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,20 +45,24 @@ public class TeachUpdater {
 
     @Transactional
     public Integer updateClass(Integer gameId, ClassSaveRequest request, MultipartFile image) {
+        if (request.getProjectDate() != null) {
+            validateDate(request.getProjectDate());
+        }
+
         TbGameModel game = findGame(gameId);
 
         TbGameModel updatedGame = TbGameModel.builder()
                 .gameId(game.getGameId())
-                .name(request.getName())
+                .name(request.getName() != null ? request.getName() : game.getName())
                 .code(game.getCode())
                 .num(game.getNum())
-                .numTeam(request.getNumTeam())
+                .numTeam(request.getNumTeam() != null ? request.getNumTeam() : game.getNumTeam())
                 .numMember(request.getNumMember() != null ? String.valueOf(request.getNumMember()) : game.getNumMember())
                 .createdAt(game.getCreatedAt())
                 .endedAt(game.getEndedAt())
                 .status(game.getStatus())
                 .eStatus(game.getEStatus())
-                .summary(request.getSummary())
+                .summary(request.getSummary() != null ? request.getSummary() : game.getSummary())
                 .totalDd(game.getTotalDd())
                 .lang(game.getLang())
                 .worldType(request.getWorldType() != null ? request.getWorldType() : game.getWorldType())
@@ -106,9 +115,34 @@ public class TeachUpdater {
     }
 
     @Transactional
-    public void startClass(Integer gameId) {
+    public void startClass(Integer gameId, String enddate) {
+        validateDate(enddate);
+
         TbGameModel game = findGame(gameId);
-        updateGameStatus(game, 10, null, null);
+
+        // 첫 미션 생성 (year=1, term=1, sequence=1)
+        LocalDateTime enddateTime = LocalDateTime.parse(enddate,
+                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+
+        TbMissionModel newMission = TbMissionModel.builder()
+                .sequence(1)
+                .startdate(LocalDateTime.now())
+                .enddate(enddateTime)
+                .ddYear(1)
+                .ddTerm(1)
+                .gameId(gameId)
+                .build();
+
+        TbMissionModel savedMission = tbMissionRepository.save(newMission);
+
+        // 모든 팀 연결
+        List<Integer> teamIds = gameTeamRepository.findTeamIdsByGameId(gameId);
+        if (!teamIds.isEmpty()) {
+            missionDataRepository.saveAll(savedMission.getMissionId(), teamIds);
+        }
+
+        // status: 1 → 10
+        updateGameStatus(game, 10, 0, null);
     }
 
     @Transactional
@@ -118,9 +152,64 @@ public class TeachUpdater {
     }
 
     @Transactional
-    public void restoreClass(Integer gameId) {
+    public void restoreClass(Integer gameId, String enddate) {
+        validateDate(enddate);
+
         TbGameModel game = findGame(gameId);
-        updateGameStatus(game, 10, null, null);
+
+        // 최신 미션의 제출기한 갱신
+        LocalDateTime enddateTime = LocalDateTime.parse(enddate,
+                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+
+        Optional<TbMissionModel> latestMission = tbMissionRepository.findLatestByGameId(gameId);
+        if (latestMission.isPresent()) {
+            tbMissionRepository.updateEnddate(latestMission.get().getMissionId(), enddateTime);
+        } else {
+            // 미션이 없으면 새로 생성
+            TbMissionModel newMission = TbMissionModel.builder()
+                    .sequence(1)
+                    .startdate(LocalDateTime.now())
+                    .enddate(enddateTime)
+                    .ddYear(1)
+                    .ddTerm(1)
+                    .gameId(gameId)
+                    .build();
+
+            TbMissionModel savedMission = tbMissionRepository.save(newMission);
+
+            List<Integer> teamIds = gameTeamRepository.findTeamIdsByGameId(gameId);
+            if (!teamIds.isEmpty()) {
+                missionDataRepository.saveAll(savedMission.getMissionId(), teamIds);
+            }
+        }
+
+        // 복원 시 ended_at을 null로 초기화
+        TbGameModel updated = TbGameModel.builder()
+                .gameId(game.getGameId())
+                .name(game.getName())
+                .code(game.getCode())
+                .num(game.getNum())
+                .numTeam(game.getNumTeam())
+                .numMember(game.getNumMember())
+                .createdAt(game.getCreatedAt())
+                .endedAt(null)
+                .status(10)
+                .eStatus(game.getEStatus())
+                .summary(game.getSummary())
+                .totalDd(game.getTotalDd())
+                .lang(game.getLang())
+                .worldType(game.getWorldType())
+                .step(game.getStep())
+                .classType(game.getClassType())
+                .isDoing(game.getIsDoing())
+                .regDate(game.getRegDate())
+                .popupId(game.getPopupId())
+                .imageUrl(game.getImageUrl())
+                .target(game.getTarget())
+                .projectDate(game.getProjectDate())
+                .build();
+
+        tbGameRepository.save(updated);
     }
 
     @Transactional
@@ -224,6 +313,18 @@ public class TeachUpdater {
                 .build();
 
         tbGameRepository.save(updated);
+    }
+
+    private void validateDate(String date) {
+        LocalDateTime parsed;
+        try {
+            parsed = LocalDateTime.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        } catch (DateTimeParseException e) {
+            throw new InvalidDateException(ErrorCode.INVALID_DATE);
+        }
+        if (parsed.isBefore(LocalDateTime.now())) {
+            throw new InvalidDateException(ErrorCode.DATE_IN_PAST);
+        }
     }
 
 }

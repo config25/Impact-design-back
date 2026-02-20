@@ -17,8 +17,14 @@ import qtedu.Impact_design.domain.repository.teach.GameAdminRepository;
 import qtedu.Impact_design.domain.repository.teach.GameTeamRepository;
 import qtedu.Impact_design.domain.repository.teach.TbGameRepository;
 
+import qtedu.Impact_design.common.error.ErrorCode;
+import qtedu.Impact_design.common.error.InvalidDateException;
+
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Random;
 
 @Component
@@ -36,6 +42,10 @@ public class TeachAppender {
 
     @Transactional
     public Integer createClass(Long userId, ClassSaveRequest request, MultipartFile image) {
+        if (request.getProjectDate() != null) {
+            validateDate(request.getProjectDate());
+        }
+
         String code = generateCode();
 
         TbGameModel game = TbGameModel.builder()
@@ -51,8 +61,10 @@ public class TeachAppender {
                 .projectDate(request.getProjectDate())
                 .totalDd(16)
                 .status(1)
+                .eStatus(0)
                 .isDoing(1)
                 .lang(1)
+                .createdAt(LocalDateTime.now())
                 .regDate(LocalDateTime.now())
                 .build();
 
@@ -96,10 +108,24 @@ public class TeachAppender {
                     .code(code)
                     .status(0)
                     .isDoing(1)
+                    .aiPlay(0)
+                    .numUser(0)
                     .build();
 
             TbTeamModel savedTeam = tbTeamRepository.save(team);
             gameTeamRepository.save(gameId, savedTeam.getTeamId());
+        }
+    }
+
+    private void validateDate(String date) {
+        LocalDate parsed;
+        try {
+            parsed = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        } catch (DateTimeParseException e) {
+            throw new InvalidDateException(ErrorCode.INVALID_DATE);
+        }
+        if (parsed.isBefore(LocalDate.now())) {
+            throw new InvalidDateException(ErrorCode.DATE_IN_PAST);
         }
     }
 

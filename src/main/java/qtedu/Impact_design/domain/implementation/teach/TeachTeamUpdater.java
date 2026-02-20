@@ -56,6 +56,8 @@ public class TeachTeamUpdater {
                 .regDate(game.getRegDate())
                 .popupId(game.getPopupId())
                 .imageUrl(game.getImageUrl())
+                .target(game.getTarget())
+                .projectDate(game.getProjectDate())
                 .build();
 
         tbGameRepository.save(updated);

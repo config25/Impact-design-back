@@ -20,7 +20,7 @@ public class IdentityCanvasReader {
         String imageUrl = tbGameRepository.findGameImageUrlByUserId(userId);
         return identityCanvasRepository.findByUserId(userId)
                 .map(model -> IdentityCanvasResponse.from(model, imageUrl))
-                .orElse(null);
+                .orElse(IdentityCanvasResponse.builder().imageUrl(imageUrl).build());
     }
 
     public List<IdentityCanvasModel> readByUserIds(List<Long> userIds) {
