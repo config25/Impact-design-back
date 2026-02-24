@@ -37,9 +37,10 @@ public class FlowCanvasController {
 
     @PatchMapping("/submit")
     public ResponseEntity<HttpResponse<FlowCanvasResponse>> submitFlowCanvas(
-            @CurrentUser UserId userId
+            @CurrentUser UserId userId,
+            @RequestBody FlowCanvasSaveRequest request
     ) {
-        FlowCanvasResponse response = flowCanvasService.submitFlowCanvas(userId.getId());
+        FlowCanvasResponse response = flowCanvasService.submitFlowCanvas(userId.getId(), request);
         return ResponseHelper.success(response);
     }
 }

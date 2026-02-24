@@ -20,6 +20,10 @@ public class ImpactCheckAppender {
 
     @Transactional
     public ImpactCheckResponse append(Long userId, ImpactCheckRequest request) {
+        if (impactCheckRepository.existsSubmittedByUserId(userId)) {
+            throw new ConflictException(ErrorCode.ALREADY_SUBMITTED);
+        }
+
         Optional<ImpactCheckModel> existing = impactCheckRepository.findByUserId(userId);
 
         Long existingId = existing.map(ImpactCheckModel::getAnswerId).orElse(null);
@@ -50,10 +54,12 @@ public class ImpactCheckAppender {
     }
 
     @Transactional
-    public void submit(Long userId) {
+    public ImpactCheckResponse submit(Long userId, ImpactCheckRequest request) {
         if (impactCheckRepository.existsSubmittedByUserId(userId)) {
             throw new ConflictException(ErrorCode.ALREADY_SUBMITTED);
         }
+        ImpactCheckResponse response = append(userId, request);
         impactCheckRepository.submitByUserId(userId);
+        return response;
     }
 }

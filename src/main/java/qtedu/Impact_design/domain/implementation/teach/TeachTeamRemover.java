@@ -65,6 +65,9 @@ public class TeachTeamRemover {
                     userinfoRepository.clearWriterByUserIds(List.of(userId));
                 }
             });
+            teamUserRepository.findByUserId(userId).ifPresent(teamUser ->
+                    tbTeamRepository.decrementNumUser(teamUser.getTeamId())
+            );
             teamUserRepository.deleteByUserId(userId);
         }
     }

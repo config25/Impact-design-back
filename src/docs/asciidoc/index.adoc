@@ -1,0 +1,1691 @@
+= API Document
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 3
+:sectlinks:
+:sectanchors:
+
+== 소개
+
+API 문서입니다.
+
+== 공통 사항
+
+API 문서에서 공통으로 사용되는 내용을 정의합니다.
+
+=== Domain
+
+=== 공통 응답 구조
+
+==== 성공 응답
+
+[source,json]
+----
+{
+  "status": 200,
+  "data": { ... }
+}
+----
+
+* `status`: HTTP 상태 코드
+* `data`: 실제 응답 데이터
+
+==== 실패 응답
+
+[source,json]
+----
+{
+  "status": 400,
+  "data": {
+    "errorCode": "COMMON_2",
+    "message": "요청 변수가 잘못되었습니다."
+  }
+}
+----
+
+* `status`: HTTP 상태 코드
+* `errorCode`: 에러 코드
+* `message`: 에러 메시지
+
+=== 상태 코드
+
+|===
+| 상태 코드 | 의미 | 설명
+
+| 200
+| OK
+| 요청이 성공적으로 처리됨
+
+| 401
+| Unauthorized
+| 인증 실패 (잘못된 토큰 등)
+
+| 404
+| Not Found
+| 리소스를 찾을 수 없음
+
+| 409
+| Conflict
+| 리소스 충돌 (중복 등)
+
+| 500
+| Internal Server Error
+| 서버 내부 오류
+|===
+
+=== Authorization
+
+[source]
+----
+Authorization: Bearer 액세스 토큰 (필수)
+----
+
+* 형식: `Bearer {token}`
+* 인증이 필요한 API 호출 시 반드시 포함
+
+== Auth API
+
+=== 1. 학생 로그인
+
+==== 요청(Request)
+
+include::{snippets}/auth/login/http-request.adoc[]
+
+==== 요청 필드 설명(Request Fields)
+
+include::{snippets}/auth/login/request-fields.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/auth/login/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/auth/login/response-fields.adoc[]
+
+=== 1-1. 학생 로그인 (비밀번호 틀림)
+
+==== 응답(Response)
+
+include::{snippets}/auth/login-wrong-password/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/auth/login-wrong-password/response-fields.adoc[]
+
+=== 1-2. 학생 로그인 (사용자 없음)
+
+==== 응답(Response)
+
+include::{snippets}/auth/login-user-not-found/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/auth/login-user-not-found/response-fields.adoc[]
+
+=== 1-3. 학생 로그인 (권한 없음)
+
+==== 응답(Response)
+
+include::{snippets}/auth/login-access-denied/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/auth/login-access-denied/response-fields.adoc[]
+
+=== 2. 강사 로그인
+
+==== 요청(Request)
+
+include::{snippets}/auth/teacher-login/http-request.adoc[]
+
+==== 요청 필드 설명(Request Fields)
+
+include::{snippets}/auth/teacher-login/request-fields.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/auth/teacher-login/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/auth/teacher-login/response-fields.adoc[]
+
+=== 2-1. 강사 로그인 (비밀번호 틀림)
+
+==== 응답(Response)
+
+include::{snippets}/auth/teacher-login-wrong-password/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/auth/teacher-login-wrong-password/response-fields.adoc[]
+
+=== 2-2. 강사 로그인 (사용자 없음)
+
+==== 응답(Response)
+
+include::{snippets}/auth/teacher-login-user-not-found/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/auth/teacher-login-user-not-found/response-fields.adoc[]
+
+=== 2-3. 강사 로그인 (권한 없음)
+
+==== 응답(Response)
+
+include::{snippets}/auth/teacher-login-access-denied/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/auth/teacher-login-access-denied/response-fields.adoc[]
+
+=== 3. 코드 확인
+
+==== 요청(Request)
+
+include::{snippets}/auth/check-code/http-request.adoc[]
+
+==== 요청 파라미터 설명(Query Parameters)
+
+include::{snippets}/auth/check-code/query-parameters.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/auth/check-code/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/auth/check-code/response-fields.adoc[]
+
+=== 3-1. 코드 확인 (존재하지 않는 코드)
+
+==== 응답(Response)
+
+include::{snippets}/auth/check-code-not-found/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/auth/check-code-not-found/response-fields.adoc[]
+
+=== 4. 로그인 ID 중복 확인
+
+==== 요청(Request)
+
+include::{snippets}/auth/check-id/http-request.adoc[]
+
+==== 요청 파라미터 설명(Query Parameters)
+
+include::{snippets}/auth/check-id/query-parameters.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/auth/check-id/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/auth/check-id/response-fields.adoc[]
+
+=== 4-1. 로그인 ID 중복 확인 (이미 존재하는 ID)
+
+==== 응답(Response)
+
+include::{snippets}/auth/check-id-duplicate/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/auth/check-id-duplicate/response-fields.adoc[]
+
+=== 5. 회원가입
+
+==== 요청(Request)
+
+include::{snippets}/auth/signup/http-request.adoc[]
+
+==== 요청 필드 설명(Request Fields)
+
+include::{snippets}/auth/signup/request-fields.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/auth/signup/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/auth/signup/response-fields.adoc[]
+
+=== 6. 로그아웃
+
+NOTE: 인증 필요 (`Authorization: Bearer {token}`)
+
+==== 요청(Request)
+
+include::{snippets}/auth/logout/http-request.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/auth/logout/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/auth/logout/response-fields.adoc[]
+
+== Admin API
+
+NOTE: 모든 Admin API는 인증 필요 (`Authorization: Bearer {token}`) + 관리자 권한 필요
+
+=== 1. 진행중인 전체 강의실 목록 조회
+
+==== 요청(Request)
+
+include::{snippets}/admin/teach/http-request.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/admin/teach/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/admin/teach/response-fields.adoc[]
+
+=== 1-1. 진행중인 전체 강의실 목록 조회 (사용자 없음)
+
+==== 응답(Response)
+
+include::{snippets}/admin/teach-user-not-found/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/admin/teach-user-not-found/response-fields.adoc[]
+
+=== 1-2. 진행중인 전체 강의실 목록 조회 (권한 없음)
+
+==== 응답(Response)
+
+include::{snippets}/admin/teach-access-denied/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/admin/teach-access-denied/response-fields.adoc[]
+
+=== 2. 전체 강의실 카테고리별 조회
+
+==== 요청(Request)
+
+include::{snippets}/admin/teach-list/http-request.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/admin/teach-list/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/admin/teach-list/response-fields.adoc[]
+
+=== 2-1. 전체 강의실 카테고리별 조회 (사용자 없음)
+
+==== 응답(Response)
+
+include::{snippets}/admin/teach-list-user-not-found/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/admin/teach-list-user-not-found/response-fields.adoc[]
+
+=== 2-2. 전체 강의실 카테고리별 조회 (권한 없음)
+
+==== 응답(Response)
+
+include::{snippets}/admin/teach-list-access-denied/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/admin/teach-list-access-denied/response-fields.adoc[]
+
+== Impact Check API
+
+NOTE: 모든 Impact Check API는 인증 필요 (`Authorization: Bearer {token}`)
+
+=== 1. 임팩트 체크 조회
+
+==== 요청(Request)
+
+include::{snippets}/impact-check/get/http-request.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/impact-check/get/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/impact-check/get/response-fields.adoc[]
+
+=== 2. 임팩트 체크 저장
+
+==== 요청(Request)
+
+include::{snippets}/impact-check/save/http-request.adoc[]
+
+==== 요청 필드 설명(Request Fields)
+
+include::{snippets}/impact-check/save/request-fields.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/impact-check/save/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/impact-check/save/response-fields.adoc[]
+
+=== 3. 임팩트 체크 제출
+
+==== 요청(Request)
+
+include::{snippets}/impact-check/submit/http-request.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/impact-check/submit/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/impact-check/submit/response-fields.adoc[]
+
+=== 3-1. 임팩트 체크 제출 (이미 제출 완료)
+
+==== 응답(Response)
+
+include::{snippets}/impact-check/submit-already-submitted/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/impact-check/submit-already-submitted/response-fields.adoc[]
+
+== Identity Canvas API
+
+NOTE: 모든 Identity Canvas API는 인증 필요 (`Authorization: Bearer {token}`)
+
+=== 1. Identity 캔버스 조회
+
+==== 요청(Request)
+
+include::{snippets}/identity-canvas/get/http-request.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/identity-canvas/get/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/identity-canvas/get/response-fields.adoc[]
+
+=== 2. Identity 캔버스 저장
+
+==== 요청(Request)
+
+include::{snippets}/identity-canvas/save/http-request.adoc[]
+
+==== 요청 필드 설명(Request Fields)
+
+include::{snippets}/identity-canvas/save/request-fields.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/identity-canvas/save/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/identity-canvas/save/response-fields.adoc[]
+
+=== 2-1. Identity 캔버스 저장 (이미 제출 완료)
+
+==== 응답(Response)
+
+include::{snippets}/identity-canvas/save-already-submitted/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/identity-canvas/save-already-submitted/response-fields.adoc[]
+
+=== 3. Identity 캔버스 제출
+
+==== 요청(Request)
+
+include::{snippets}/identity-canvas/submit/http-request.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/identity-canvas/submit/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/identity-canvas/submit/response-fields.adoc[]
+
+=== 3-1. Identity 캔버스 제출 (이미 제출 완료)
+
+==== 응답(Response)
+
+include::{snippets}/identity-canvas/submit-already-submitted/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/identity-canvas/submit-already-submitted/response-fields.adoc[]
+
+== Flow Canvas API
+
+NOTE: 모든 Flow Canvas API는 인증 필요 (`Authorization: Bearer {token}`)
+
+=== 1. Flow 캔버스 조회
+
+==== 요청(Request)
+
+include::{snippets}/flow-canvas/get/http-request.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/flow-canvas/get/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/flow-canvas/get/response-fields.adoc[]
+
+=== 2. Flow 캔버스 저장
+
+==== 요청(Request)
+
+include::{snippets}/flow-canvas/save/http-request.adoc[]
+
+==== 요청 필드 설명(Request Fields)
+
+include::{snippets}/flow-canvas/save/request-fields.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/flow-canvas/save/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/flow-canvas/save/response-fields.adoc[]
+
+=== 2-1. Flow 캔버스 저장 (이미 제출 완료)
+
+==== 응답(Response)
+
+include::{snippets}/flow-canvas/save-already-submitted/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/flow-canvas/save-already-submitted/response-fields.adoc[]
+
+=== 3. Flow 캔버스 제출
+
+==== 요청(Request)
+
+include::{snippets}/flow-canvas/submit/http-request.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/flow-canvas/submit/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/flow-canvas/submit/response-fields.adoc[]
+
+=== 3-1. Flow 캔버스 제출 (이미 제출 완료)
+
+==== 응답(Response)
+
+include::{snippets}/flow-canvas/submit-already-submitted/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/flow-canvas/submit-already-submitted/response-fields.adoc[]
+
+== QuickWin Canvas API
+
+NOTE: 모든 QuickWin Canvas API는 인증 필요 (`Authorization: Bearer {token}`)
+
+=== 1. QuickWin 캔버스 조회
+
+==== 요청(Request)
+
+include::{snippets}/quick-win-canvas/get/http-request.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/quick-win-canvas/get/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/quick-win-canvas/get/response-fields.adoc[]
+
+=== 2. QuickWin 캔버스 저장
+
+==== 요청(Request)
+
+include::{snippets}/quick-win-canvas/save/http-request.adoc[]
+
+==== 요청 필드 설명(Request Fields)
+
+include::{snippets}/quick-win-canvas/save/request-fields.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/quick-win-canvas/save/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/quick-win-canvas/save/response-fields.adoc[]
+
+=== 2-1. QuickWin 캔버스 저장 (이미 제출 완료)
+
+==== 응답(Response)
+
+include::{snippets}/quick-win-canvas/save-already-submitted/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/quick-win-canvas/save-already-submitted/response-fields.adoc[]
+
+=== 3. QuickWin 캔버스 제출
+
+==== 요청(Request)
+
+include::{snippets}/quick-win-canvas/submit/http-request.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/quick-win-canvas/submit/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/quick-win-canvas/submit/response-fields.adoc[]
+
+=== 3-1. QuickWin 캔버스 제출 (이미 제출 완료)
+
+==== 응답(Response)
+
+include::{snippets}/quick-win-canvas/submit-already-submitted/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/quick-win-canvas/submit-already-submitted/response-fields.adoc[]
+
+== BuildWin Canvas API
+
+NOTE: 모든 BuildWin Canvas API는 인증 필요 (`Authorization: Bearer {token}`)
+
+=== 1. BuildWin 캔버스 조회
+
+==== 요청(Request)
+
+include::{snippets}/build-win-canvas/get/http-request.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/build-win-canvas/get/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/build-win-canvas/get/response-fields.adoc[]
+
+=== 2. BuildWin 캔버스 저장
+
+==== 요청(Request)
+
+include::{snippets}/build-win-canvas/save/http-request.adoc[]
+
+==== 요청 필드 설명(Request Fields)
+
+include::{snippets}/build-win-canvas/save/request-fields.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/build-win-canvas/save/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/build-win-canvas/save/response-fields.adoc[]
+
+=== 2-1. BuildWin 캔버스 저장 (이미 제출 완료)
+
+==== 응답(Response)
+
+include::{snippets}/build-win-canvas/save-already-submitted/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/build-win-canvas/save-already-submitted/response-fields.adoc[]
+
+=== 3. BuildWin 캔버스 제출
+
+==== 요청(Request)
+
+include::{snippets}/build-win-canvas/submit/http-request.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/build-win-canvas/submit/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/build-win-canvas/submit/response-fields.adoc[]
+
+=== 3-1. BuildWin 캔버스 제출 (이미 제출 완료)
+
+==== 응답(Response)
+
+include::{snippets}/build-win-canvas/submit-already-submitted/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/build-win-canvas/submit-already-submitted/response-fields.adoc[]
+
+== Funding API
+
+NOTE: 모든 Funding API는 인증 필요 (`Authorization: Bearer {token}`) +
+`canvasType` 경로 변수: `build` 또는 `quick`
+
+=== 1. 투자 대상 팀 목록 조회
+
+==== 요청(Request)
+
+include::{snippets}/funding/teams/http-request.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/funding/teams/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/funding/teams/response-fields.adoc[]
+
+=== 2. 특정 팀 투자 정보 조회
+
+==== 요청(Request)
+
+include::{snippets}/funding/investment-get/http-request.adoc[]
+
+==== 요청 파라미터 설명(Query Parameters)
+
+include::{snippets}/funding/investment-get/query-parameters.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/funding/investment-get/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/funding/investment-get/response-fields.adoc[]
+
+=== 3. 투자 의향서 저장/수정
+
+==== 요청(Request)
+
+include::{snippets}/funding/investment-save/http-request.adoc[]
+
+==== 요청 필드 설명(Request Fields)
+
+include::{snippets}/funding/investment-save/request-fields.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/funding/investment-save/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/funding/investment-save/response-fields.adoc[]
+
+=== 3-1. 투자 의향서 저장 (이미 제출 완료)
+
+==== 응답(Response)
+
+include::{snippets}/funding/investment-save-already-submitted/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/funding/investment-save-already-submitted/response-fields.adoc[]
+
+=== 3-2. 투자 의향서 저장 (투자 한도 초과)
+
+==== 응답(Response)
+
+include::{snippets}/funding/investment-save-limit-exceeded/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/funding/investment-save-limit-exceeded/response-fields.adoc[]
+
+=== 4. 내 투자 포트폴리오 조회
+
+==== 요청(Request)
+
+include::{snippets}/funding/portfolio/http-request.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/funding/portfolio/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/funding/portfolio/response-fields.adoc[]
+
+=== 5. 전체 팀 평가 점수 조회
+
+==== 요청(Request)
+
+include::{snippets}/funding/scores/http-request.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/funding/scores/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/funding/scores/response-fields.adoc[]
+
+=== 6. 제출 완료
+
+==== 요청(Request)
+
+include::{snippets}/funding/submit/http-request.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/funding/submit/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/funding/submit/response-fields.adoc[]
+
+=== 6-1. 제출 완료 (이미 제출됨)
+
+==== 응답(Response)
+
+include::{snippets}/funding/submit-already-submitted/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/funding/submit-already-submitted/response-fields.adoc[]
+
+=== 7. 제출 상태 확인
+
+==== 요청(Request)
+
+include::{snippets}/funding/status/http-request.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/funding/status/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/funding/status/response-fields.adoc[]
+
+=== 8. 내 팀 결과 조회
+
+==== 요청(Request)
+
+include::{snippets}/funding/my-result/http-request.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/funding/my-result/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/funding/my-result/response-fields.adoc[]
+
+== Game API
+
+NOTE: 모든 Game API는 인증 필요 (`Authorization: Bearer {token}`)
+
+=== 1. 학생용 공개범위(step) 조회
+
+==== 요청(Request)
+
+include::{snippets}/game/step/http-request.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/game/step/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/game/step/response-fields.adoc[]
+
+== Teach API
+
+NOTE: 모든 Teach API는 인증 필요 (`Authorization: Bearer {token}`)
+
+=== 1. 강의실 목록 조회
+
+==== 요청(Request)
+
+include::{snippets}/teach/index/http-request.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/teach/index/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach/index/response-fields.adoc[]
+
+=== 2. 강의실 카테고리별 목록 조회
+
+==== 요청(Request)
+
+include::{snippets}/teach/list/http-request.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/teach/list/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach/list/response-fields.adoc[]
+
+=== 3. 클래스 상세 조회
+
+==== 요청(Request)
+
+include::{snippets}/teach/detail/http-request.adoc[]
+
+==== 요청 파라미터 설명(Query Parameters)
+
+include::{snippets}/teach/detail/query-parameters.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/teach/detail/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach/detail/response-fields.adoc[]
+
+=== 3-1. 클래스 상세 조회 (게임 없음)
+
+==== 응답(Response)
+
+include::{snippets}/teach/detail-game-not-found/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach/detail-game-not-found/response-fields.adoc[]
+
+=== 4. 클래스 상세 조회 2
+
+==== 요청(Request)
+
+include::{snippets}/teach/detail2/http-request.adoc[]
+
+==== 요청 파라미터 설명(Query Parameters)
+
+include::{snippets}/teach/detail2/query-parameters.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/teach/detail2/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach/detail2/response-fields.adoc[]
+
+=== 4-1. 클래스 상세 조회 2 (게임 없음)
+
+==== 응답(Response)
+
+include::{snippets}/teach/detail2-game-not-found/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach/detail2-game-not-found/response-fields.adoc[]
+
+=== 5. 학생 목록 조회
+
+==== 요청(Request)
+
+include::{snippets}/teach/student-list/http-request.adoc[]
+
+==== 요청 파라미터 설명(Query Parameters)
+
+include::{snippets}/teach/student-list/query-parameters.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/teach/student-list/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach/student-list/response-fields.adoc[]
+
+=== 5-1. 학생 목록 조회 (게임 없음)
+
+==== 응답(Response)
+
+include::{snippets}/teach/student-list-game-not-found/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach/student-list-game-not-found/response-fields.adoc[]
+
+=== 6. 클래스 생성
+
+==== 요청(Request)
+
+include::{snippets}/teach/create-class/http-request.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/teach/create-class/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach/create-class/response-fields.adoc[]
+
+=== 6-1. 클래스 생성 (유효하지 않은 날짜)
+
+==== 응답(Response)
+
+include::{snippets}/teach/create-class-invalid-date/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach/create-class-invalid-date/response-fields.adoc[]
+
+=== 7. 클래스 수정
+
+==== 요청(Request)
+
+include::{snippets}/teach/update-class/http-request.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/teach/update-class/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach/update-class/response-fields.adoc[]
+
+=== 7-1. 클래스 수정 (게임 없음)
+
+==== 응답(Response)
+
+include::{snippets}/teach/update-class-game-not-found/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach/update-class-game-not-found/response-fields.adoc[]
+
+=== 8. 강의실 시작
+
+==== 요청(Request)
+
+include::{snippets}/teach/start-class/http-request.adoc[]
+
+==== 경로 변수 설명(Path Parameters)
+
+include::{snippets}/teach/start-class/path-parameters.adoc[]
+
+==== 요청 필드 설명(Request Fields)
+
+include::{snippets}/teach/start-class/request-fields.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/teach/start-class/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach/start-class/response-fields.adoc[]
+
+=== 8-1. 강의실 시작 (게임 없음)
+
+==== 응답(Response)
+
+include::{snippets}/teach/start-class-game-not-found/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach/start-class-game-not-found/response-fields.adoc[]
+
+=== 8-2. 강의실 시작 (유효하지 않은 날짜)
+
+==== 응답(Response)
+
+include::{snippets}/teach/start-class-invalid-date/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach/start-class-invalid-date/response-fields.adoc[]
+
+=== 9. 강의실 종료
+
+==== 요청(Request)
+
+include::{snippets}/teach/end-class/http-request.adoc[]
+
+==== 경로 변수 설명(Path Parameters)
+
+include::{snippets}/teach/end-class/path-parameters.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/teach/end-class/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach/end-class/response-fields.adoc[]
+
+=== 9-1. 강의실 종료 (게임 없음)
+
+==== 응답(Response)
+
+include::{snippets}/teach/end-class-game-not-found/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach/end-class-game-not-found/response-fields.adoc[]
+
+=== 10. 강의실 복원
+
+==== 요청(Request)
+
+include::{snippets}/teach/restore-class/http-request.adoc[]
+
+==== 경로 변수 설명(Path Parameters)
+
+include::{snippets}/teach/restore-class/path-parameters.adoc[]
+
+==== 요청 필드 설명(Request Fields)
+
+include::{snippets}/teach/restore-class/request-fields.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/teach/restore-class/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach/restore-class/response-fields.adoc[]
+
+=== 10-1. 강의실 복원 (게임 없음)
+
+==== 응답(Response)
+
+include::{snippets}/teach/restore-class-game-not-found/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach/restore-class-game-not-found/response-fields.adoc[]
+
+=== 11. 다음 단계 시작
+
+==== 요청(Request)
+
+include::{snippets}/teach/next-stage/http-request.adoc[]
+
+==== 경로 변수 설명(Path Parameters)
+
+include::{snippets}/teach/next-stage/path-parameters.adoc[]
+
+==== 요청 필드 설명(Request Fields)
+
+include::{snippets}/teach/next-stage/request-fields.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/teach/next-stage/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach/next-stage/response-fields.adoc[]
+
+=== 11-1. 다음 단계 시작 (게임 없음)
+
+==== 응답(Response)
+
+include::{snippets}/teach/next-stage-game-not-found/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach/next-stage-game-not-found/response-fields.adoc[]
+
+== Teach Team API
+
+NOTE: 모든 Teach Team API는 인증 필요 (`Authorization: Bearer {token}`)
+
+=== 1. 단계(step) 설정 저장
+
+==== 요청(Request)
+
+include::{snippets}/teach-team/save-step/http-request.adoc[]
+
+==== 요청 필드 설명(Request Fields)
+
+include::{snippets}/teach-team/save-step/request-fields.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/teach-team/save-step/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach-team/save-step/response-fields.adoc[]
+
+=== 1-1. 단계(step) 설정 저장 (게임 없음)
+
+==== 응답(Response)
+
+include::{snippets}/teach-team/save-step-game-not-found/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach-team/save-step-game-not-found/response-fields.adoc[]
+
+=== 2. 팀 추가
+
+==== 요청(Request)
+
+include::{snippets}/teach-team/add-team/http-request.adoc[]
+
+==== 요청 파라미터 설명(Query Parameters)
+
+include::{snippets}/teach-team/add-team/query-parameters.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/teach-team/add-team/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach-team/add-team/response-fields.adoc[]
+
+=== 2-1. 팀 추가 (게임 없음)
+
+==== 응답(Response)
+
+include::{snippets}/teach-team/add-team-game-not-found/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach-team/add-team-game-not-found/response-fields.adoc[]
+
+=== 2-2. 팀 추가 (최대 팀 수 초과)
+
+==== 응답(Response)
+
+include::{snippets}/teach-team/add-team-max-exceeded/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach-team/add-team-max-exceeded/response-fields.adoc[]
+
+=== 3. 평가팀 추가
+
+==== 요청(Request)
+
+include::{snippets}/teach-team/add-evaluation-team/http-request.adoc[]
+
+==== 요청 파라미터 설명(Query Parameters)
+
+include::{snippets}/teach-team/add-evaluation-team/query-parameters.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/teach-team/add-evaluation-team/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach-team/add-evaluation-team/response-fields.adoc[]
+
+=== 3-1. 평가팀 추가 (최대 팀 수 초과)
+
+==== 응답(Response)
+
+include::{snippets}/teach-team/add-evaluation-team-max-exceeded/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach-team/add-evaluation-team-max-exceeded/response-fields.adoc[]
+
+=== 4. 팀원 추가
+
+==== 요청(Request)
+
+include::{snippets}/teach-team/add-team-member/http-request.adoc[]
+
+==== 경로 변수 설명(Path Parameters)
+
+include::{snippets}/teach-team/add-team-member/path-parameters.adoc[]
+
+==== 요청 파라미터 설명(Query Parameters)
+
+include::{snippets}/teach-team/add-team-member/query-parameters.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/teach-team/add-team-member/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach-team/add-team-member/response-fields.adoc[]
+
+=== 4-1. 팀원 추가 (팀 없음)
+
+==== 응답(Response)
+
+include::{snippets}/teach-team/add-team-member-team-not-found/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach-team/add-team-member-team-not-found/response-fields.adoc[]
+
+=== 4-2. 팀원 추가 (최대 팀원 수 초과)
+
+==== 응답(Response)
+
+include::{snippets}/teach-team/add-team-member-max-exceeded/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach-team/add-team-member-max-exceeded/response-fields.adoc[]
+
+=== 5. 팀 삭제
+
+==== 요청(Request)
+
+include::{snippets}/teach-team/delete-team/http-request.adoc[]
+
+==== 경로 변수 설명(Path Parameters)
+
+include::{snippets}/teach-team/delete-team/path-parameters.adoc[]
+
+==== 요청 파라미터 설명(Query Parameters)
+
+include::{snippets}/teach-team/delete-team/query-parameters.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/teach-team/delete-team/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach-team/delete-team/response-fields.adoc[]
+
+=== 5-1. 팀 삭제 (팀 없음)
+
+==== 응답(Response)
+
+include::{snippets}/teach-team/delete-team-not-found/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach-team/delete-team-not-found/response-fields.adoc[]
+
+=== 6. 삭제된 팀 복원
+
+==== 요청(Request)
+
+include::{snippets}/teach-team/restore-team/http-request.adoc[]
+
+==== 경로 변수 설명(Path Parameters)
+
+include::{snippets}/teach-team/restore-team/path-parameters.adoc[]
+
+==== 요청 파라미터 설명(Query Parameters)
+
+include::{snippets}/teach-team/restore-team/query-parameters.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/teach-team/restore-team/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach-team/restore-team/response-fields.adoc[]
+
+=== 6-1. 삭제된 팀 복원 (팀 없음)
+
+==== 응답(Response)
+
+include::{snippets}/teach-team/restore-team-not-found/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach-team/restore-team-not-found/response-fields.adoc[]
+
+=== 7. 삭제된 팀 목록 조회
+
+==== 요청(Request)
+
+include::{snippets}/teach-team/deleted-teams/http-request.adoc[]
+
+==== 요청 파라미터 설명(Query Parameters)
+
+include::{snippets}/teach-team/deleted-teams/query-parameters.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/teach-team/deleted-teams/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach-team/deleted-teams/response-fields.adoc[]
+
+=== 8. 학생 팀 이동
+
+==== 요청(Request)
+
+include::{snippets}/teach-team/update-team-member/http-request.adoc[]
+
+==== 요청 필드 설명(Request Fields)
+
+include::{snippets}/teach-team/update-team-member/request-fields.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/teach-team/update-team-member/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach-team/update-team-member/response-fields.adoc[]
+
+=== 8-1. 학생 팀 이동 (대표작성자 이동 불가)
+
+==== 응답(Response)
+
+include::{snippets}/teach-team/update-team-member-writer-cannot-move/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach-team/update-team-member-writer-cannot-move/response-fields.adoc[]
+
+=== 9. 팀 상세 정보 조회
+
+==== 요청(Request)
+
+include::{snippets}/teach-team/get-team-info/http-request.adoc[]
+
+==== 경로 변수 설명(Path Parameters)
+
+include::{snippets}/teach-team/get-team-info/path-parameters.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/teach-team/get-team-info/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach-team/get-team-info/response-fields.adoc[]
+
+=== 9-1. 팀 상세 정보 조회 (팀 없음)
+
+==== 응답(Response)
+
+include::{snippets}/teach-team/get-team-info-not-found/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach-team/get-team-info-not-found/response-fields.adoc[]
+
+=== 10. 팀 정보 수정
+
+==== 요청(Request)
+
+include::{snippets}/teach-team/update-team-info/http-request.adoc[]
+
+==== 경로 변수 설명(Path Parameters)
+
+include::{snippets}/teach-team/update-team-info/path-parameters.adoc[]
+
+==== 요청 필드 설명(Request Fields)
+
+include::{snippets}/teach-team/update-team-info/request-fields.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/teach-team/update-team-info/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach-team/update-team-info/response-fields.adoc[]
+
+=== 10-1. 팀 정보 수정 (팀 없음)
+
+==== 응답(Response)
+
+include::{snippets}/teach-team/update-team-info-not-found/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach-team/update-team-info-not-found/response-fields.adoc[]
+
+=== 11. 선택한 팀원 삭제
+
+==== 요청(Request)
+
+include::{snippets}/teach-team/delete-team-members/http-request.adoc[]
+
+==== 요청 필드 설명(Request Fields)
+
+include::{snippets}/teach-team/delete-team-members/request-fields.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/teach-team/delete-team-members/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach-team/delete-team-members/response-fields.adoc[]
+
+=== 12. 대표작성자 지정
+
+==== 요청(Request)
+
+include::{snippets}/teach-team/set-writer/http-request.adoc[]
+
+==== 경로 변수 설명(Path Parameters)
+
+include::{snippets}/teach-team/set-writer/path-parameters.adoc[]
+
+==== 요청 필드 설명(Request Fields)
+
+include::{snippets}/teach-team/set-writer/request-fields.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/teach-team/set-writer/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach-team/set-writer/response-fields.adoc[]
+
+=== 12-1. 대표작성자 지정 (팀 소속 아님)
+
+==== 응답(Response)
+
+include::{snippets}/teach-team/set-writer-not-found/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach-team/set-writer-not-found/response-fields.adoc[]
+
+== Teach Submission API
+
+NOTE: 모든 Teach Submission API는 인증 필요 (`Authorization: Bearer {token}`) + 강사 권한 필요
+
+=== 1. 게임별 팀 제출 현황 목록
+
+==== 요청(Request)
+
+include::{snippets}/teach-submission/list/http-request.adoc[]
+
+==== 요청 파라미터 설명(Query Parameters)
+
+include::{snippets}/teach-submission/list/query-parameters.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/teach-submission/list/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach-submission/list/response-fields.adoc[]
+
+=== 2. A: 성과관리 현황진단 열람
+
+==== 요청(Request)
+
+include::{snippets}/teach-submission/impact-check/http-request.adoc[]
+
+==== 요청 파라미터 설명(Query Parameters)
+
+include::{snippets}/teach-submission/impact-check/query-parameters.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/teach-submission/impact-check/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach-submission/impact-check/response-fields.adoc[]
+
+=== 3. B: 정체성 설계 열람
+
+==== 요청(Request)
+
+include::{snippets}/teach-submission/identity-canvas/http-request.adoc[]
+
+==== 요청 파라미터 설명(Query Parameters)
+
+include::{snippets}/teach-submission/identity-canvas/query-parameters.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/teach-submission/identity-canvas/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach-submission/identity-canvas/response-fields.adoc[]
+
+=== 4. C: 성과경로 설계 열람
+
+==== 요청(Request)
+
+include::{snippets}/teach-submission/flow-canvas/http-request.adoc[]
+
+==== 요청 파라미터 설명(Query Parameters)
+
+include::{snippets}/teach-submission/flow-canvas/query-parameters.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/teach-submission/flow-canvas/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach-submission/flow-canvas/response-fields.adoc[]
+
+=== 5. D: 전술적 실행과제 (QuickWin) 열람
+
+==== 요청(Request)
+
+include::{snippets}/teach-submission/quick-win/http-request.adoc[]
+
+==== 요청 파라미터 설명(Query Parameters)
+
+include::{snippets}/teach-submission/quick-win/query-parameters.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/teach-submission/quick-win/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach-submission/quick-win/response-fields.adoc[]
+
+=== 6. E: 전략적 실행과제 (BuildWin) 열람
+
+==== 요청(Request)
+
+include::{snippets}/teach-submission/build-win/http-request.adoc[]
+
+==== 요청 파라미터 설명(Query Parameters)
+
+include::{snippets}/teach-submission/build-win/query-parameters.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/teach-submission/build-win/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach-submission/build-win/response-fields.adoc[]
+
+=== 7. F: 실행과제 검증 (Funding) 열람
+
+==== 요청(Request)
+
+include::{snippets}/teach-submission/funding/http-request.adoc[]
+
+==== 경로 변수 설명(Path Parameters)
+
+include::{snippets}/teach-submission/funding/path-parameters.adoc[]
+
+==== 요청 파라미터 설명(Query Parameters)
+
+include::{snippets}/teach-submission/funding/query-parameters.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/teach-submission/funding/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach-submission/funding/response-fields.adoc[]
+
+=== 8. F-3: 팀별 결과 열람
+
+==== 요청(Request)
+
+include::{snippets}/teach-submission/funding-result/http-request.adoc[]
+
+==== 요청 파라미터 설명(Query Parameters)
+
+include::{snippets}/teach-submission/funding-result/query-parameters.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/teach-submission/funding-result/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach-submission/funding-result/response-fields.adoc[]
+
+== Report API
+
+NOTE: 인증 필요 (`Authorization: Bearer {token}`)
+
+=== 1. 팀별 리포트 조회
+
+==== 요청(Request)
+
+include::{snippets}/report/get/http-request.adoc[]
+
+==== 경로 변수 설명(Path Parameters)
+
+include::{snippets}/report/get/path-parameters.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/report/get/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/report/get/response-fields.adoc[]

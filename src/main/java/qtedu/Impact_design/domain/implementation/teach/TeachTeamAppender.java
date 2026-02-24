@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import qtedu.Impact_design.common.error.ConflictException;
 import qtedu.Impact_design.common.error.ErrorCode;
 import qtedu.Impact_design.common.error.NotFoundException;
 import qtedu.Impact_design.domain.model.team.TbGameModel;
@@ -21,6 +22,8 @@ import qtedu.Impact_design.domain.repository.user.UserinfoRepository;
 public class TeachTeamAppender {
 
     private static final String ALPHABET = "abcdefghijklmnopqrstuvwxyz";
+    private static final int MAX_TEAMS_PER_GAME = 6;
+    private static final int MAX_MEMBERS_PER_TEAM = 10;
 
     private final TbGameRepository tbGameRepository;
     private final TbTeamRepository tbTeamRepository;
@@ -33,6 +36,11 @@ public class TeachTeamAppender {
     public Integer addTeam(Integer gameId) {
         TbGameModel game = tbGameRepository.findById(gameId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.GAME_NOT_FOUND));
+
+        int currentTeamCount = gameTeamRepository.countByGameId(gameId);
+        if (currentTeamCount > MAX_TEAMS_PER_GAME) {
+            throw new ConflictException(ErrorCode.MAX_TEAM_EXCEEDED);
+        }
 
         int nextSequence = tbTeamRepository.findMaxSequenceByGameId(gameId) + 1;
         String teamName = "팀" + nextSequence;
@@ -56,6 +64,11 @@ public class TeachTeamAppender {
     public Integer addEvaluationTeam(Integer gameId) {
         TbGameModel game = tbGameRepository.findById(gameId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.GAME_NOT_FOUND));
+
+        int currentTeamCount = gameTeamRepository.countByGameId(gameId);
+        if (currentTeamCount > MAX_TEAMS_PER_GAME) {
+            throw new ConflictException(ErrorCode.MAX_TEAM_EXCEEDED);
+        }
 
         int nextSequence = tbTeamRepository.findMaxSequenceByGameId(gameId) + 1;
 
@@ -83,7 +96,12 @@ public class TeachTeamAppender {
         TbGameModel game = tbGameRepository.findById(gameId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.GAME_NOT_FOUND));
 
-        // 1. loginId 생성: [letter][gameId][number]
+        int currentMemberCount = teamUserRepository.countByTeamId(teamId);
+        if (currentMemberCount > MAX_MEMBERS_PER_TEAM) {
+            throw new ConflictException(ErrorCode.MAX_MEMBER_EXCEEDED);
+        }
+
+        // 1. loginId 생성: [letter][gameId][number] (중복 회피)
         String loginId = generateLoginId(team.getSequence(), gameId);
 
         // 2. 비밀번호 = 아이디 (BCrypt 인코딩)
@@ -97,7 +115,10 @@ public class TeachTeamAppender {
         TeamUserModel teamUser = TeamUserModel.createStudent(savedUser.getUserId(), teamId);
         teamUserRepository.save(teamUser);
 
-        // 5. 팀에 writer가 없으면 자동으로 writer 지정
+        // 5. 팀 멤버 수 증가
+        tbTeamRepository.incrementNumUser(teamId);
+
+        // 6. 팀에 writer가 없으면 자동으로 writer 지정
         boolean hasWriter = teamUserRepository.findByTeamId(teamId).stream()
                 .map(TeamUserModel::getUserId)
                 .anyMatch(uid -> userinfoRepository.findByUserId(uid)
@@ -128,6 +149,13 @@ public class TeachTeamAppender {
             }
         }
 
-        return prefix + nextNum;
+        // 동시 요청으로 이미 존재하는 경우 다음 번호로 증가
+        String loginId = prefix + nextNum;
+        while (userinfoRepository.existsByLoginId(loginId)) {
+            nextNum++;
+            loginId = prefix + nextNum;
+        }
+
+        return loginId;
     }
 }

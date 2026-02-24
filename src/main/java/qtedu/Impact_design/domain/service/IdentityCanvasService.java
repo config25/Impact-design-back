@@ -29,8 +29,7 @@ public class IdentityCanvasService {
         return identityCanvasReader.readByUserIds(userIds);
     }
 
-    public IdentityCanvasResponse submitIdentityCanvas(Long userId) {
-        identityCanvasAppender.submit(userId);
-        return identityCanvasReader.read(userId);
+    public IdentityCanvasResponse submitIdentityCanvas(Long userId, IdentityCanvasRequest request) {
+        return identityCanvasAppender.submit(userId, request);
     }
 }

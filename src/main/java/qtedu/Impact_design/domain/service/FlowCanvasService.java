@@ -39,8 +39,7 @@ public class FlowCanvasService {
         return flowCanvasReader.readStrategicActivitiesByGoalIds(goalIds);
     }
 
-    public FlowCanvasResponse submitFlowCanvas(Long userId) {
-        flowCanvasAppender.submit(userId);
-        return flowCanvasReader.read(userId);
+    public FlowCanvasResponse submitFlowCanvas(Long userId, FlowCanvasSaveRequest request) {
+        return flowCanvasAppender.submit(userId, request);
     }
 }

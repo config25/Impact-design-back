@@ -37,9 +37,10 @@ public class ImpactCheckController {
 
     @PatchMapping("/submit")
     public ResponseEntity<HttpResponse<ImpactCheckResponse>> submitImpactCheck(
-            @CurrentUser UserId userId
+            @CurrentUser UserId userId,
+            @RequestBody ImpactCheckRequest request
     ) {
-        ImpactCheckResponse response = impactCheckService.submitImpactCheck(userId.getId());
+        ImpactCheckResponse response = impactCheckService.submitImpactCheck(userId.getId(), request);
         return ResponseHelper.success(response);
     }
 }

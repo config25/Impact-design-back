@@ -25,9 +25,8 @@ public class ImpactCheckService {
         return impactCheckAppender.append(userId, request);
     }
 
-    public ImpactCheckResponse submitImpactCheck(Long userId) {
-        impactCheckAppender.submit(userId);
-        return impactCheckReader.read(userId);
+    public ImpactCheckResponse submitImpactCheck(Long userId, ImpactCheckRequest request) {
+        return impactCheckAppender.submit(userId, request);
     }
 
     public List<ImpactCheckModel> getImpactChecksByUserIds(List<Long> userIds) {

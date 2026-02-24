@@ -12,4 +12,6 @@ public interface TbTeamRepository {
     TbTeamModel save(TbTeamModel model);
     List<TbTeamModel> findDeletedByGameId(Integer gameId);
     int findMaxSequenceByGameId(Integer gameId);
+    void incrementNumUser(Integer teamId);
+    void decrementNumUser(Integer teamId);
 }

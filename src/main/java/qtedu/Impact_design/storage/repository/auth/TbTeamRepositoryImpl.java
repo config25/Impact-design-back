@@ -64,6 +64,16 @@ public class TbTeamRepositoryImpl implements TbTeamRepository {
         return tbTeamJpaRepository.findMaxSequenceByGameId(gameId);
     }
 
+    @Override
+    public void incrementNumUser(Integer teamId) {
+        tbTeamJpaRepository.incrementNumUser(teamId);
+    }
+
+    @Override
+    public void decrementNumUser(Integer teamId) {
+        tbTeamJpaRepository.decrementNumUser(teamId);
+    }
+
     private TbTeamModel toModel(TbTeam entity) {
         return TbTeamModel.builder()
                 .teamId(entity.getTeamId())

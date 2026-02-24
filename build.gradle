@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '4.0.1'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id 'org.asciidoctor.jvm.convert' version '4.0.5'
 }
 
 group = 'qtedu'
@@ -15,6 +16,7 @@ java {
 }
 
 configurations {
+	asciidoctorExt
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
@@ -43,8 +45,39 @@ dependencies {
 
 	// Swagger / OpenAPI
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.6'
+
+	// Spring REST Docs
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+	asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor:4.0.0'
+}
+
+ext {
+	snippetsDir = file('build/generated-snippets')
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+	outputs.dir snippetsDir
+	jvmArgs '-Djava.io.tmpdir=C:\\temp'
+}
+
+asciidoctorj {
+	version = '3.0.0'
+}
+
+asciidoctor {
+	configurations 'asciidoctorExt'
+	inputs.dir snippetsDir
+	dependsOn test
+	sources {
+		include '**/index.adoc'
+	}
+	baseDirFollowsSourceFile()
+}
+
+tasks.named('bootJar') {
+	dependsOn asciidoctor
+	from("${asciidoctor.outputDir}") {
+		into 'static/docs'
+	}
 }

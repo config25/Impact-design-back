@@ -139,10 +139,12 @@ public class FlowCanvasAppender {
     }
 
     @Transactional
-    public void submit(Long userId) {
+    public FlowCanvasResponse submit(Long userId, FlowCanvasSaveRequest request) {
         if (flowCanvasRepository.existsSubmittedByUserId(userId)) {
             throw new ConflictException(ErrorCode.ALREADY_SUBMITTED);
         }
+        FlowCanvasResponse response = append(userId, request);
         flowCanvasRepository.submitAllByUserId(userId);
+        return response;
     }
 }

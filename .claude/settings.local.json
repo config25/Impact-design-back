@@ -26,7 +26,22 @@
       "Bash(pip install:*)",
       "Bash(node -e:*)",
       "Bash(find:*)",
-      "Bash(./gradlew build:*)"
+      "Bash(./gradlew build:*)",
+      "Bash(cd:2)",
+      "Bash(cd \"C:/Users/김영호/Desktop/impact_design/id_backend/Impact_design\" && python3 generate_sql.py 2>&1 || py generate_sql.py 2>&1)",
+      "Bash(/c/msys64/mingw64/bin/python.exe)",
+      "Bash(tail:*)",
+      "WebSearch",
+      "Bash(xargs -I{} jar tf \"{}\")",
+      "Bash(jar tf:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(cd /c/Users/김영호/Desktop/impact_design/id_backend/Impact_design && ./gradlew --stop 2>&1)",
+      "Bash(rm:*)",
+      "Bash(echo GRADLE_USER_HOME is now: C:\\\\\\\\gradle_home:*)",
+      "Bash(cp:*)",
+      "Bash(mkdir -p /c/dev && cp -r \"/c/Users/김영호/Desktop/impact_design\" /c/dev/impact_design 2>&1)",
+      "Bash(/c/dev/impact_design/id_backend/Impact_design/gradlew --stop -p /c/dev/impact_design/id_backend/Impact_design 2>&1 && rm -rf /c/dev/impact_design 2>&1)",
+      "Bash(ls:*)"
     ]
   }
 }

@@ -50,10 +50,12 @@ public class IdentityCanvasAppender {
     }
 
     @Transactional
-    public void submit(Long userId) {
+    public IdentityCanvasResponse submit(Long userId, IdentityCanvasRequest request) {
         if (identityCanvasRepository.existsSubmittedByUserId(userId)) {
             throw new ConflictException(ErrorCode.ALREADY_SUBMITTED);
         }
+        IdentityCanvasResponse response = append(userId, request);
         identityCanvasRepository.submitByUserId(userId);
+        return response;
     }
 }

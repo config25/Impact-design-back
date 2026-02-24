@@ -95,6 +95,12 @@ public class TeachTeamUpdater {
                 .filter(user -> user.isWriter())
                 .ifPresent(user -> { throw new ConflictException(ErrorCode.WRITER_CANNOT_MOVE); });
 
+        // 이전 팀 멤버 수 감소, 새 팀 멤버 수 증가
+        teamUserRepository.findByUserId(userId).ifPresent(teamUser ->
+                tbTeamRepository.decrementNumUser(teamUser.getTeamId())
+        );
+        tbTeamRepository.incrementNumUser(teamId);
+
         teamUserRepository.updateTeamId(userId, teamId);
         String teamIdStr = String.valueOf(teamId);
         fLetterOfIntentRepository.updateInvestmentTargetByCanvasOwner(userId, teamIdStr);

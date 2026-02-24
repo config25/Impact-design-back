@@ -12,10 +12,12 @@ import qtedu.Impact_design.domain.model.FLetterOfIntent2Model;
 import qtedu.Impact_design.domain.model.FLetterOfIntentModel;
 import qtedu.Impact_design.domain.model.en.CanvasType;
 import qtedu.Impact_design.domain.model.team.TeamUserModel;
+import qtedu.Impact_design.domain.model.user.UserinfoModel;
 import qtedu.Impact_design.domain.model.win_canvas.WinCanvasModel;
 import qtedu.Impact_design.domain.repository.FLetterOfIntent2Repository;
 import qtedu.Impact_design.domain.repository.FLetterOfIntentRepository;
 import qtedu.Impact_design.domain.repository.auth.TeamUserRepository;
+import qtedu.Impact_design.domain.repository.user.UserinfoRepository;
 import qtedu.Impact_design.domain.repository.win_canvas.WinCanvasRepository;
 
 import java.util.List;
@@ -29,6 +31,7 @@ public class FundingAppender {
     private final FLetterOfIntentRepository fLetterOfIntentRepository;
     private final FLetterOfIntent2Repository fLetterOfIntent2Repository;
     private final TeamUserRepository teamUserRepository;
+    private final UserinfoRepository userinfoRepository;
     private final WinCanvasRepository winCanvasRepository;
     private final FundingReader fundingReader;
     private final FundingValidator fundingValidator;
@@ -147,54 +150,22 @@ public class FundingAppender {
     }
 
     /**
-     * 대상 팀의 캔버스 중 평가자에게 할당할 canvasId를 찾는다.
-     * 팀원들의 캔버스를 조회하여 평가가 가장 적은 캔버스를 선택 (균등 분배).
-     * 캔버스가 없으면 null 반환.
+     * 대상 팀의 대표작성자(writer) 캔버스 ID를 찾는다.
      */
     private Long resolveCanvasId(Integer targetTeamId, CanvasType canvasType) {
-        List<Long> targetUserIds = teamUserRepository.findByTeamId(targetTeamId).stream()
+        List<Long> writerIds = teamUserRepository.findByTeamId(targetTeamId).stream()
                 .map(TeamUserModel::getUserId)
+                .filter(uid -> userinfoRepository.findByUserId(uid)
+                        .map(UserinfoModel::isWriter)
+                        .orElse(false))
                 .collect(Collectors.toList());
 
-        if (targetUserIds.isEmpty()) return null;
+        if (writerIds.isEmpty()) return null;
 
-        List<WinCanvasModel> canvases = winCanvasRepository.findByUserIdInAndCanvasType(targetUserIds, canvasType);
+        List<WinCanvasModel> canvases = winCanvasRepository.findByUserIdInAndCanvasType(writerIds, canvasType);
         if (canvases.isEmpty()) return null;
 
-        // 캔버스가 1개면 바로 반환
-        if (canvases.size() == 1) {
-            return canvases.get(0).getCanvasId();
-        }
-
-        // 여러 개면 평가가 가장 적은 캔버스에 할당 (균등 분배)
-        List<Long> canvasIds = canvases.stream().map(WinCanvasModel::getCanvasId).collect(Collectors.toList());
-
-        List<?> existingIntents;
-        if (canvasType == CanvasType.QUICK) {
-            existingIntents = fLetterOfIntentRepository.findByCanvasIdIn(canvasIds);
-        } else {
-            existingIntents = fLetterOfIntent2Repository.findByCanvasIdIn(canvasIds);
-        }
-
-        // 각 캔버스별 평가 수 카운트
-        java.util.Map<Long, Long> countByCanvas = new java.util.HashMap<>();
-        for (Long cid : canvasIds) {
-            countByCanvas.put(cid, 0L);
-        }
-        for (Object intent : existingIntents) {
-            Long cid = (intent instanceof FLetterOfIntentModel)
-                    ? ((FLetterOfIntentModel) intent).getCanvasId()
-                    : ((FLetterOfIntent2Model) intent).getCanvasId();
-            if (cid != null) {
-                countByCanvas.merge(cid, 1L, Long::sum);
-            }
-        }
-
-        // 평가가 가장 적은 캔버스 선택
-        return countByCanvas.entrySet().stream()
-                .min(java.util.Map.Entry.comparingByValue())
-                .map(java.util.Map.Entry::getKey)
-                .orElse(canvases.get(0).getCanvasId());
+        return canvases.get(0).getCanvasId();
     }
 
     private boolean isBuildType(String canvasType) {

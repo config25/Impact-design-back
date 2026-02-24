@@ -1,6 +1,7 @@
 package qtedu.Impact_design.storage.jparepository.teach;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -30,4 +31,12 @@ public interface TbTeamJpaRepository extends JpaRepository<TbTeam, Integer> {
         WHERE gt.game_id = :gameId
         """, nativeQuery = true)
     int findMaxSequenceByGameId(@Param("gameId") Integer gameId);
+
+    @Modifying
+    @Query("UPDATE TbTeam t SET t.numUser = COALESCE(t.numUser, 0) + 1 WHERE t.teamId = :teamId")
+    void incrementNumUser(@Param("teamId") Integer teamId);
+
+    @Modifying
+    @Query("UPDATE TbTeam t SET t.numUser = CASE WHEN COALESCE(t.numUser, 0) > 0 THEN t.numUser - 1 ELSE 0 END WHERE t.teamId = :teamId")
+    void decrementNumUser(@Param("teamId") Integer teamId);
 }
