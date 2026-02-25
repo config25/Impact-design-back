@@ -59,7 +59,7 @@ class AdminControllerTest extends RestDocsTestSupport {
                 .ddYear(2026)
                 .ddTerm(1)
                 .statusCeo(null)
-                .imageUrl("http://localhost:8080/uploads/class/1/image.png")
+                .imageUrl("http://iptdesign.mycafe24.com/uploads/class/1/image.png")
                 .build();
     }
 
@@ -171,7 +171,7 @@ class AdminControllerTest extends RestDocsTestSupport {
                 .ddYear(2025)
                 .ddTerm(2)
                 .statusCeo(null)
-                .imageUrl("http://localhost:8080/uploads/class/3/image.png")
+                .imageUrl("http://iptdesign.mycafe24.com/uploads/class/3/image.png")
                 .build();
 
         TeachListResponse teachList = TeachListResponse.builder()

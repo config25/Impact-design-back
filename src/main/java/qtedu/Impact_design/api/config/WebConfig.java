@@ -46,12 +46,15 @@ public class WebConfig implements WebMvcConfigurer {
         resolvers.add(userArgumentResolver); // ✅ 반드시 빈으로 주입된 resolver 사용
     }
 
+    @Value("${cors.allowed-origins:http://localhost:3000}")
+    private String allowedOrigins;
+
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/api/**")  // API 경로를 대상으로
-                .allowedOrigins("http://localhost:3000")  // 허용할 출처 (프론트엔드 주소) -> 나중에 변동가능
+        registry.addMapping("/api/**")
+                .allowedOrigins(allowedOrigins)
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
-                .allowCredentials(true);  // 쿠키, 인증 헤더 허용 시 필요
+                .allowCredentials(true);
     }
 
 }

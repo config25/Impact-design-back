@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    url: jdbc:mariadb://localhost:3306/impact_design?useUnicode=true&characterEncoding=utf8mb4
+    username: root
+    password: 11111111
+
+file:
+  base-url: http://localhost:8080/uploads
+
+cors:
+  allowed-origins: http://localhost:3000

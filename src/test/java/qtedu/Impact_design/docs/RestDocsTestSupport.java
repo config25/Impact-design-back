@@ -32,6 +32,11 @@ public abstract class RestDocsTestSupport {
     void setUp(WebApplicationContext context, RestDocumentationContextProvider restDocumentation) {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
                 .apply(documentationConfiguration(restDocumentation)
+                        .uris()
+                        .withScheme("http")
+                        .withHost("iptdesign.mycafe24.com")
+                        .withPort(80)
+                        .and()
                         .operationPreprocessors()
                         .withRequestDefaults(prettyPrint())
                         .withResponseDefaults(prettyPrint()))

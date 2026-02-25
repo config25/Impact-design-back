@@ -55,7 +55,7 @@ class ReportControllerTest extends RestDocsTestSupport {
                 .className("임팩트 디자인 수업")
                 .target("대학생")
                 .projectDate("2026-06-30")
-                .imageUrl("http://localhost:8080/uploads/class/1/image.png")
+                .imageUrl("http://iptdesign.mycafe24.com/uploads/class/1/image.png")
                 .impactCheckScores(List.of(
                         ReportResponse.ImpactCheckScoreItem.builder()
                                 .userId(10L)

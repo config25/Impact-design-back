@@ -8,7 +8,6 @@ import qtedu.Impact_design.domain.repository.FLetterOfIntentRepository;
 import qtedu.Impact_design.domain.repository.FLetterOfIntent2Repository;
 import qtedu.Impact_design.domain.service.*;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,9 +35,6 @@ public class ReportDataLoader {
         List<WinCanvasModel> quickCanvases = quickWinCanvasService.getCanvasesByUserIds(userIds);
         List<WinCanvasModel> buildCanvases = buildWinCanvasService.getCanvasesByUserIds(userIds);
 
-        List<Long> quickCanvasIds = quickCanvases.stream().map(WinCanvasModel::getCanvasId).collect(Collectors.toList());
-        List<Long> buildCanvasIds = buildCanvases.stream().map(WinCanvasModel::getCanvasId).collect(Collectors.toList());
-
         return ReportRawData.builder()
                 .impactChecks(impactCheckService.getImpactChecksByUserIds(userIds))
                 .identityCanvases(identityCanvasService.getIdentityCanvasesByUserIds(userIds))
@@ -47,12 +43,8 @@ public class ReportDataLoader {
                 .strategicActivities(flowCanvasService.getStrategicActivitiesByGoalIds(goalIds))
                 .quickCanvases(quickCanvases)
                 .buildCanvases(buildCanvases)
-                // QUICK 캔버스 평가는 f_letter_of_intent2에 저장됨
-                .quickIntents(quickCanvasIds.isEmpty() ? Collections.emptyList()
-                        : fLetterOfIntent2Repository.findByCanvasIdIn(quickCanvasIds))
-                // BUILD 캔버스 평가는 f_letter_of_intent에 저장됨
-                .buildIntents(buildCanvasIds.isEmpty() ? Collections.emptyList()
-                        : fLetterOfIntentRepository.findByCanvasIdIn(buildCanvasIds))
+                .quickIntents(fLetterOfIntent2Repository.findByTargetTeamId(teamId))
+                .buildIntents(fLetterOfIntentRepository.findByTargetTeamId(teamId))
                 .build();
     }
 }

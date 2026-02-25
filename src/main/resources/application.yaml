@@ -1,11 +1,10 @@
 spring:
   application:
     name: Impact_design
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:local}
 
   datasource:
-    url: jdbc:mariadb://localhost:3306/impact_design
-    username: root
-    password: 11111111
     driver-class-name: org.mariadb.jdbc.Driver
 
   jpa:
@@ -17,7 +16,7 @@ spring:
         format_sql: true
 
 jwt:
-  secret: REDACTED_JWT_SECRET
+  secret: ${JWT_SECRET:REDACTED_JWT_SECRET}
   access-expiration: 3600000
   refresh-expiration: 604800000
 
@@ -25,9 +24,7 @@ openai:
   api-key: ${OPENAI_API_KEY:REDACTED_OPENAI_KEY}
   base-url: https://api.openai.com/v1
 
-
 file:
   storage: local
   upload-dir: ./uploads
-  base-url: http://localhost:8080/uploads
 

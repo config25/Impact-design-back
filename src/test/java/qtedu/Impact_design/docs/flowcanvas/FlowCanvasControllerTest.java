@@ -71,7 +71,7 @@ class FlowCanvasControllerTest extends RestDocsTestSupport {
                 .newVision("지속 가능한 미래")
                 .goals(List.of(goal))
                 .submitted(submitted)
-                .imageUrl("http://localhost:8080/uploads/class/1/image.png")
+                .imageUrl("http://iptdesign.mycafe24.com/uploads/class/1/image.png")
                 .build();
     }
 

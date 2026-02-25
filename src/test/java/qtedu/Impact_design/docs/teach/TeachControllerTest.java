@@ -68,7 +68,7 @@ class TeachControllerTest extends RestDocsTestSupport {
                 .ddYear(1)
                 .ddTerm(1)
                 .statusCeo(20)
-                .imageUrl("http://localhost:8080/uploads/class/1/image.png")
+                .imageUrl("http://iptdesign.mycafe24.com/uploads/class/1/image.png")
                 .build();
     }
 
@@ -119,7 +119,7 @@ class TeachControllerTest extends RestDocsTestSupport {
                 .mission(mission)
                 .teams(List.of(team))
                 .gameLogo(gameLogo)
-                .imageUrl("http://localhost:8080/uploads/class/1/image.png")
+                .imageUrl("http://iptdesign.mycafe24.com/uploads/class/1/image.png")
                 .build();
     }
 
@@ -333,7 +333,7 @@ class TeachControllerTest extends RestDocsTestSupport {
                         .submitA("Y").submitB("N").submitC("N").submitD("N").submitE("N").submitF("N")
                         .build()))
                 .gameLogo(null)
-                .imageUrl("http://localhost:8080/uploads/class/1/image.png")
+                .imageUrl("http://iptdesign.mycafe24.com/uploads/class/1/image.png")
                 .classList(List.of(sampleClassInfo()))
                 .build();
 

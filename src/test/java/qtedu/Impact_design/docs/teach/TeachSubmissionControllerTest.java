@@ -147,7 +147,7 @@ class TeachSubmissionControllerTest extends RestDocsTestSupport {
                         .structure("팀 기반").etc("기타 사항")
                         .newMission("새로운 미션").newVision("새로운 비전").newValue("새로운 가치")
                         .userId(10L).submitted(true)
-                        .imageUrl("http://localhost:8080/uploads/class/1/image.png")
+                        .imageUrl("http://iptdesign.mycafe24.com/uploads/class/1/image.png")
                         .build());
 
         mockMvc.perform(get("/api/teach/submission/identity-canvas?teamId={teamId}", "1"))
@@ -196,7 +196,7 @@ class TeachSubmissionControllerTest extends RestDocsTestSupport {
         given(teachSubmissionService.getFlowCanvas(anyInt()))
                 .willReturn(FlowCanvasResponse.builder()
                         .newVision("지속 가능한 미래").goals(List.of(goal)).submitted(true)
-                        .imageUrl("http://localhost:8080/uploads/class/1/image.png").build());
+                        .imageUrl("http://iptdesign.mycafe24.com/uploads/class/1/image.png").build());
 
         mockMvc.perform(get("/api/teach/submission/flow-canvas?teamId={teamId}", "1"))
                 .andExpect(status().isOk())
@@ -238,7 +238,7 @@ class TeachSubmissionControllerTest extends RestDocsTestSupport {
                         .canvasId(1L).strategicGoal("전략 목표").taskName("과제명")
                         .taskDescription("주요 내용").crisisSignal("위기의 신호").painTouchPoint("페인 포인트")
                         .userId(10L).submitted(true)
-                        .imageUrl("http://localhost:8080/uploads/class/1/image.png")
+                        .imageUrl("http://iptdesign.mycafe24.com/uploads/class/1/image.png")
                         .taskInputs(List.of(QuickWinCanvasResponse.TaskInputItem.builder()
                                 .inputId(1L).resourceName("인적 자원").quantity(3).orderNo(1).build()))
                         .taskActivities(List.of(QuickWinCanvasResponse.TaskActivityItem.builder()
@@ -301,7 +301,7 @@ class TeachSubmissionControllerTest extends RestDocsTestSupport {
                         .canvasId(1L).strategicGoal("전략 목표").taskName("과제명")
                         .taskDescription("주요 내용").crisisSignal("변화의 신호").painTouchPoint("페인포인트")
                         .userId(10L).submitted(true)
-                        .imageUrl("http://localhost:8080/uploads/class/1/image.png")
+                        .imageUrl("http://iptdesign.mycafe24.com/uploads/class/1/image.png")
                         .taskInputs(List.of(BuildWinCanvasResponse.TaskInputItem.builder()
                                 .inputId(1L).resourceName("인적 자원").quantity(3).orderNo(1).build()))
                         .taskActivities(List.of(BuildWinCanvasResponse.TaskActivityItem.builder()

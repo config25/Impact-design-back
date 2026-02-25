@@ -63,7 +63,7 @@ class IdentityCanvasControllerTest extends RestDocsTestSupport {
                 .newValue("새로운 가치")
                 .userId(1L)
                 .submitted(submitted)
-                .imageUrl("http://localhost:8080/uploads/class/1/image.png")
+                .imageUrl("http://iptdesign.mycafe24.com/uploads/class/1/image.png")
                 .build();
     }
 

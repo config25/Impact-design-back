@@ -76,4 +76,11 @@ public class ImpactCheckResponse {
                 .gameName(gameName)
                 .build();
     }
+
+    public static ImpactCheckResponse empty(String gameName) {
+        return ImpactCheckResponse.builder()
+                .submitted(false)
+                .gameName(gameName)
+                .build();
+    }
 }

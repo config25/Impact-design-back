@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: jdbc:mariadb://localhost:3306/impact_design?useUnicode=true&characterEncoding=utf8mb4
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:11111111}
+
+  jpa:
+    show-sql: false
+
+file:
+  base-url: http://iptdesign.mycafe24.com/uploads
+
+cors:
+  allowed-origins: http://iptdesign.mycafe24.com

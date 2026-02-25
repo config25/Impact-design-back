@@ -20,7 +20,7 @@ public class ImpactCheckReader {
         String gameName = tbGameRepository.findGameNameByUserId(userId);
         return impactCheckRepository.findByUserId(userId)
                 .map(model -> ImpactCheckResponse.from(model, gameName))
-                .orElse(null);
+                .orElse(ImpactCheckResponse.empty(gameName));
     }
 
     public List<ImpactCheckModel> readByUserIds(List<Long> userIds) {

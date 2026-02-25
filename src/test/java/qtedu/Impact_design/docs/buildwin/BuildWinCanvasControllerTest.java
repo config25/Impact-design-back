@@ -75,7 +75,7 @@ class BuildWinCanvasControllerTest extends RestDocsTestSupport {
                                 .outcomeNo(2L).outcomeType(OutcomeType.QUALITATIVE)
                                 .outcomeContent("사용자 테스트 완료").orderNo(2).build()
                 ))
-                .imageUrl("http://localhost:8080/uploads/class/1/image.png")
+                .imageUrl("http://iptdesign.mycafe24.com/uploads/class/1/image.png")
                 .build();
     }
 

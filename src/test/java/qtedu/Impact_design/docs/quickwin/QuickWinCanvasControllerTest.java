@@ -75,7 +75,7 @@ class QuickWinCanvasControllerTest extends RestDocsTestSupport {
                                 .outcomeNo(2L).outcomeType(OutcomeType.QUALITATIVE)
                                 .outcomeContent("주민 만족도 향상").orderNo(2).build()
                 ))
-                .imageUrl("http://localhost:8080/uploads/class/1/image.png")
+                .imageUrl("http://iptdesign.mycafe24.com/uploads/class/1/image.png")
                 .build();
     }
 

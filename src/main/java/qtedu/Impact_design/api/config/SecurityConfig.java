@@ -54,6 +54,17 @@ public class SecurityConfig {
                                 "/uploads/**",
                                 "/health",
 
+                                // React 정적 파일 및 SPA 라우팅
+                                "/",
+                                "/index.html",
+                                "/static/**",
+                                "/favicon.ico",
+                                "/manifest.json",
+                                "/logo*.png",
+                                "/robots.txt",
+                                "/teacher_login",
+                                "/admin_login",
+
                                 // Swagger / OpenAPI
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
@@ -61,7 +72,8 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",
                                 "/v3/api-docs.yaml"
                         ).permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/api/**").authenticated()
+                        .anyRequest().permitAll()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, BasicAuthenticationFilter.class)
                 .exceptionHandling(exception -> exception
