@@ -114,8 +114,8 @@ class TeachControllerTest extends RestDocsTestSupport {
                 .status(10)
                 .summary("수업 요약")
                 .code("ABC123")
-                .step("IMPACT_CHECK,IDENTITY")
-                .stepArr(List.of("IMPACT_CHECK", "IDENTITY"))
+                .step("A-1,B-1,C-1,E-1")
+                .stepArr(List.of("A-1", "B-1", "C-1", "E-1"))
                 .mission(mission)
                 .teams(List.of(team))
                 .gameLogo(gameLogo)
@@ -132,7 +132,7 @@ class TeachControllerTest extends RestDocsTestSupport {
                 .status(10)
                 .summary("수업 요약")
                 .code("ABC123")
-                .step("IMPACT_CHECK,IDENTITY")
+                .step("A-1,B-1,C-1,D-1,E-1")
                 .build();
 
         StudentListResponse.TeamInfo teamInfo = StudentListResponse.TeamInfo.builder()
@@ -171,18 +171,18 @@ class TeachControllerTest extends RestDocsTestSupport {
                 .andDo(document("teach/index",
                         responseFields(
                                 fieldWithPath("status").description("상태 코드"),
-                                fieldWithPath("data[].gameId").description("게임 ID"),
+                                fieldWithPath("data[].gameId").description("강의실 ID"),
                                 fieldWithPath("data[].name").description("강의실 이름"),
                                 fieldWithPath("data[].numTeam").description("팀 수"),
-                                fieldWithPath("data[].totalDd").description("총 D-day"),
+                                fieldWithPath("data[].totalDd").description("총 의사결정일 수"),
                                 fieldWithPath("data[].missionId").description("미션 ID").optional(),
-                                fieldWithPath("data[].sequence").description("미션 순서").optional(),
-                                fieldWithPath("data[].subject").description("미션 주제").optional(),
-                                fieldWithPath("data[].summary").description("요약").optional(),
-                                fieldWithPath("data[].startdate").description("시작일").optional(),
-                                fieldWithPath("data[].enddate").description("종료일").optional(),
-                                fieldWithPath("data[].ddYear").description("D-day 년도").optional(),
-                                fieldWithPath("data[].ddTerm").description("D-day 분기").optional(),
+                                fieldWithPath("data[].sequence").description("미션 순서 번호").optional(),
+                                fieldWithPath("data[].subject").description("미션 제목").optional(),
+                                fieldWithPath("data[].summary").description("미션 요약 설명").optional(),
+                                fieldWithPath("data[].startdate").description("미션 시작일").optional(),
+                                fieldWithPath("data[].enddate").description("미션 종료일").optional(),
+                                fieldWithPath("data[].ddYear").description("의사결정 연도").optional(),
+                                fieldWithPath("data[].ddTerm").description("의사결정 분기/기간").optional(),
                                 fieldWithPath("data[].statusCeo").description("CEO 상태").optional(),
                                 fieldWithPath("data[].imageUrl").description("이미지 URL").optional()
                         )
@@ -210,18 +210,18 @@ class TeachControllerTest extends RestDocsTestSupport {
                         responseFields(
                                 fieldWithPath("status").description("상태 코드"),
                                 fieldWithPath("data.inProgress[]").description("진행중 강의실 목록"),
-                                fieldWithPath("data.inProgress[].gameId").description("게임 ID"),
+                                fieldWithPath("data.inProgress[].gameId").description("강의실 ID"),
                                 fieldWithPath("data.inProgress[].name").description("강의실 이름"),
                                 fieldWithPath("data.inProgress[].numTeam").description("팀 수"),
-                                fieldWithPath("data.inProgress[].totalDd").description("총 D-day"),
+                                fieldWithPath("data.inProgress[].totalDd").description("총 의사결정일 수"),
                                 fieldWithPath("data.inProgress[].missionId").description("미션 ID").optional(),
-                                fieldWithPath("data.inProgress[].sequence").description("미션 순서").optional(),
-                                fieldWithPath("data.inProgress[].subject").description("미션 주제").optional(),
-                                fieldWithPath("data.inProgress[].summary").description("요약").optional(),
-                                fieldWithPath("data.inProgress[].startdate").description("시작일").optional(),
-                                fieldWithPath("data.inProgress[].enddate").description("종료일").optional(),
-                                fieldWithPath("data.inProgress[].ddYear").description("D-day 년도").optional(),
-                                fieldWithPath("data.inProgress[].ddTerm").description("D-day 분기").optional(),
+                                fieldWithPath("data.inProgress[].sequence").description("미션 순서 번호").optional(),
+                                fieldWithPath("data.inProgress[].subject").description("미션 제목").optional(),
+                                fieldWithPath("data.inProgress[].summary").description("미션 요약 설명").optional(),
+                                fieldWithPath("data.inProgress[].startdate").description("미션 시작일").optional(),
+                                fieldWithPath("data.inProgress[].enddate").description("미션 종료일").optional(),
+                                fieldWithPath("data.inProgress[].ddYear").description("의사결정 연도").optional(),
+                                fieldWithPath("data.inProgress[].ddTerm").description("의사결정 분기/기간").optional(),
                                 fieldWithPath("data.inProgress[].statusCeo").description("CEO 상태").optional(),
                                 fieldWithPath("data.inProgress[].imageUrl").description("이미지 URL").optional(),
                                 fieldWithPath("data.setting[]").description("설정중 강의실 목록"),
@@ -244,33 +244,33 @@ class TeachControllerTest extends RestDocsTestSupport {
                 .andExpect(status().isOk())
                 .andDo(document("teach/detail",
                         queryParameters(
-                                parameterWithName("gameId").description("게임 ID")
+                                parameterWithName("gameId").description("강의실 ID")
                         ),
                         responseFields(
                                 fieldWithPath("status").description("상태 코드"),
-                                fieldWithPath("data.gameId").description("게임 ID"),
+                                fieldWithPath("data.gameId").description("강의실 ID"),
                                 fieldWithPath("data.name").description("강의실 이름"),
                                 fieldWithPath("data.numTeam").description("팀 수"),
-                                fieldWithPath("data.totalDd").description("총 D-day"),
-                                fieldWithPath("data.status").description("게임 상태"),
-                                fieldWithPath("data.summary").description("요약"),
-                                fieldWithPath("data.code").description("참가 코드"),
+                                fieldWithPath("data.totalDd").description("총 의사결정일 수"),
+                                fieldWithPath("data.status").description("강의실 상태(진행중 = 10, 준비중 = 1, 종료된 = 0, 100)"),
+                                fieldWithPath("data.summary").description("강의실 요약(현재는 쓰지않음)"),
+                                fieldWithPath("data.code").description("강의실 코드"),
                                 fieldWithPath("data.step").description("공개 단계"),
                                 fieldWithPath("data.stepArr[]").description("공개 단계 배열"),
                                 fieldWithPath("data.mission").description("최신 미션 정보").optional(),
                                 fieldWithPath("data.mission.missionId").description("미션 ID"),
-                                fieldWithPath("data.mission.sequence").description("미션 순서"),
-                                fieldWithPath("data.mission.subject").description("미션 주제").optional(),
-                                fieldWithPath("data.mission.summary").description("미션 요약").optional(),
-                                fieldWithPath("data.mission.startdate").description("시작일"),
-                                fieldWithPath("data.mission.enddate").description("종료일"),
-                                fieldWithPath("data.mission.ddYear").description("D-day 년도"),
-                                fieldWithPath("data.mission.ddTerm").description("D-day 분기"),
+                                fieldWithPath("data.mission.sequence").description("미션 순서 번호"),
+                                fieldWithPath("data.mission.subject").description("미션 제목").optional(),
+                                fieldWithPath("data.mission.summary").description("미션 요약 설명").optional(),
+                                fieldWithPath("data.mission.startdate").description("미션 시작일"),
+                                fieldWithPath("data.mission.enddate").description("미션 종료일"),
+                                fieldWithPath("data.mission.ddYear").description("의사결정 연도"),
+                                fieldWithPath("data.mission.ddTerm").description("의사결정 분기/기간"),
                                 fieldWithPath("data.teams[]").description("팀 목록"),
                                 fieldWithPath("data.teams[].teamId").description("팀 ID"),
                                 fieldWithPath("data.teams[].teamName").description("팀 이름"),
-                                fieldWithPath("data.teams[].sequence").description("팀 순서"),
-                                fieldWithPath("data.teams[].status").description("팀 상태"),
+                                fieldWithPath("data.teams[].sequence").description("팀 순서 번호"),
+                                fieldWithPath("data.teams[].status").description("팀 삭제 여부(0: 일반팀, 1: 평가팀, -1: 삭제된 팀, null: 미설정)"),
                                 fieldWithPath("data.teams[].numUser").description("팀원 수"),
                                 fieldWithPath("data.teams[].submitA").description("성과관리 현황진단 제출 여부"),
                                 fieldWithPath("data.teams[].submitB").description("정체성 설계 제출 여부"),
@@ -319,10 +319,10 @@ class TeachControllerTest extends RestDocsTestSupport {
                 .numTeam(4)
                 .totalDd(16)
                 .status(10)
-                .summary("수업 요약")
+                .summary("강의 요약")
                 .code("ABC123")
-                .step("IMPACT_CHECK,IDENTITY")
-                .stepArr(List.of("IMPACT_CHECK", "IDENTITY"))
+                .step("A-1,B-1,C-1")
+                .stepArr(List.of("A-1", "B-1", "C-1"))
                 .mission(TeachDetailResponse.MissionInfo.builder()
                         .missionId(1).sequence(1).subject("미션 1").summary("미션 요약")
                         .startdate(LocalDateTime.of(2026, 2, 1, 9, 0))
@@ -345,33 +345,33 @@ class TeachControllerTest extends RestDocsTestSupport {
                 .andExpect(status().isOk())
                 .andDo(document("teach/detail2",
                         queryParameters(
-                                parameterWithName("gameId").description("게임 ID (없으면 첫 번째 진행중 클래스)").optional()
+                                parameterWithName("gameId").description("강의실 ID (없으면 첫 번째 진행중 클래스)").optional()
                         ),
                         responseFields(
                                 fieldWithPath("status").description("상태 코드"),
-                                fieldWithPath("data.gameId").description("게임 ID"),
+                                fieldWithPath("data.gameId").description("강의실 ID"),
                                 fieldWithPath("data.name").description("강의실 이름"),
                                 fieldWithPath("data.numTeam").description("팀 수"),
-                                fieldWithPath("data.totalDd").description("총 D-day"),
-                                fieldWithPath("data.status").description("게임 상태"),
-                                fieldWithPath("data.summary").description("요약"),
-                                fieldWithPath("data.code").description("참가 코드"),
+                                fieldWithPath("data.totalDd").description("총 의사결정일 수"),
+                                fieldWithPath("data.status").description("강의실 상태(진행중 = 10, 준비중 = 1, 종료된 = 0, 100)"),
+                                fieldWithPath("data.summary").description("강의실 요약(현재는 미사용)"),
+                                fieldWithPath("data.code").description("강의실 코드"),
                                 fieldWithPath("data.step").description("공개 단계"),
                                 fieldWithPath("data.stepArr[]").description("공개 단계 배열"),
                                 fieldWithPath("data.mission").description("최신 미션 정보").optional(),
                                 fieldWithPath("data.mission.missionId").description("미션 ID"),
-                                fieldWithPath("data.mission.sequence").description("미션 순서"),
-                                fieldWithPath("data.mission.subject").description("미션 주제").optional(),
-                                fieldWithPath("data.mission.summary").description("미션 요약").optional(),
-                                fieldWithPath("data.mission.startdate").description("시작일"),
-                                fieldWithPath("data.mission.enddate").description("종료일"),
-                                fieldWithPath("data.mission.ddYear").description("D-day 년도"),
-                                fieldWithPath("data.mission.ddTerm").description("D-day 분기"),
+                                fieldWithPath("data.mission.sequence").description("미션 순서 번호"),
+                                fieldWithPath("data.mission.subject").description("미션 제목").optional(),
+                                fieldWithPath("data.mission.summary").description("미션 요약 설명").optional(),
+                                fieldWithPath("data.mission.startdate").description("미션 시작일"),
+                                fieldWithPath("data.mission.enddate").description("미션 종료일"),
+                                fieldWithPath("data.mission.ddYear").description("의사결정 연도"),
+                                fieldWithPath("data.mission.ddTerm").description("의사결정 분기/기간"),
                                 fieldWithPath("data.teams[]").description("팀 목록"),
                                 fieldWithPath("data.teams[].teamId").description("팀 ID"),
                                 fieldWithPath("data.teams[].teamName").description("팀 이름"),
-                                fieldWithPath("data.teams[].sequence").description("팀 순서"),
-                                fieldWithPath("data.teams[].status").description("팀 상태"),
+                                fieldWithPath("data.teams[].sequence").description("팀 순서 번호"),
+                                fieldWithPath("data.teams[].status").description("팀 삭제 여부(0: 일반팀, 1: 평가팀, -1: 삭제된 팀, null: 미설정)"),
                                 fieldWithPath("data.teams[].numUser").description("팀원 수"),
                                 fieldWithPath("data.teams[].submitA").description("성과관리 현황진단 제출 여부"),
                                 fieldWithPath("data.teams[].submitB").description("정체성 설계 제출 여부"),
@@ -379,21 +379,21 @@ class TeachControllerTest extends RestDocsTestSupport {
                                 fieldWithPath("data.teams[].submitD").description("전술적 실행과제 제출 여부"),
                                 fieldWithPath("data.teams[].submitE").description("전략적 실행과제 제출 여부"),
                                 fieldWithPath("data.teams[].submitF").description("실행과제 검증 제출 여부"),
-                                fieldWithPath("data.gameLogo").description("게임 로고 정보").optional(),
+                                fieldWithPath("data.gameLogo").description("강의실 로고 정보").optional(),
                                 fieldWithPath("data.imageUrl").description("이미지 URL").optional(),
                                 fieldWithPath("data.classList[]").description("교사의 진행중 클래스 목록"),
-                                fieldWithPath("data.classList[].gameId").description("게임 ID"),
+                                fieldWithPath("data.classList[].gameId").description("강의실 ID"),
                                 fieldWithPath("data.classList[].name").description("강의실 이름"),
                                 fieldWithPath("data.classList[].numTeam").description("팀 수"),
-                                fieldWithPath("data.classList[].totalDd").description("총 D-day"),
+                                fieldWithPath("data.classList[].totalDd").description("총 의사결정일 수"),
                                 fieldWithPath("data.classList[].missionId").description("미션 ID").optional(),
-                                fieldWithPath("data.classList[].sequence").description("미션 순서").optional(),
-                                fieldWithPath("data.classList[].subject").description("미션 주제").optional(),
-                                fieldWithPath("data.classList[].summary").description("요약").optional(),
-                                fieldWithPath("data.classList[].startdate").description("시작일").optional(),
-                                fieldWithPath("data.classList[].enddate").description("종료일").optional(),
-                                fieldWithPath("data.classList[].ddYear").description("D-day 년도").optional(),
-                                fieldWithPath("data.classList[].ddTerm").description("D-day 분기").optional(),
+                                fieldWithPath("data.classList[].sequence").description("미션 순서 번호").optional(),
+                                fieldWithPath("data.classList[].subject").description("미션 제목").optional(),
+                                fieldWithPath("data.classList[].summary").description("미션 요약 설명").optional(),
+                                fieldWithPath("data.classList[].startdate").description("미션 시작일").optional(),
+                                fieldWithPath("data.classList[].enddate").description("미션 종료일").optional(),
+                                fieldWithPath("data.classList[].ddYear").description("의사결정 연도").optional(),
+                                fieldWithPath("data.classList[].ddTerm").description("의사결정 분기/기간").optional(),
                                 fieldWithPath("data.classList[].statusCeo").description("CEO 상태").optional(),
                                 fieldWithPath("data.classList[].imageUrl").description("이미지 URL").optional()
                         )
@@ -435,18 +435,18 @@ class TeachControllerTest extends RestDocsTestSupport {
                         ),
                         responseFields(
                                 fieldWithPath("status").description("상태 코드"),
-                                fieldWithPath("data.game.gameId").description("게임 ID"),
+                                fieldWithPath("data.game.gameId").description("강의실 ID"),
                                 fieldWithPath("data.game.name").description("강의실 이름"),
                                 fieldWithPath("data.game.numTeam").description("팀 수"),
-                                fieldWithPath("data.game.totalDd").description("총 D-day"),
-                                fieldWithPath("data.game.status").description("게임 상태"),
-                                fieldWithPath("data.game.summary").description("요약"),
-                                fieldWithPath("data.game.code").description("참가 코드"),
+                                fieldWithPath("data.game.totalDd").description("총 의사결정일 수"),
+                                fieldWithPath("data.game.status").description("강의실 상태(진행중 = 10, 준비중 = 1, 종료된 = 0, 100)"),
+                                fieldWithPath("data.game.summary").description("강의실 요약"),
+                                fieldWithPath("data.game.code").description("강의실 코드"),
                                 fieldWithPath("data.game.step").description("공개 단계"),
                                 fieldWithPath("data.teamList[]").description("팀 목록"),
                                 fieldWithPath("data.teamList[].teamId").description("팀 ID"),
                                 fieldWithPath("data.teamList[].name").description("팀 이름"),
-                                fieldWithPath("data.teamList[].sequence").description("팀 순서"),
+                                fieldWithPath("data.teamList[].sequence").description("팀 순서 번호"),
                                 fieldWithPath("data.teamList[].numUser").description("팀원 수"),
                                 fieldWithPath("data.studentList[]").description("학생 목록"),
                                 fieldWithPath("data.studentList[].userId").description("사용자 ID"),
@@ -486,7 +486,7 @@ class TeachControllerTest extends RestDocsTestSupport {
         given(teachService.createClass(anyLong(), any(), any()))
                 .willReturn(1);
 
-        String requestJson = objectMapper.writeValueAsString(java.util.Map.of(
+        String requestJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(java.util.Map.of(
                 "name", "새 강의실",
                 "numTeam", 4,
                 "numMember", 10,
@@ -522,7 +522,7 @@ class TeachControllerTest extends RestDocsTestSupport {
         given(teachService.createClass(anyLong(), any(), any()))
                 .willThrow(new InvalidDateException(ErrorCode.INVALID_DATE));
 
-        String requestJson = objectMapper.writeValueAsString(java.util.Map.of(
+        String requestJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(java.util.Map.of(
                 "name", "새 강의실",
                 "numTeam", 4,
                 "projectDate", "invalid-date"
@@ -551,7 +551,7 @@ class TeachControllerTest extends RestDocsTestSupport {
         given(teachService.updateClass(anyInt(), any(), any()))
                 .willReturn(1);
 
-        String requestJson = objectMapper.writeValueAsString(java.util.Map.of(
+        String requestJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(java.util.Map.of(
                 "name", "수정된 강의실",
                 "numTeam", 6,
                 "summary", "수정된 설명"
@@ -578,7 +578,7 @@ class TeachControllerTest extends RestDocsTestSupport {
         given(teachService.updateClass(anyInt(), any(), any()))
                 .willThrow(new NotFoundException(ErrorCode.GAME_NOT_FOUND));
 
-        String requestJson = objectMapper.writeValueAsString(java.util.Map.of(
+        String requestJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(java.util.Map.of(
                 "name", "수정된 강의실"
         ));
 
@@ -603,7 +603,7 @@ class TeachControllerTest extends RestDocsTestSupport {
     @Test
     @DisplayName("강의실 시작")
     void startClass() throws Exception {
-        String requestJson = objectMapper.writeValueAsString(java.util.Map.of(
+        String requestJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(java.util.Map.of(
                 "enddate", "2026-03-01 18:00"
         ));
 
@@ -631,7 +631,7 @@ class TeachControllerTest extends RestDocsTestSupport {
         willThrow(new NotFoundException(ErrorCode.GAME_NOT_FOUND))
                 .given(teachService).startClass(anyInt(), any());
 
-        String requestJson = objectMapper.writeValueAsString(java.util.Map.of(
+        String requestJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(java.util.Map.of(
                 "enddate", "2026-03-01 18:00"
         ));
 
@@ -654,7 +654,7 @@ class TeachControllerTest extends RestDocsTestSupport {
         willThrow(new InvalidDateException(ErrorCode.INVALID_DATE))
                 .given(teachService).startClass(anyInt(), any());
 
-        String requestJson = objectMapper.writeValueAsString(java.util.Map.of(
+        String requestJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(java.util.Map.of(
                 "enddate", "invalid"
         ));
 
@@ -711,7 +711,7 @@ class TeachControllerTest extends RestDocsTestSupport {
     @Test
     @DisplayName("강의실 복원")
     void restoreClass() throws Exception {
-        String requestJson = objectMapper.writeValueAsString(java.util.Map.of(
+        String requestJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(java.util.Map.of(
                 "enddate", "2026-03-01 18:00"
         ));
 
@@ -739,7 +739,7 @@ class TeachControllerTest extends RestDocsTestSupport {
         willThrow(new NotFoundException(ErrorCode.GAME_NOT_FOUND))
                 .given(teachService).restoreClass(anyInt(), any());
 
-        String requestJson = objectMapper.writeValueAsString(java.util.Map.of(
+        String requestJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(java.util.Map.of(
                 "enddate", "2026-03-01 18:00"
         ));
 
@@ -761,7 +761,7 @@ class TeachControllerTest extends RestDocsTestSupport {
     @Test
     @DisplayName("다음 단계 시작")
     void startNextStage() throws Exception {
-        String requestJson = objectMapper.writeValueAsString(java.util.Map.of(
+        String requestJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(java.util.Map.of(
                 "enddate", "2026-04-01 18:00"
         ));
 
@@ -789,7 +789,7 @@ class TeachControllerTest extends RestDocsTestSupport {
         willThrow(new NotFoundException(ErrorCode.GAME_NOT_FOUND))
                 .given(teachService).startNextStage(anyInt(), any());
 
-        String requestJson = objectMapper.writeValueAsString(java.util.Map.of(
+        String requestJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(java.util.Map.of(
                 "enddate", "2026-04-01 18:00"
         ));
 

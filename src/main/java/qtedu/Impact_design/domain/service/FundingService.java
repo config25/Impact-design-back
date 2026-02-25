@@ -37,12 +37,8 @@ public class FundingService {
         return fundingReader.getScores(canvasType, userId);
     }
 
-    public void submit(String canvasType, Long userId) {
-        fundingUpdater.submit(canvasType, userId);
-    }
-
-    public boolean isSubmitted(String canvasType, Long userId) {
-        return fundingReader.isSubmitted(canvasType, userId);
+    public FundingSubmitResponse submit(String canvasType, Long userId, FundingInvestmentRequest request) {
+        return fundingUpdater.submit(canvasType, userId, request);
     }
 
     public FundingMyResultResponse getMyResult(Long userId) {

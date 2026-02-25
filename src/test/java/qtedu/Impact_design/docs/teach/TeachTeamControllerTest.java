@@ -53,7 +53,7 @@ class TeachTeamControllerTest extends RestDocsTestSupport {
     void saveStep() throws Exception {
         String requestJson = objectMapper.writeValueAsString(java.util.Map.of(
                 "gameId", 1,
-                "step", "IMPACT_CHECK,IDENTITY,FLOW"
+                "step", "A-1,B-1,C-1,D-1,E-1"
         ));
 
         mockMvc.perform(post("/api/teach/step")
@@ -62,7 +62,7 @@ class TeachTeamControllerTest extends RestDocsTestSupport {
                 .andExpect(status().isOk())
                 .andDo(document("teach-team/save-step",
                         requestFields(
-                                fieldWithPath("gameId").description("게임 ID"),
+                                fieldWithPath("gameId").description("강의실 ID"),
                                 fieldWithPath("step").description("공개 단계 (쉼표 구분)")
                         ),
                         responseFields(
@@ -80,7 +80,7 @@ class TeachTeamControllerTest extends RestDocsTestSupport {
 
         String requestJson = objectMapper.writeValueAsString(java.util.Map.of(
                 "gameId", 999,
-                "step", "IMPACT_CHECK"
+                "step", "A-1,B-1"
         ));
 
         mockMvc.perform(post("/api/teach/step")
@@ -108,7 +108,7 @@ class TeachTeamControllerTest extends RestDocsTestSupport {
                 .andExpect(status().isOk())
                 .andDo(document("teach-team/add-team",
                         queryParameters(
-                                parameterWithName("gameId").description("게임 ID")
+                                parameterWithName("gameId").description("강의실 ID")
                         ),
                         responseFields(
                                 fieldWithPath("status").description("상태 코드"),
@@ -163,7 +163,7 @@ class TeachTeamControllerTest extends RestDocsTestSupport {
                 .andExpect(status().isOk())
                 .andDo(document("teach-team/add-evaluation-team",
                         queryParameters(
-                                parameterWithName("gameId").description("게임 ID")
+                                parameterWithName("gameId").description("강의실 ID")
                         ),
                         responseFields(
                                 fieldWithPath("status").description("상태 코드"),
@@ -204,7 +204,7 @@ class TeachTeamControllerTest extends RestDocsTestSupport {
                                 parameterWithName("teamId").description("팀 ID")
                         ),
                         queryParameters(
-                                parameterWithName("gameId").description("게임 ID")
+                                parameterWithName("gameId").description("강의실 ID")
                         ),
                         responseFields(
                                 fieldWithPath("status").description("상태 코드"),
@@ -259,7 +259,7 @@ class TeachTeamControllerTest extends RestDocsTestSupport {
                                 parameterWithName("teamId").description("팀 ID")
                         ),
                         queryParameters(
-                                parameterWithName("gameId").description("게임 ID")
+                                parameterWithName("gameId").description("강의실 ID")
                         ),
                         responseFields(
                                 fieldWithPath("status").description("상태 코드"),
@@ -297,7 +297,7 @@ class TeachTeamControllerTest extends RestDocsTestSupport {
                                 parameterWithName("teamId").description("팀 ID")
                         ),
                         queryParameters(
-                                parameterWithName("gameId").description("게임 ID")
+                                parameterWithName("gameId").description("강의실 ID")
                         ),
                         responseFields(
                                 fieldWithPath("status").description("상태 코드"),
@@ -341,7 +341,7 @@ class TeachTeamControllerTest extends RestDocsTestSupport {
                 .andExpect(status().isOk())
                 .andDo(document("teach-team/deleted-teams",
                         queryParameters(
-                                parameterWithName("gameId").description("게임 ID")
+                                parameterWithName("gameId").description("강의실 ID")
                         ),
                         responseFields(
                                 fieldWithPath("status").description("상태 코드"),
@@ -445,7 +445,7 @@ class TeachTeamControllerTest extends RestDocsTestSupport {
                                 fieldWithPath("data.teamName").description("팀 이름"),
                                 fieldWithPath("data.sequence").description("팀 순서"),
                                 fieldWithPath("data.isDoing").description("활성 여부"),
-                                fieldWithPath("data.teamCategory").description("팀 카테고리 (0: 일반, 1: 평가팀)"),
+                                fieldWithPath("data.teamCategory").description("팀 카테고리 (0: 일반, 1: 평가팀) (DB는 팀 구분 컬럼)"),
                                 fieldWithPath("data.numUser").description("팀원 수"),
                                 fieldWithPath("data.members[]").description("팀원 목록"),
                                 fieldWithPath("data.members[].userId").description("사용자 ID"),

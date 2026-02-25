@@ -41,14 +41,14 @@ class GameControllerTest extends RestDocsTestSupport {
     void getUserStep() throws Exception {
         authenticateAs(1L);
         given(gameService.getUserStep(anyLong()))
-                .willReturn("FLOW");
+                .willReturn("A-1,B-1,C-1,D-1,E-1,F-1,F-2,F-3");
 
         mockMvc.perform(get("/api/game/step"))
                 .andExpect(status().isOk())
                 .andDo(document("game/step",
                         responseFields(
                                 fieldWithPath("status").description("상태 코드"),
-                                fieldWithPath("data.step").description("현재 공개된 단계 (예: IMPACT_CHECK, IDENTITY, FLOW, QUICK_WIN, BUILD_WIN, FUNDING)")
+                                fieldWithPath("data.step").description("현재 공개된 단계 (A-1,B-1,C-1,D-1,E-1,F-1,F-2,F-3) -> (예: IMPACT_CHECK, IDENTITY, FLOW, QUICK_WIN, BUILD_WIN, FUNDING)")
                         )
                 ));
     }

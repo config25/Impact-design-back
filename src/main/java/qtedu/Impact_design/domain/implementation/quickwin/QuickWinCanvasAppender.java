@@ -166,10 +166,12 @@ public class QuickWinCanvasAppender {
     }
 
     @Transactional
-    public void submit(Long userId) {
+    public QuickWinCanvasResponse submit(Long userId, QuickWinCanvasSaveRequest request) {
         if (winCanvasRepository.existsSubmittedByUserIdAndCanvasType(userId, CanvasType.QUICK)) {
             throw new ConflictException(ErrorCode.ALREADY_SUBMITTED);
         }
+        append(userId, request);
         winCanvasRepository.submitByUserIdAndCanvasType(userId, CanvasType.QUICK);
+        return quickWinCanvasReader.read(userId);
     }
 }

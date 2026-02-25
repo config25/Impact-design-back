@@ -34,8 +34,7 @@ public class QuickWinCanvasService {
         return quickWinCanvasReader.readEvaluationsByCanvasIds(canvasIds);
     }
 
-    public QuickWinCanvasResponse submitQuickWinCanvas(Long userId) {
-        quickWinCanvasAppender.submit(userId);
-        return quickWinCanvasReader.read(userId);
+    public QuickWinCanvasResponse submitQuickWinCanvas(Long userId, QuickWinCanvasSaveRequest request) {
+        return quickWinCanvasAppender.submit(userId, request);
     }
 }

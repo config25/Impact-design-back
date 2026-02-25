@@ -165,10 +165,12 @@ public class BuildWinCanvasAppender {
     }
 
     @Transactional
-    public void submit(Long userId) {
+    public BuildWinCanvasResponse submit(Long userId, BuildWinCanvasSaveRequest request) {
         if (winCanvasRepository.existsSubmittedByUserIdAndCanvasType(userId, CanvasType.BUILD)) {
             throw new ConflictException(ErrorCode.ALREADY_SUBMITTED);
         }
+        append(userId, request);
         winCanvasRepository.submitByUserIdAndCanvasType(userId, CanvasType.BUILD);
+        return buildWinCanvasReader.read(userId);
     }
 }

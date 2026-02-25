@@ -37,9 +37,10 @@ public class QuickWinCanvasController {
 
     @PatchMapping("/submit")
     public ResponseEntity<HttpResponse<QuickWinCanvasResponse>> submitQuickWinCanvas(
-            @CurrentUser UserId userId
+            @CurrentUser UserId userId,
+            @RequestBody QuickWinCanvasSaveRequest request
     ) {
-        QuickWinCanvasResponse response = quickWinCanvasService.submitQuickWinCanvas(userId.getId());
+        QuickWinCanvasResponse response = quickWinCanvasService.submitQuickWinCanvas(userId.getId(), request);
         return ResponseHelper.success(response);
     }
 }

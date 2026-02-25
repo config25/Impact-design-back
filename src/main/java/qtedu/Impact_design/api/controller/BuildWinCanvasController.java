@@ -37,9 +37,10 @@ public class BuildWinCanvasController {
 
     @PatchMapping("/submit")
     public ResponseEntity<HttpResponse<BuildWinCanvasResponse>> submitBuildWinCanvas(
-            @CurrentUser UserId userId
+            @CurrentUser UserId userId,
+            @RequestBody BuildWinCanvasSaveRequest request
     ) {
-        BuildWinCanvasResponse response = buildWinCanvasService.submitBuildWinCanvas(userId.getId());
+        BuildWinCanvasResponse response = buildWinCanvasService.submitBuildWinCanvas(userId.getId(), request);
         return ResponseHelper.success(response);
     }
 }

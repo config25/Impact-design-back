@@ -87,27 +87,10 @@ public class FundingController {
     @PatchMapping("/{canvasType}/submit")
     public ResponseEntity<HttpResponse<FundingSubmitResponse>> submit(
             @PathVariable String canvasType,
-            @CurrentUser UserId userId
+            @CurrentUser UserId userId,
+            @RequestBody FundingInvestmentRequest request
     ) {
-        fundingService.submit(canvasType, userId.getId());
-        FundingSubmitResponse response = FundingSubmitResponse.builder()
-                .submitted(true)
-                .build();
-        return ResponseHelper.success(response);
-    }
-
-    /**
-     * 제출 상태 확인
-     */
-    @GetMapping("/{canvasType}/status")
-    public ResponseEntity<HttpResponse<FundingSubmitResponse>> getStatus(
-            @PathVariable String canvasType,
-            @CurrentUser UserId userId
-    ) {
-        boolean submitted = fundingService.isSubmitted(canvasType, userId.getId());
-        FundingSubmitResponse response = FundingSubmitResponse.builder()
-                .submitted(submitted)
-                .build();
+        FundingSubmitResponse response = fundingService.submit(canvasType, userId.getId(), request);
         return ResponseHelper.success(response);
     }
 

@@ -34,8 +34,7 @@ public class BuildWinCanvasService {
         return buildWinCanvasReader.readEvaluationsByCanvasIds(canvasIds);
     }
 
-    public BuildWinCanvasResponse submitBuildWinCanvas(Long userId) {
-        buildWinCanvasAppender.submit(userId);
-        return buildWinCanvasReader.read(userId);
+    public BuildWinCanvasResponse submitBuildWinCanvas(Long userId, BuildWinCanvasSaveRequest request) {
+        return buildWinCanvasAppender.submit(userId, request);
     }
 }

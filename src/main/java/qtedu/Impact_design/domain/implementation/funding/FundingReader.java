@@ -103,14 +103,6 @@ public class FundingReader {
         return FundingScoresResponse.from(scoreItems);
     }
 
-    public boolean isSubmitted(String canvasType, Long userId) {
-        if (isBuildType(canvasType)) {
-            return fLetterOfIntentRepository.existsSubmittedByUserId(userId);
-        } else {
-            return fLetterOfIntent2Repository.existsSubmittedByUserId(userId);
-        }
-    }
-
     /**
      * 내 팀의 결과 조회 (F3 - BUILD/QUICK 모두)
      */

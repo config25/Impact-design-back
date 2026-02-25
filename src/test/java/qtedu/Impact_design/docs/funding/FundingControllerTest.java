@@ -94,7 +94,7 @@ class FundingControllerTest extends RestDocsTestSupport {
                                 fieldWithPath("data.teams[]").description("투자 대상 팀 목록"),
                                 fieldWithPath("data.teams[].teamId").description("팀 ID"),
                                 fieldWithPath("data.teams[].teamName").description("팀 이름"),
-                                fieldWithPath("data.teams[].businessName").description("사업명"),
+                                fieldWithPath("data.teams[].businessName").description("실행 과제명"),
                                 fieldWithPath("data.myTeamId").description("내 팀 ID")
                         )
                 ));
@@ -135,17 +135,17 @@ class FundingControllerTest extends RestDocsTestSupport {
                                 fieldWithPath("data.intentIndex").description("투자 의향서 인덱스").optional(),
                                 fieldWithPath("data.investmentTarget").description("투자 대상 팀 ID"),
                                 fieldWithPath("data.teamName").description("팀 이름"),
-                                fieldWithPath("data.businessName").description("사업명"),
+                                fieldWithPath("data.businessName").description("실행 과제명"),
                                 fieldWithPath("data.investmentPrice").description("투자 금액"),
-                                fieldWithPath("data.score1").description("문제인식 A1 점수"),
-                                fieldWithPath("data.score2").description("문제인식 A2 점수"),
+                                fieldWithPath("data.score1").description("문제정의 A1 점수"),
+                                fieldWithPath("data.score2").description("문제정의 A2 점수"),
                                 fieldWithPath("data.score3").description("솔루션 B1 점수"),
                                 fieldWithPath("data.score4").description("솔루션 B2 점수"),
                                 fieldWithPath("data.score5").description("솔루션 B3 점수"),
-                                fieldWithPath("data.score6").description("스케일업 C1 점수"),
-                                fieldWithPath("data.score7").description("스케일업 C2 점수"),
-                                fieldWithPath("data.score8").description("효과 D1 점수"),
-                                fieldWithPath("data.score9").description("효과 D2 점수"),
+                                fieldWithPath("data.score6").description("실행력 C1 점수"),
+                                fieldWithPath("data.score7").description("실행력 C2 점수"),
+                                fieldWithPath("data.score8").description("파급효과 D1 점수"),
+                                fieldWithPath("data.score9").description("파급효과 D2 점수"),
                                 fieldWithPath("data.opinion").description("종합 의견"),
                                 fieldWithPath("data.submitted").description("제출 여부")
                         )
@@ -183,15 +183,15 @@ class FundingControllerTest extends RestDocsTestSupport {
                         requestFields(
                                 fieldWithPath("investmentTarget").description("투자 대상 팀 ID"),
                                 fieldWithPath("investmentPrice").description("투자 금액"),
-                                fieldWithPath("score1").description("문제인식 A1 점수"),
-                                fieldWithPath("score2").description("문제인식 A2 점수"),
+                                fieldWithPath("score1").description("문제정의 A1 점수"),
+                                fieldWithPath("score2").description("문제정의 A2 점수"),
                                 fieldWithPath("score3").description("솔루션 B1 점수"),
                                 fieldWithPath("score4").description("솔루션 B2 점수"),
                                 fieldWithPath("score5").description("솔루션 B3 점수"),
-                                fieldWithPath("score6").description("스케일업 C1 점수"),
-                                fieldWithPath("score7").description("스케일업 C2 점수"),
-                                fieldWithPath("score8").description("효과 D1 점수"),
-                                fieldWithPath("score9").description("효과 D2 점수"),
+                                fieldWithPath("score6").description("실행력 C1 점수"),
+                                fieldWithPath("score7").description("실행력 C2 점수"),
+                                fieldWithPath("score8").description("파급효과 D1 점수"),
+                                fieldWithPath("score9").description("파급효과 D2 점수"),
                                 fieldWithPath("opinion").description("종합 의견"),
                                 fieldWithPath("submit").description("제출 여부 (true: 제출, false: 임시저장)")
                         ),
@@ -200,17 +200,17 @@ class FundingControllerTest extends RestDocsTestSupport {
                                 fieldWithPath("data.intentIndex").description("투자 의향서 인덱스").optional(),
                                 fieldWithPath("data.investmentTarget").description("투자 대상 팀 ID"),
                                 fieldWithPath("data.teamName").description("팀 이름"),
-                                fieldWithPath("data.businessName").description("사업명"),
+                                fieldWithPath("data.businessName").description("실행 과제명"),
                                 fieldWithPath("data.investmentPrice").description("투자 금액"),
-                                fieldWithPath("data.score1").description("문제인식 A1 점수"),
-                                fieldWithPath("data.score2").description("문제인식 A2 점수"),
+                                fieldWithPath("data.score1").description("문제정의 A1 점수"),
+                                fieldWithPath("data.score2").description("문제정의 A2 점수"),
                                 fieldWithPath("data.score3").description("솔루션 B1 점수"),
                                 fieldWithPath("data.score4").description("솔루션 B2 점수"),
                                 fieldWithPath("data.score5").description("솔루션 B3 점수"),
-                                fieldWithPath("data.score6").description("스케일업 C1 점수"),
-                                fieldWithPath("data.score7").description("스케일업 C2 점수"),
-                                fieldWithPath("data.score8").description("효과 D1 점수"),
-                                fieldWithPath("data.score9").description("효과 D2 점수"),
+                                fieldWithPath("data.score6").description("실행력 C1 점수"),
+                                fieldWithPath("data.score7").description("실행력 C2 점수"),
+                                fieldWithPath("data.score8").description("파급효과 D1 점수"),
+                                fieldWithPath("data.score9").description("파급효과 D2 점수"),
                                 fieldWithPath("data.opinion").description("종합 의견"),
                                 fieldWithPath("data.submitted").description("제출 여부")
                         )
@@ -328,10 +328,10 @@ class FundingControllerTest extends RestDocsTestSupport {
                                 fieldWithPath("data.teamScores[]").description("팀별 점수 목록"),
                                 fieldWithPath("data.teamScores[].teamId").description("팀 ID"),
                                 fieldWithPath("data.teamScores[].teamName").description("팀 이름"),
-                                fieldWithPath("data.teamScores[].problemScore").description("문제인식 점수 (A1+A2)"),
+                                fieldWithPath("data.teamScores[].problemScore").description("문제정의 점수 (A1+A2)"),
                                 fieldWithPath("data.teamScores[].solutionScore").description("솔루션 점수 (B1+B2+B3)"),
-                                fieldWithPath("data.teamScores[].scaleUpScore").description("스케일업 점수 (C1+C2)"),
-                                fieldWithPath("data.teamScores[].effectScore").description("효과 점수 (D1+D2)"),
+                                fieldWithPath("data.teamScores[].scaleUpScore").description("실행력 점수 (C1+C2)"),
+                                fieldWithPath("data.teamScores[].effectScore").description("파급효과 점수 (D1+D2)"),
                                 fieldWithPath("data.teamScores[].totalScore").description("총점")
                         )
                 ));
@@ -343,12 +343,31 @@ class FundingControllerTest extends RestDocsTestSupport {
     @DisplayName("제출 완료")
     void submit() throws Exception {
         authenticateAs(1L);
+        FundingSubmitResponse submitResponse = FundingSubmitResponse.builder().submitted(true).build();
+        given(fundingService.submit(anyString(), anyLong(), any())).willReturn(submitResponse);
 
-        mockMvc.perform(patch("/api/funding/{canvasType}/submit", "build"))
+        mockMvc.perform(patch("/api/funding/{canvasType}/submit", "build")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(sampleInvestmentRequestJson()))
                 .andExpect(status().isOk())
                 .andDo(document("funding/submit",
                         pathParameters(
                                 parameterWithName("canvasType").description("캔버스 타입 (build 또는 quick)")
+                        ),
+                        requestFields(
+                                fieldWithPath("investmentTarget").description("투자 대상 팀 ID"),
+                                fieldWithPath("investmentPrice").description("투자 금액"),
+                                fieldWithPath("score1").description("문제정의 A1 점수"),
+                                fieldWithPath("score2").description("문제정의 A2 점수"),
+                                fieldWithPath("score3").description("솔루션 B1 점수"),
+                                fieldWithPath("score4").description("솔루션 B2 점수"),
+                                fieldWithPath("score5").description("솔루션 B3 점수"),
+                                fieldWithPath("score6").description("실행력 C1 점수"),
+                                fieldWithPath("score7").description("실행력 C2 점수"),
+                                fieldWithPath("score8").description("파급효과 D1 점수"),
+                                fieldWithPath("score9").description("파급효과 D2 점수"),
+                                fieldWithPath("opinion").description("종합 의견"),
+                                fieldWithPath("submit").description("제출 여부 (true: 제출, false: 임시저장)")
                         ),
                         responseFields(
                                 fieldWithPath("status").description("상태 코드"),
@@ -361,10 +380,12 @@ class FundingControllerTest extends RestDocsTestSupport {
     @DisplayName("제출 완료 - 이미 제출됨")
     void submit_alreadySubmitted() throws Exception {
         authenticateAs(1L);
-        willThrow(new ConflictException(ErrorCode.ALREADY_SUBMITTED))
-                .given(fundingService).submit(anyString(), anyLong());
+        given(fundingService.submit(anyString(), anyLong(), any()))
+                .willThrow(new ConflictException(ErrorCode.ALREADY_SUBMITTED));
 
-        mockMvc.perform(patch("/api/funding/{canvasType}/submit", "build"))
+        mockMvc.perform(patch("/api/funding/{canvasType}/submit", "build")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(sampleInvestmentRequestJson()))
                 .andExpect(status().isConflict())
                 .andDo(document("funding/submit-already-submitted",
                         responseFields(
@@ -375,28 +396,7 @@ class FundingControllerTest extends RestDocsTestSupport {
                 ));
     }
 
-    // ===== 7. 제출 상태 확인 =====
-
-    @Test
-    @DisplayName("제출 상태 확인")
-    void getStatus() throws Exception {
-        authenticateAs(1L);
-        given(fundingService.isSubmitted(anyString(), anyLong())).willReturn(false);
-
-        mockMvc.perform(get("/api/funding/{canvasType}/status", "build"))
-                .andExpect(status().isOk())
-                .andDo(document("funding/status",
-                        pathParameters(
-                                parameterWithName("canvasType").description("캔버스 타입 (build 또는 quick)")
-                        ),
-                        responseFields(
-                                fieldWithPath("status").description("상태 코드"),
-                                fieldWithPath("data.submitted").description("제출 여부")
-                        )
-                ));
-    }
-
-    // ===== 8. 내 팀 결과 조회 =====
+    // ===== 7. 내 팀 결과 조회 =====
 
     @Test
     @DisplayName("내 팀 결과 조회")
@@ -428,19 +428,19 @@ class FundingControllerTest extends RestDocsTestSupport {
                                 fieldWithPath("status").description("상태 코드"),
                                 fieldWithPath("data.build").description("Build 캔버스 결과"),
                                 fieldWithPath("data.build.scores").description("Build 점수"),
-                                fieldWithPath("data.build.scores.problemScore").description("문제인식 점수"),
+                                fieldWithPath("data.build.scores.problemScore").description("문제정의 점수"),
                                 fieldWithPath("data.build.scores.solutionScore").description("솔루션 점수"),
-                                fieldWithPath("data.build.scores.scaleUpScore").description("스케일업 점수"),
-                                fieldWithPath("data.build.scores.effectScore").description("효과 점수"),
+                                fieldWithPath("data.build.scores.scaleUpScore").description("실행력 점수"),
+                                fieldWithPath("data.build.scores.effectScore").description("파급효과 점수"),
                                 fieldWithPath("data.build.scores.totalScore").description("총점"),
                                 fieldWithPath("data.build.scores.evaluatorCount").description("평가 참가자 수"),
                                 fieldWithPath("data.build.opinions[]").description("Build 종합 의견 목록"),
                                 fieldWithPath("data.quick").description("Quick 캔버스 결과"),
                                 fieldWithPath("data.quick.scores").description("Quick 점수"),
-                                fieldWithPath("data.quick.scores.problemScore").description("문제인식 점수"),
+                                fieldWithPath("data.quick.scores.problemScore").description("문제정의 점수"),
                                 fieldWithPath("data.quick.scores.solutionScore").description("솔루션 점수"),
-                                fieldWithPath("data.quick.scores.scaleUpScore").description("스케일업 점수"),
-                                fieldWithPath("data.quick.scores.effectScore").description("효과 점수"),
+                                fieldWithPath("data.quick.scores.scaleUpScore").description("실행력 점수"),
+                                fieldWithPath("data.quick.scores.effectScore").description("파급효과 점수"),
                                 fieldWithPath("data.quick.scores.totalScore").description("총점"),
                                 fieldWithPath("data.quick.scores.evaluatorCount").description("평가 참가자 수"),
                                 fieldWithPath("data.quick.opinions[]").description("Quick 종합 의견 목록")

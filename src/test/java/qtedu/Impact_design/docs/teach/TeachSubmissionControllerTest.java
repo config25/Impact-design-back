@@ -66,13 +66,13 @@ class TeachSubmissionControllerTest extends RestDocsTestSupport {
                 .andExpect(status().isOk())
                 .andDo(document("teach-submission/list",
                         queryParameters(
-                                parameterWithName("gameId").description("게임 ID")
+                                parameterWithName("gameId").description("강의실 ID")
                         ),
                         responseFields(
                                 fieldWithPath("status").description("상태 코드"),
                                 fieldWithPath("data[].teamId").description("팀 ID"),
                                 fieldWithPath("data[].teamName").description("팀 이름"),
-                                fieldWithPath("data[].sequence").description("팀 순서"),
+                                fieldWithPath("data[].sequence").description("팀 순서 번호"),
                                 fieldWithPath("data[].numUser").description("팀원 수"),
                                 fieldWithPath("data[].submitA").description("A: 성과관리 현황진단 제출 여부"),
                                 fieldWithPath("data[].submitB").description("B: 정체성 설계 제출 여부"),
@@ -162,9 +162,9 @@ class TeachSubmissionControllerTest extends RestDocsTestSupport {
                                 fieldWithPath("data.mission").description("미션"),
                                 fieldWithPath("data.vision").description("비전"),
                                 fieldWithPath("data.value").description("가치"),
-                                fieldWithPath("data.macro").description("거시환경"),
+                                fieldWithPath("data.macro").description("정책/경제"),
                                 fieldWithPath("data.tech").description("기술"),
-                                fieldWithPath("data.customer").description("고객"),
+                                fieldWithPath("data.customer").description("고객/사회"),
                                 fieldWithPath("data.competitor").description("경쟁자"),
                                 fieldWithPath("data.capability").description("역량"),
                                 fieldWithPath("data.culture").description("문화"),
@@ -210,17 +210,17 @@ class TeachSubmissionControllerTest extends RestDocsTestSupport {
                                 fieldWithPath("data.goals[]").description("목표 목록"),
                                 fieldWithPath("data.goals[].goalId").description("목표 ID"),
                                 fieldWithPath("data.goals[].goalTitle").description("목표 제목"),
-                                fieldWithPath("data.goals[].goalDescription").description("목표 설명"),
+                                fieldWithPath("data.goals[].goalDescription").description("존재 이유"),
                                 fieldWithPath("data.goals[].orderNo").description("목표 순서"),
-                                fieldWithPath("data.goals[].tacticals[]").description("전술 지표 목록"),
+                                fieldWithPath("data.goals[].tacticals[]").description("전술적 성과 목록"),
                                 fieldWithPath("data.goals[].tacticals[].metricId").description("지표 ID"),
-                                fieldWithPath("data.goals[].tacticals[].tacticalMetric").description("전술 지표"),
+                                fieldWithPath("data.goals[].tacticals[].tacticalMetric").description("전술적 성과 지표"),
                                 fieldWithPath("data.goals[].tacticals[].tacticalGoal").description("전술 목표"),
-                                fieldWithPath("data.goals[].tacticals[].orderNo").description("지표 순서"),
-                                fieldWithPath("data.goals[].strategicActivities[]").description("전략 활동 목록"),
+                                fieldWithPath("data.goals[].tacticals[].orderNo").description("성과 순서"),
+                                fieldWithPath("data.goals[].strategicActivities[]").description("전략적 활동 목록"),
                                 fieldWithPath("data.goals[].strategicActivities[].activityId").description("활동 ID"),
-                                fieldWithPath("data.goals[].strategicActivities[].activityMetric").description("활동 지표"),
-                                fieldWithPath("data.goals[].strategicActivities[].interCriteria").description("중간 기준"),
+                                fieldWithPath("data.goals[].strategicActivities[].activityMetric").description("전략적 활동 지표"),
+                                fieldWithPath("data.goals[].strategicActivities[].interCriteria").description("내재화 기준"),
                                 fieldWithPath("data.goals[].strategicActivities[].orderNo").description("활동 순서"),
                                 fieldWithPath("data.submitted").description("제출 여부"),
                                 fieldWithPath("data.imageUrl").description("이미지 URL").optional()
@@ -236,7 +236,7 @@ class TeachSubmissionControllerTest extends RestDocsTestSupport {
         given(teachSubmissionService.getQuickWinCanvas(anyInt()))
                 .willReturn(QuickWinCanvasResponse.builder()
                         .canvasId(1L).strategicGoal("전략 목표").taskName("과제명")
-                        .taskDescription("과제 설명").crisisSignal("위기 신호").painTouchPoint("페인포인트")
+                        .taskDescription("주요 내용").crisisSignal("위기의 신호").painTouchPoint("페인 포인트")
                         .userId(10L).submitted(true)
                         .imageUrl("http://localhost:8080/uploads/class/1/image.png")
                         .taskInputs(List.of(QuickWinCanvasResponse.TaskInputItem.builder()
@@ -261,27 +261,27 @@ class TeachSubmissionControllerTest extends RestDocsTestSupport {
                                 fieldWithPath("data.canvasId").description("캔버스 ID"),
                                 fieldWithPath("data.strategicGoal").description("전략 목표").optional(),
                                 fieldWithPath("data.taskName").description("과제명").optional(),
-                                fieldWithPath("data.taskDescription").description("과제 설명").optional(),
-                                fieldWithPath("data.crisisSignal").description("위기 신호").optional(),
+                                fieldWithPath("data.taskDescription").description("주요 내용").optional(),
+                                fieldWithPath("data.crisisSignal").description("위기의 신호").optional(),
                                 fieldWithPath("data.painTouchPoint").description("페인/터치포인트").optional(),
                                 fieldWithPath("data.userId").description("작성자 ID"),
                                 fieldWithPath("data.submitted").description("제출 여부"),
                                 fieldWithPath("data.imageUrl").description("이미지 URL").optional(),
                                 fieldWithPath("data.taskInputs[]").description("투입 자원 목록"),
                                 fieldWithPath("data.taskInputs[].inputId").description("투입 ID"),
-                                fieldWithPath("data.taskInputs[].resourceName").description("자원명"),
+                                fieldWithPath("data.taskInputs[].resourceName").description("필요 자원"),
                                 fieldWithPath("data.taskInputs[].quantity").description("수량"),
                                 fieldWithPath("data.taskInputs[].orderNo").description("순서"),
                                 fieldWithPath("data.taskActivities[]").description("활동 목록"),
                                 fieldWithPath("data.taskActivities[].activityId").description("활동 ID"),
-                                fieldWithPath("data.taskActivities[].processStep").description("프로세스 단계"),
-                                fieldWithPath("data.taskActivities[].activityContent").description("활동 내용"),
+                                fieldWithPath("data.taskActivities[].processStep").description("추진 절차"),
+                                fieldWithPath("data.taskActivities[].activityContent").description("주요 내용"),
                                 fieldWithPath("data.taskActivities[].duration").description("소요 기간"),
                                 fieldWithPath("data.taskActivities[].orderNo").description("순서"),
                                 fieldWithPath("data.teamwork").description("팀워크 정보").optional(),
                                 fieldWithPath("data.teamwork.teamworkId").description("팀워크 ID"),
-                                fieldWithPath("data.teamwork.activityTeamwork").description("팀워크 활동"),
-                                fieldWithPath("data.teamwork.workType").description("작업 유형"),
+                                fieldWithPath("data.teamwork.activityTeamwork").description("활동 팀워크"),
+                                fieldWithPath("data.teamwork.workType").description("산출 팀워크"),
                                 fieldWithPath("data.taskOutcomes[]").description("산출물 목록"),
                                 fieldWithPath("data.taskOutcomes[].outcomeNo").description("산출물 번호"),
                                 fieldWithPath("data.taskOutcomes[].outcomeType").description("산출물 유형 (QUALITATIVE/QUANTITATIVE)"),
@@ -299,7 +299,7 @@ class TeachSubmissionControllerTest extends RestDocsTestSupport {
         given(teachSubmissionService.getBuildWinCanvas(anyInt()))
                 .willReturn(BuildWinCanvasResponse.builder()
                         .canvasId(1L).strategicGoal("전략 목표").taskName("과제명")
-                        .taskDescription("과제 설명").crisisSignal("위기 신호").painTouchPoint("페인포인트")
+                        .taskDescription("주요 내용").crisisSignal("변화의 신호").painTouchPoint("페인포인트")
                         .userId(10L).submitted(true)
                         .imageUrl("http://localhost:8080/uploads/class/1/image.png")
                         .taskInputs(List.of(BuildWinCanvasResponse.TaskInputItem.builder()
@@ -324,27 +324,27 @@ class TeachSubmissionControllerTest extends RestDocsTestSupport {
                                 fieldWithPath("data.canvasId").description("캔버스 ID"),
                                 fieldWithPath("data.strategicGoal").description("전략 목표").optional(),
                                 fieldWithPath("data.taskName").description("과제명").optional(),
-                                fieldWithPath("data.taskDescription").description("과제 설명").optional(),
-                                fieldWithPath("data.crisisSignal").description("위기 신호").optional(),
+                                fieldWithPath("data.taskDescription").description("주요 내용").optional(),
+                                fieldWithPath("data.crisisSignal").description("변화의 신호").optional(),
                                 fieldWithPath("data.painTouchPoint").description("페인/터치포인트").optional(),
                                 fieldWithPath("data.userId").description("작성자 ID"),
                                 fieldWithPath("data.submitted").description("제출 여부"),
                                 fieldWithPath("data.imageUrl").description("이미지 URL").optional(),
                                 fieldWithPath("data.taskInputs[]").description("투입 자원 목록"),
                                 fieldWithPath("data.taskInputs[].inputId").description("투입 ID"),
-                                fieldWithPath("data.taskInputs[].resourceName").description("자원명"),
+                                fieldWithPath("data.taskInputs[].resourceName").description("필요 자원"),
                                 fieldWithPath("data.taskInputs[].quantity").description("수량"),
                                 fieldWithPath("data.taskInputs[].orderNo").description("순서"),
                                 fieldWithPath("data.taskActivities[]").description("활동 목록"),
                                 fieldWithPath("data.taskActivities[].activityId").description("활동 ID"),
-                                fieldWithPath("data.taskActivities[].processStep").description("프로세스 단계"),
-                                fieldWithPath("data.taskActivities[].activityContent").description("활동 내용"),
+                                fieldWithPath("data.taskActivities[].processStep").description("전환 단계"),
+                                fieldWithPath("data.taskActivities[].activityContent").description("전환 활동"),
                                 fieldWithPath("data.taskActivities[].duration").description("소요 기간"),
                                 fieldWithPath("data.taskActivities[].orderNo").description("순서"),
                                 fieldWithPath("data.teamwork").description("팀워크 정보").optional(),
                                 fieldWithPath("data.teamwork.teamworkId").description("팀워크 ID"),
-                                fieldWithPath("data.teamwork.activityTeamwork").description("팀워크 활동"),
-                                fieldWithPath("data.teamwork.workType").description("작업 유형"),
+                                fieldWithPath("data.teamwork.activityTeamwork").description("활동 팀워크"),
+                                fieldWithPath("data.teamwork.workType").description("산출 팀워크"),
                                 fieldWithPath("data.taskOutcomes[]").description("산출물 목록"),
                                 fieldWithPath("data.taskOutcomes[].outcomeNo").description("산출물 번호"),
                                 fieldWithPath("data.taskOutcomes[].outcomeType").description("산출물 유형 (QUALITATIVE/QUANTITATIVE)"),
@@ -441,10 +441,10 @@ class TeachSubmissionControllerTest extends RestDocsTestSupport {
                                 fieldWithPath("data.build.scores.evaluatorCount").description("평가 참가자 수"),
                                 fieldWithPath("data.build.opinions[]").description("투자 의견 목록"),
                                 fieldWithPath("data.quick").description("QUICK 캔버스 결과"),
-                                fieldWithPath("data.quick.scores.problemScore").description("문제 점수"),
+                                fieldWithPath("data.quick.scores.problemScore").description("문제정의 점수"),
                                 fieldWithPath("data.quick.scores.solutionScore").description("솔루션 점수"),
-                                fieldWithPath("data.quick.scores.scaleUpScore").description("확장 점수"),
-                                fieldWithPath("data.quick.scores.effectScore").description("효과 점수"),
+                                fieldWithPath("data.quick.scores.scaleUpScore").description("실행력 점수"),
+                                fieldWithPath("data.quick.scores.effectScore").description("파급효과 점수"),
                                 fieldWithPath("data.quick.scores.totalScore").description("총 점수"),
                                 fieldWithPath("data.quick.scores.evaluatorCount").description("평가 참가자 수"),
                                 fieldWithPath("data.quick.opinions[]").description("투자 의견 목록")

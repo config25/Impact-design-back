@@ -10,6 +10,7 @@ import qtedu.Impact_design.common.response.HttpResponse;
 import qtedu.Impact_design.domain.model.ai.AiResponse;
 import qtedu.Impact_design.domain.service.AiService;
 
+// API 테스트용 (실제로 쓰지 않음)
 @RestController
 @RequestMapping("/api/ai")
 @RequiredArgsConstructor
