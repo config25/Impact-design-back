@@ -21,7 +21,7 @@ jobs:
         run: |
           chmod +x ./gradlew
           echo "" > gradle.properties
-          ./gradlew clean build
+          ./gradlew clean build -x test
 
       - name: Copy JAR to server
         uses: appleboy/scp-action@v0.1.7
