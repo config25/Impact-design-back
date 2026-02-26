@@ -36,5 +36,9 @@ out/
 ### VS Code ###
 .vscode/
 
+### Secrets ###
+.env
+src/main/resources/application-local.yaml
+
 ### Windows reserved names ###
 nul

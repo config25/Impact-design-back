@@ -9,6 +9,10 @@ import java.util.List;
 @Builder
 public class ReportResponse {
 
+    private Integer teamId;
+
+    private String teamName;
+
     private String className;
 
     private String target;

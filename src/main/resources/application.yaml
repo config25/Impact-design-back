@@ -16,12 +16,12 @@ spring:
         format_sql: true
 
 jwt:
-  secret: ${JWT_SECRET:REDACTED_JWT_SECRET}
+  secret: ${JWT_SECRET}
   access-expiration: 3600000
   refresh-expiration: 604800000
 
 openai:
-  api-key: ${OPENAI_API_KEY:REDACTED_OPENAI_KEY}
+  api-key: ${OPENAI_API_KEY}
   base-url: https://api.openai.com/v1
 
 file:

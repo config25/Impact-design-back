@@ -13,6 +13,8 @@ import qtedu.Impact_design.common.response.HttpResponse;
 import qtedu.Impact_design.domain.model.UserId;
 import qtedu.Impact_design.domain.service.ReportService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/teach")
 @RequiredArgsConstructor
@@ -27,5 +29,14 @@ public class ReportController {
     ) {
         ReportResponse response = reportService.getReport(teamId);
         return ResponseHelper.success(response);
+    }
+
+    @GetMapping("/report/bulk/{gameId}")
+    public ResponseEntity<HttpResponse<List<ReportResponse>>> getReportsByGameId(
+            @CurrentUser UserId userId,
+            @PathVariable Integer gameId
+    ) {
+        List<ReportResponse> responses = reportService.getReportsByGameId(gameId);
+        return ResponseHelper.success(responses);
     }
 }

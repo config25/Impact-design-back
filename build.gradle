@@ -58,7 +58,6 @@ ext {
 tasks.named('test') {
 	useJUnitPlatform()
 	outputs.dir snippetsDir
-	jvmArgs '-Djava.io.tmpdir=C:\\temp'
 }
 
 asciidoctorj {

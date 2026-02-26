@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import qtedu.Impact_design.api.dto.response.report.ReportResponse;
 import qtedu.Impact_design.domain.implementation.report.ReportFacade;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ReportService {
@@ -13,5 +15,9 @@ public class ReportService {
 
     public ReportResponse getReport(Integer teamId) {
         return reportFacade.getReport(teamId);
+    }
+
+    public List<ReportResponse> getReportsByGameId(Integer gameId) {
+        return reportFacade.getReportsByGameId(gameId);
     }
 }
