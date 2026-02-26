@@ -20,6 +20,7 @@ jobs:
       - name: Build with Gradle
         run: |
           chmod +x ./gradlew
+          echo "" > gradle.properties
           ./gradlew clean build
 
       - name: Copy JAR to server
