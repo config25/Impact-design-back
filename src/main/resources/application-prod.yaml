@@ -10,5 +10,11 @@ spring:
 file:
   base-url: http://iptdesign.mycafe24.com/uploads
 
+jwt:
+  secret: mysecretkey12345asdfvasdfvhjaaaaaaaaaaaaaaaaaaaaaaaaaslfdjasdlkr231243123412
+
+openai:
+  api-key: sk-proj-ug8F8LTp9IGhABt2oAviT3BlbkFJaS7ggavlvRUQ6g5LuvvA
+
 cors:
   allowed-origins: http://iptdesign.mycafe24.com
