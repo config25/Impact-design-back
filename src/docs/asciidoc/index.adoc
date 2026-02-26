@@ -812,21 +812,7 @@ include::{snippets}/funding/submit-already-submitted/http-response.adoc[]
 
 include::{snippets}/funding/submit-already-submitted/response-fields.adoc[]
 
-=== 7. 제출 상태 확인
-
-==== 요청(Request)
-
-include::{snippets}/funding/status/http-request.adoc[]
-
-==== 응답(Response)
-
-include::{snippets}/funding/status/http-response.adoc[]
-
-==== 응답 필드 설명(Response Fields)
-
-include::{snippets}/funding/status/response-fields.adoc[]
-
-=== 8. 내 팀 결과 조회
+=== 7. 내 팀 결과 조회
 
 ==== 요청(Request)
 
@@ -1689,3 +1675,21 @@ include::{snippets}/report/get/http-response.adoc[]
 ==== 응답 필드 설명(Response Fields)
 
 include::{snippets}/report/get/response-fields.adoc[]
+
+=== 2. 게임별 벌크 리포트 조회
+
+==== 요청(Request)
+
+include::{snippets}/report/get-bulk/http-request.adoc[]
+
+==== 경로 변수 설명(Path Parameters)
+
+include::{snippets}/report/get-bulk/path-parameters.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/report/get-bulk/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/report/get-bulk/response-fields.adoc[]

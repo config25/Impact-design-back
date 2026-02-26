@@ -42,7 +42,9 @@
       "Bash(mkdir -p /c/dev && cp -r \"/c/Users/김영호/Desktop/impact_design\" /c/dev/impact_design 2>&1)",
       "Bash(/c/dev/impact_design/id_backend/Impact_design/gradlew --stop -p /c/dev/impact_design/id_backend/Impact_design 2>&1 && rm -rf /c/dev/impact_design 2>&1)",
       "Bash(ls:*)",
-      "Bash(git remote:*)"
+      "Bash(git remote:*)",
+      "WebFetch(domain:iptdesign.mycafe24.com)",
+      "Bash(cd:*)"
     ]
   }
 }
