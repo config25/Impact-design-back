@@ -18,7 +18,9 @@ jobs:
           java-version: '17'
 
       - name: Build with Gradle
-        run: ./gradlew clean build
+        run: |
+          chmod +x ./gradlew
+          ./gradlew clean build
 
       - name: Copy JAR to server
         uses: appleboy/scp-action@v0.1.7
