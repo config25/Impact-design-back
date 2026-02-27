@@ -19,7 +19,10 @@ import qtedu.Impact_design.domain.model.team.ClassInfoProjection;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Component
@@ -194,13 +197,39 @@ public class TeachReader {
 
     private List<TeachDetailResponse.TeamInfo> getTeamInfoList(Integer gameId) {
         List<Integer> teamIds = gameTeamRepository.findTeamIdsByGameId(gameId);
+        if (teamIds.isEmpty()) {
+            return Collections.emptyList();
+        }
 
+        // 1. 팀 정보 배치 조회
+        Map<Integer, qtedu.Impact_design.domain.model.team.TbTeamModel> teamMap =
+                tbTeamRepository.findByTeamIdIn(teamIds).stream()
+                        .collect(Collectors.toMap(
+                                qtedu.Impact_design.domain.model.team.TbTeamModel::getTeamId,
+                                Function.identity()));
+
+        // 2. 팀원 정보 배치 조회 → 팀별 userIds + 팀별 인원수
+        List<qtedu.Impact_design.domain.model.team.TeamUserModel> allTeamUsers =
+                teamUserRepository.findByTeamIdIn(teamIds);
+        Map<Integer, List<Long>> teamUserIdsMap = allTeamUsers.stream()
+                .collect(Collectors.groupingBy(
+                        qtedu.Impact_design.domain.model.team.TeamUserModel::getTeamId,
+                        Collectors.mapping(
+                                qtedu.Impact_design.domain.model.team.TeamUserModel::getUserId,
+                                Collectors.toList())));
+
+        // 3. 제출 상태 배치 조회
+        Map<Integer, TeamSubmitStatusChecker.TeamSubmitResult> submitMap =
+                submitStatusChecker.checkAllSubmitStatuses(teamUserIdsMap);
+
+        // 4. 결과 조합
         return teamIds.stream()
-                .map(teamId -> tbTeamRepository.findByTeamId(teamId).orElse(null))
+                .map(teamMap::get)
                 .filter(team -> team != null && (team.getStatus() == null || team.getStatus() != -1))
                 .map(team -> {
-                    int numUser = teamUserRepository.countByTeamId(team.getTeamId());
-                    Long writerUserId = submitStatusChecker.findWriterUserId(team.getTeamId());
+                    int numUser = teamUserIdsMap.getOrDefault(team.getTeamId(), Collections.emptyList()).size();
+                    TeamSubmitStatusChecker.TeamSubmitResult submit =
+                            submitMap.getOrDefault(team.getTeamId(), TeamSubmitStatusChecker.TeamSubmitResult.allNotSubmitted());
 
                     return TeachDetailResponse.TeamInfo.builder()
                             .teamId(team.getTeamId())
@@ -208,12 +237,12 @@ public class TeachReader {
                             .sequence(team.getSequence())
                             .status(team.getStatus())
                             .numUser(numUser)
-                            .submitA(submitStatusChecker.checkSubmitA(writerUserId))
-                            .submitB(submitStatusChecker.checkSubmitB(writerUserId))
-                            .submitC(submitStatusChecker.checkSubmitC(writerUserId))
-                            .submitD(submitStatusChecker.checkSubmitD(writerUserId))
-                            .submitE(submitStatusChecker.checkSubmitE(writerUserId))
-                            .submitF(submitStatusChecker.checkSubmitF(writerUserId))
+                            .submitA(submit.getSubmitA())
+                            .submitB(submit.getSubmitB())
+                            .submitC(submit.getSubmitC())
+                            .submitD(submit.getSubmitD())
+                            .submitE(submit.getSubmitE())
+                            .submitF(submit.getSubmitF())
                             .build();
                 })
                 .collect(Collectors.toList());

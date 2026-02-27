@@ -10,6 +10,7 @@ import qtedu.Impact_design.domain.repository.auth.TbTeamRepository;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -83,6 +84,30 @@ public class FundingScoreAggregator {
                 inv.getInvestmentTarget(),
                 inv.getScore1(), inv.getScore2(), inv.getScore3(), inv.getScore4(), inv.getScore5(),
                 inv.getScore6(), inv.getScore7(), inv.getScore8(), inv.getScore9()
+        );
+    }
+
+    public FundingScoresResponse.TeamScoreItem createScoreItem(FLetterOfIntentModel inv, Map<Integer, String> teamNameMap) {
+        Integer teamId = Integer.parseInt(inv.getInvestmentTarget());
+        String teamName = teamNameMap.getOrDefault(teamId, "Unknown");
+        return FundingScoresResponse.TeamScoreItem.from(
+                teamId, teamName,
+                safe(inv.getScore1()), safe(inv.getScore2()), safe(inv.getScore3()),
+                safe(inv.getScore4()), safe(inv.getScore5()),
+                safe(inv.getScore6()), safe(inv.getScore7()),
+                safe(inv.getScore8()), safe(inv.getScore9())
+        );
+    }
+
+    public FundingScoresResponse.TeamScoreItem createScoreItem(FLetterOfIntent2Model inv, Map<Integer, String> teamNameMap) {
+        Integer teamId = Integer.parseInt(inv.getInvestmentTarget());
+        String teamName = teamNameMap.getOrDefault(teamId, "Unknown");
+        return FundingScoresResponse.TeamScoreItem.from(
+                teamId, teamName,
+                safe(inv.getScore1()), safe(inv.getScore2()), safe(inv.getScore3()),
+                safe(inv.getScore4()), safe(inv.getScore5()),
+                safe(inv.getScore6()), safe(inv.getScore7()),
+                safe(inv.getScore8()), safe(inv.getScore9())
         );
     }
 

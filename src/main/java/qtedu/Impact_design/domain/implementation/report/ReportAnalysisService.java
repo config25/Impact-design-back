@@ -15,7 +15,9 @@ import qtedu.Impact_design.domain.model.flow_canvas.TacticalModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -87,8 +89,9 @@ public class ReportAnalysisService {
         }
         // 혹시 누락된 항목이 있으면 추가
         if (result.size() < items.size()) {
+            Set<Integer> orderSet = new HashSet<>(order);
             for (int i = 0; i < items.size(); i++) {
-                if (!order.contains(i)) {
+                if (!orderSet.contains(i)) {
                     result.add(items.get(i));
                 }
             }

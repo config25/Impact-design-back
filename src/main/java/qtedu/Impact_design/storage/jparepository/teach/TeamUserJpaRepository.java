@@ -13,6 +13,7 @@ import java.util.Optional;
 @Repository
 public interface TeamUserJpaRepository extends JpaRepository<TeamUser, Integer> {
     List<TeamUser> findByTeamId(Integer teamId);
+    List<TeamUser> findByTeamIdIn(List<Integer> teamIds);
     Optional<TeamUser> findByUserId(Long userId);
 
     // 팀별 사용자 수 카운트

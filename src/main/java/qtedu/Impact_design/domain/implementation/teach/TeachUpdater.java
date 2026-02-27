@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import qtedu.Impact_design.api.dto.request.teach.ClassSaveRequest;
+import qtedu.Impact_design.api.dto.request.teach.ClassUpdateRequest;
 import qtedu.Impact_design.common.error.ErrorCode;
 import qtedu.Impact_design.common.error.NotFoundException;
 import qtedu.Impact_design.domain.external.ExternalFileClient;
@@ -88,6 +89,62 @@ public class TeachUpdater {
             String imageUrl = saveClassImage(gameId, image);
             tbGameRepository.updateImageUrl(gameId, imageUrl);
         }
+
+        if (request.getEnddate() != null && !request.getEnddate().isBlank()) {
+            tbMissionRepository.findLatestByGameId(gameId)
+                    .ifPresent(mission -> {
+                        LocalDateTime newEnddate = LocalDateTime.parse(request.getEnddate(),
+                                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+                        TbMissionModel updated = TbMissionModel.builder()
+                                .missionId(mission.getMissionId())
+                                .sequence(mission.getSequence())
+                                .subject(mission.getSubject())
+                                .summary(mission.getSummary())
+                                .startdate(mission.getStartdate())
+                                .enddate(newEnddate)
+                                .ddYear(mission.getDdYear())
+                                .ddTerm(mission.getDdTerm())
+                                .mlevel(mission.getMlevel())
+                                .gameId(mission.getGameId())
+                                .toinform(mission.getToinform())
+                                .build();
+                        tbMissionRepository.save(updated);
+                    });
+        }
+
+        return gameId;
+    }
+
+    @Transactional
+    public Integer updateClass(Integer gameId, ClassUpdateRequest request) {
+        TbGameModel game = findGame(gameId);
+
+        TbGameModel updatedGame = TbGameModel.builder()
+                .gameId(game.getGameId())
+                .name(request.getName() != null ? request.getName() : game.getName())
+                .code(game.getCode())
+                .num(game.getNum())
+                .numTeam(game.getNumTeam())
+                .numMember(game.getNumMember())
+                .createdAt(game.getCreatedAt())
+                .endedAt(game.getEndedAt())
+                .status(game.getStatus())
+                .eStatus(game.getEStatus())
+                .summary(game.getSummary())
+                .totalDd(game.getTotalDd())
+                .lang(game.getLang())
+                .worldType(game.getWorldType())
+                .step(game.getStep())
+                .classType(game.getClassType())
+                .isDoing(game.getIsDoing())
+                .regDate(game.getRegDate())
+                .popupId(game.getPopupId())
+                .imageUrl(game.getImageUrl())
+                .target(game.getTarget())
+                .projectDate(game.getProjectDate())
+                .build();
+
+        tbGameRepository.save(updatedGame);
 
         if (request.getEnddate() != null && !request.getEnddate().isBlank()) {
             tbMissionRepository.findLatestByGameId(gameId)

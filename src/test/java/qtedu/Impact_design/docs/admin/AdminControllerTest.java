@@ -154,7 +154,7 @@ class AdminControllerTest extends RestDocsTestSupport {
                 .ddYear(null)
                 .ddTerm(null)
                 .statusCeo(null)
-                .imageUrl(null)
+                .imageUrl("http://iptdesign.mycafe24.com/uploads/class/1/%ED%98%84%EB%8C%80%EC%9E%90%EB%8F%99%EC%B0%A8.png")
                 .build();
 
         ClassInfoResponse completedSample = ClassInfoResponse.builder()

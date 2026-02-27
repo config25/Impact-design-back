@@ -8,8 +8,10 @@ import qtedu.Impact_design.storage.jpaentity.FLetterOfIntent;
 import qtedu.Impact_design.storage.jparepository.web.FLetterOfIntentJpaRepository;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Repository
@@ -102,6 +104,25 @@ public class FLetterOfIntentRepositoryImpl implements FLetterOfIntentRepository 
                 .stream()
                 .map(this::toModel)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<FLetterOfIntentModel> findByTargetTeamIds(List<Integer> teamIds) {
+        List<String> targets = teamIds.stream().map(String::valueOf).collect(Collectors.toList());
+        return fLetterOfIntentJpaRepository
+                .findByInvestmentTargetInAndDelYn(targets, "N")
+                .stream()
+                .map(this::toModel)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Set<Long> findSubmittedUserIds(List<Long> userIds) {
+        return fLetterOfIntentJpaRepository
+                .findByStdntNoInAndSubmittedAndDelYn(userIds, true, "N")
+                .stream()
+                .map(e -> e.getStdntNo())
+                .collect(Collectors.toCollection(HashSet::new));
     }
 
     @Override

@@ -4,6 +4,7 @@ import qtedu.Impact_design.domain.model.FLetterOfIntent2Model;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface FLetterOfIntent2Repository {
     List<FLetterOfIntent2Model> findByCanvasIdIn(List<Long> canvasIds);
@@ -20,6 +21,9 @@ public interface FLetterOfIntent2Repository {
 
     // 내 팀을 투자 대상으로 한 모든 투자 (F3용)
     List<FLetterOfIntent2Model> findByTargetTeamId(Integer teamId);
+    List<FLetterOfIntent2Model> findByTargetTeamIds(List<Integer> teamIds);
 
     void updateInvestmentTargetByCanvasOwner(Long userId, String teamId);
+
+    Set<Long> findSubmittedUserIds(List<Long> userIds);
 }

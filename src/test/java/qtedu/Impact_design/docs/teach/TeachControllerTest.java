@@ -508,6 +508,21 @@ class TeachControllerTest extends RestDocsTestSupport {
                         .file(imagePart))
                 .andExpect(status().isOk())
                 .andDo(document("teach/create-class",
+                        requestParts(
+                                partWithName("request").description("강의실 생성 정보 (JSON)"),
+                                partWithName("image").description("강의실 대표 이미지 파일").optional()
+                        ),
+                        requestPartFields("request",
+                                fieldWithPath("name").description("강의실 이름"),
+                                fieldWithPath("numTeam").description("팀 수"),
+                                fieldWithPath("numMember").description("팀당 최대 인원"),
+                                fieldWithPath("worldType").description("월드 타입"),
+                                fieldWithPath("popupId").description("팝업 ID"),
+                                fieldWithPath("summary").description("강의실 설명"),
+                                fieldWithPath("classType").description("수업 유형 (BASIC 등)"),
+                                fieldWithPath("target").description("대상 (대학생, 직장인 등)"),
+                                fieldWithPath("projectDate").description("프로젝트 기한 (yyyy-MM-dd)")
+                        ),
                         responseFields(
                                 fieldWithPath("status").description("상태 코드"),
                                 fieldWithPath("data").description("생성된 게임 ID")
@@ -548,23 +563,23 @@ class TeachControllerTest extends RestDocsTestSupport {
     @Test
     @DisplayName("클래스 수정")
     void updateClass() throws Exception {
-        given(teachService.updateClass(anyInt(), any(), any()))
+        given(teachService.updateClass(anyInt(), any(qtedu.Impact_design.api.dto.request.teach.ClassUpdateRequest.class)))
                 .willReturn(1);
 
         String requestJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(java.util.Map.of(
                 "name", "수정된 강의실",
-                "numTeam", 6,
-                "summary", "수정된 설명"
+                "enddate", "2026-07-15 18:00"
         ));
 
-        MockMultipartFile requestPart = new MockMultipartFile(
-                "request", "request", "application/json", requestJson.getBytes(StandardCharsets.UTF_8));
-
-        mockMvc.perform(multipart("/api/teach/class/{gameId}", 1)
-                        .file(requestPart)
-                        .with(request -> { request.setMethod("PUT"); return request; }))
+        mockMvc.perform(put("/api/teach/class/{gameId}", 1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
                 .andExpect(status().isOk())
                 .andDo(document("teach/update-class",
+                        requestFields(
+                                fieldWithPath("name").description("강의실 이름").optional(),
+                                fieldWithPath("enddate").description("미션 종료일시 (yyyy-MM-dd HH:mm)").optional()
+                        ),
                         responseFields(
                                 fieldWithPath("status").description("상태 코드"),
                                 fieldWithPath("data").description("수정된 게임 ID")
@@ -575,19 +590,16 @@ class TeachControllerTest extends RestDocsTestSupport {
     @Test
     @DisplayName("클래스 수정 - 게임 없음")
     void updateClass_gameNotFound() throws Exception {
-        given(teachService.updateClass(anyInt(), any(), any()))
+        given(teachService.updateClass(anyInt(), any(qtedu.Impact_design.api.dto.request.teach.ClassUpdateRequest.class)))
                 .willThrow(new NotFoundException(ErrorCode.GAME_NOT_FOUND));
 
         String requestJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(java.util.Map.of(
                 "name", "수정된 강의실"
         ));
 
-        MockMultipartFile requestPart = new MockMultipartFile(
-                "request", "request", "application/json", requestJson.getBytes(StandardCharsets.UTF_8));
-
-        mockMvc.perform(multipart("/api/teach/class/{gameId}", 999)
-                        .file(requestPart)
-                        .with(request -> { request.setMethod("PUT"); return request; }))
+        mockMvc.perform(put("/api/teach/class/{gameId}", 999)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
                 .andExpect(status().isNotFound())
                 .andDo(document("teach/update-class-game-not-found",
                         responseFields(

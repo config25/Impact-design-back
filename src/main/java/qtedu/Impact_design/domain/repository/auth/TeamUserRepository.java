@@ -8,6 +8,7 @@ import java.util.Optional;
 public interface TeamUserRepository {
     TeamUserModel save(TeamUserModel teamUserModel);
     List<TeamUserModel> findByTeamId(Integer teamId);
+    List<TeamUserModel> findByTeamIdIn(List<Integer> teamIds);
     Optional<TeamUserModel> findByUserId(Long userId);
     void deleteByUserId(Long userId);
     void updateTeamId(Long userId, Integer teamId);

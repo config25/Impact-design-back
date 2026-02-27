@@ -37,6 +37,13 @@ public class TbTeamRepositoryImpl implements TbTeamRepository {
     }
 
     @Override
+    public List<TbTeamModel> findByTeamIdIn(List<Integer> teamIds) {
+        return tbTeamJpaRepository.findByTeamIdIn(teamIds).stream()
+                .map(this::toModel)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public TbTeamModel save(TbTeamModel model) {
         TbTeam entity = TbTeam.builder()
                 .teamId(model.getTeamId())

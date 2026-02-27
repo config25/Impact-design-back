@@ -38,6 +38,13 @@ public class TeamUserRepositoryImpl implements TeamUserRepository {
     }
 
     @Override
+    public List<TeamUserModel> findByTeamIdIn(List<Integer> teamIds) {
+        return teamUserJpaRepository.findByTeamIdIn(teamIds).stream()
+                .map(this::toModel)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public Optional<TeamUserModel> findByUserId(Long userId) {
         return teamUserJpaRepository.findByUserId(userId)
                 .map(this::toModel);

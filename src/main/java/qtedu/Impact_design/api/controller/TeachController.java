@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import qtedu.Impact_design.api.dto.request.teach.ClassSaveRequest;
+import qtedu.Impact_design.api.dto.request.teach.ClassUpdateRequest;
 import qtedu.Impact_design.api.dto.request.teach.NextStageRequest;
 import qtedu.Impact_design.api.dto.response.teach.ClassInfoResponse;
 import qtedu.Impact_design.api.dto.response.teach.StudentListResponse;
@@ -95,13 +96,12 @@ public class TeachController {
     /**
      * 클래스 수정 (teach_save)
      */
-    @PutMapping(value = "/class/{gameId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping("/class/{gameId}")
     public ResponseEntity<HttpResponse<Integer>> updateClass(
             @PathVariable Integer gameId,
-            @RequestPart("request") ClassSaveRequest request,
-            @RequestPart(value = "image", required = false) MultipartFile image
+            @RequestBody ClassUpdateRequest request
     ) {
-        Integer updatedGameId = teachService.updateClass(gameId, request, image);
+        Integer updatedGameId = teachService.updateClass(gameId, request);
         return ResponseHelper.success(updatedGameId);
     }
 

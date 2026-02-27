@@ -22,9 +22,11 @@ public interface FLetterOfIntentJpaRepository extends JpaRepository<FLetterOfInt
 
     // 특정 팀이 받은 모든 투자
     List<FLetterOfIntent> findByInvestmentTargetAndDelYn(String investmentTarget, String delYn);
+    List<FLetterOfIntent> findByInvestmentTargetInAndDelYn(List<String> investmentTargets, String delYn);
 
     // 제출 완료 여부 확인
     boolean existsByStdntNoAndSubmittedAndDelYn(Long stdntNo, Boolean submitted, String delYn);
+    List<FLetterOfIntent> findByStdntNoInAndSubmittedAndDelYn(List<Long> stdntNos, Boolean submitted, String delYn);
 
     // 내 팀을 투자 대상으로 한 모든 투자 (F3용)
     List<FLetterOfIntent> findByInvestmentTargetAndDelYnAndSubmitted(String investmentTarget, String delYn, Boolean submitted);

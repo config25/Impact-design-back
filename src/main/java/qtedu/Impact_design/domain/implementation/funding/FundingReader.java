@@ -13,6 +13,8 @@ import qtedu.Impact_design.domain.repository.auth.TbTeamRepository;
 import qtedu.Impact_design.domain.repository.auth.TeamUserRepository;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Component
@@ -36,11 +38,16 @@ public class FundingReader {
 
         List<TbTeamModel> otherTeams = tbTeamRepository.findByCodeExcludingTeam(myTeam.getCode(), myTeamId);
 
+        List<Integer> otherTeamIds = otherTeams.stream()
+                .map(TbTeamModel::getTeamId)
+                .collect(Collectors.toList());
+        Map<Integer, String> businessNameMap = businessNameResolver.resolveBulk(canvasType, otherTeamIds);
+
         List<FundingTeamListResponse.TeamItem> teamItems = otherTeams.stream()
                 .map(team -> FundingTeamListResponse.TeamItem.from(
                         team.getTeamId(),
                         team.getName(),
-                        businessNameResolver.resolve(canvasType, team.getTeamId())))
+                        businessNameMap.getOrDefault(team.getTeamId(), "")))
                 .collect(Collectors.toList());
 
         return FundingTeamListResponse.from(teamItems, myTeamId);
@@ -67,13 +74,19 @@ public class FundingReader {
         List<FundingPortfolioResponse.PortfolioItem> items;
 
         if (isBuildType(canvasType)) {
-            items = fLetterOfIntentRepository.findByUserId(userId).stream()
-                    .map(inv -> createPortfolioItem(inv.getInvestmentTarget(), inv.getInvestmentPrice()))
+            var investments = fLetterOfIntentRepository.findByUserId(userId);
+            Map<Integer, String> teamNameMap = preloadTeamNames(
+                    investments.stream().map(i -> Integer.parseInt(i.getInvestmentTarget())).collect(Collectors.toList()));
+            items = investments.stream()
+                    .map(inv -> createPortfolioItem(inv.getInvestmentTarget(), inv.getInvestmentPrice(), teamNameMap))
                     .filter(item -> item.getInvestmentPrice() > 0)
                     .collect(Collectors.toList());
         } else {
-            items = fLetterOfIntent2Repository.findByUserId(userId).stream()
-                    .map(inv -> createPortfolioItem(inv.getInvestmentTarget(), inv.getInvestmentPrice()))
+            var investments = fLetterOfIntent2Repository.findByUserId(userId);
+            Map<Integer, String> teamNameMap = preloadTeamNames(
+                    investments.stream().map(i -> Integer.parseInt(i.getInvestmentTarget())).collect(Collectors.toList()));
+            items = investments.stream()
+                    .map(inv -> createPortfolioItem(inv.getInvestmentTarget(), inv.getInvestmentPrice(), teamNameMap))
                     .filter(item -> item.getInvestmentPrice() > 0)
                     .collect(Collectors.toList());
         }
@@ -89,14 +102,22 @@ public class FundingReader {
         List<FundingScoresResponse.TeamScoreItem> scoreItems;
 
         if (isBuildType(canvasType)) {
-            scoreItems = fLetterOfIntentRepository.findByUserId(userId).stream()
+            var investments = fLetterOfIntentRepository.findByUserId(userId).stream()
                     .filter(inv -> !myTeamId.equals(inv.getInvestmentTarget()))
-                    .map(scoreAggregator::createScoreItem)
+                    .collect(Collectors.toList());
+            Map<Integer, String> teamNameMap = preloadTeamNames(
+                    investments.stream().map(i -> Integer.parseInt(i.getInvestmentTarget())).collect(Collectors.toList()));
+            scoreItems = investments.stream()
+                    .map(inv -> scoreAggregator.createScoreItem(inv, teamNameMap))
                     .collect(Collectors.toList());
         } else {
-            scoreItems = fLetterOfIntent2Repository.findByUserId(userId).stream()
+            var investments = fLetterOfIntent2Repository.findByUserId(userId).stream()
                     .filter(inv -> !myTeamId.equals(inv.getInvestmentTarget()))
-                    .map(scoreAggregator::createScoreItem)
+                    .collect(Collectors.toList());
+            Map<Integer, String> teamNameMap = preloadTeamNames(
+                    investments.stream().map(i -> Integer.parseInt(i.getInvestmentTarget())).collect(Collectors.toList()));
+            scoreItems = investments.stream()
+                    .map(inv -> scoreAggregator.createScoreItem(inv, teamNameMap))
                     .collect(Collectors.toList());
         }
 
@@ -128,25 +149,33 @@ public class FundingReader {
      */
     public List<FundingInvestmentResponse> readByUserId(String canvasType, Long userId) {
         if (isBuildType(canvasType)) {
-            return fLetterOfIntentRepository.findByUserId(userId).stream()
+            var investments = fLetterOfIntentRepository.findByUserId(userId);
+            List<Integer> targetTeamIds = investments.stream()
+                    .map(m -> Integer.parseInt(m.getInvestmentTarget()))
+                    .collect(Collectors.toList());
+            Map<Integer, String> teamNameMap = preloadTeamNames(targetTeamIds);
+            Map<Integer, String> businessNameMap = businessNameResolver.resolveBulk(canvasType, targetTeamIds);
+            return investments.stream()
                     .map(model -> {
                         Integer targetTeamId = Integer.parseInt(model.getInvestmentTarget());
-                        String teamName = tbTeamRepository.findByTeamId(targetTeamId)
-                                .map(TbTeamModel::getName)
-                                .orElse("Unknown");
-                        String businessName = businessNameResolver.resolve(canvasType, targetTeamId);
-                        return FundingInvestmentResponse.from(model, teamName, businessName);
+                        return FundingInvestmentResponse.from(model,
+                                teamNameMap.getOrDefault(targetTeamId, "Unknown"),
+                                businessNameMap.getOrDefault(targetTeamId, ""));
                     })
                     .collect(Collectors.toList());
         } else {
-            return fLetterOfIntent2Repository.findByUserId(userId).stream()
+            var investments = fLetterOfIntent2Repository.findByUserId(userId);
+            List<Integer> targetTeamIds = investments.stream()
+                    .map(m -> Integer.parseInt(m.getInvestmentTarget()))
+                    .collect(Collectors.toList());
+            Map<Integer, String> teamNameMap = preloadTeamNames(targetTeamIds);
+            Map<Integer, String> businessNameMap = businessNameResolver.resolveBulk(canvasType, targetTeamIds);
+            return investments.stream()
                     .map(model -> {
                         Integer targetTeamId = Integer.parseInt(model.getInvestmentTarget());
-                        String teamName = tbTeamRepository.findByTeamId(targetTeamId)
-                                .map(TbTeamModel::getName)
-                                .orElse("Unknown");
-                        String businessName = businessNameResolver.resolve(canvasType, targetTeamId);
-                        return FundingInvestmentResponse.from(model, teamName, businessName);
+                        return FundingInvestmentResponse.from(model,
+                                teamNameMap.getOrDefault(targetTeamId, "Unknown"),
+                                businessNameMap.getOrDefault(targetTeamId, ""));
                     })
                     .collect(Collectors.toList());
         }
@@ -156,11 +185,18 @@ public class FundingReader {
         return "build".equalsIgnoreCase(canvasType);
     }
 
-    private FundingPortfolioResponse.PortfolioItem createPortfolioItem(String investmentTarget, String investmentPrice) {
+    private Map<Integer, String> preloadTeamNames(List<Integer> teamIds) {
+        if (teamIds.isEmpty()) {
+            return Map.of();
+        }
+        return tbTeamRepository.findByTeamIdIn(teamIds).stream()
+                .collect(Collectors.toMap(TbTeamModel::getTeamId, TbTeamModel::getName, (a, b) -> a));
+    }
+
+    private FundingPortfolioResponse.PortfolioItem createPortfolioItem(
+            String investmentTarget, String investmentPrice, Map<Integer, String> teamNameMap) {
         Integer teamId = Integer.parseInt(investmentTarget);
-        String teamName = tbTeamRepository.findByTeamId(teamId)
-                .map(TbTeamModel::getName)
-                .orElse("Unknown");
+        String teamName = teamNameMap.getOrDefault(teamId, "Unknown");
         return FundingPortfolioResponse.PortfolioItem.from(teamId, teamName, parsePrice(investmentPrice));
     }
 

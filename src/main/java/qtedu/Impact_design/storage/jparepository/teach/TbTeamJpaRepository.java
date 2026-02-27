@@ -16,6 +16,7 @@ public interface TbTeamJpaRepository extends JpaRepository<TbTeam, Integer> {
     @Query("SELECT t FROM TbTeam t WHERE t.code = :code AND t.teamId != :teamId AND (t.status IS NULL OR t.status != -1)")
     List<TbTeam> findByCodeExcludingDeletedTeam(@Param("code") String code, @Param("teamId") Integer teamId);
     Optional<TbTeam> findByTeamId(Integer teamId);
+    List<TbTeam> findByTeamIdIn(List<Integer> teamIds);
 
     @Query(value = """
         SELECT t.* FROM tbteam t

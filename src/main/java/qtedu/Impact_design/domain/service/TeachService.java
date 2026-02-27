@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import qtedu.Impact_design.api.dto.request.teach.ClassSaveRequest;
+import qtedu.Impact_design.api.dto.request.teach.ClassUpdateRequest;
 import qtedu.Impact_design.api.dto.response.teach.ClassInfoResponse;
 import qtedu.Impact_design.api.dto.response.teach.StudentListResponse;
 import qtedu.Impact_design.api.dto.response.teach.TeachDetail2Response;
@@ -49,6 +50,10 @@ public class TeachService {
 
     public Integer updateClass(Integer gameId, ClassSaveRequest request, MultipartFile image) {
         return teachUpdater.updateClass(gameId, request, image);
+    }
+
+    public Integer updateClass(Integer gameId, ClassUpdateRequest request) {
+        return teachUpdater.updateClass(gameId, request);
     }
 
     public void startClass(Integer gameId, String enddate) {
