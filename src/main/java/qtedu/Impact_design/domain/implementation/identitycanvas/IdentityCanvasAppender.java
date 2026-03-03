@@ -46,7 +46,7 @@ public class IdentityCanvasAppender {
                 .build();
 
         IdentityCanvasModel saved = identityCanvasRepository.save(model);
-        return IdentityCanvasResponse.from(saved, null);
+        return IdentityCanvasResponse.from(saved);
     }
 
     @Transactional

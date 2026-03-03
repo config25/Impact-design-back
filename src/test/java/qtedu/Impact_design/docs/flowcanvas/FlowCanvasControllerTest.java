@@ -71,7 +71,6 @@ class FlowCanvasControllerTest extends RestDocsTestSupport {
                 .newVision("지속 가능한 미래")
                 .goals(List.of(goal))
                 .submitted(submitted)
-                .imageUrl("http://iptdesign.mycafe24.com/uploads/class/1/image.png")
                 .build();
     }
 
@@ -128,8 +127,7 @@ class FlowCanvasControllerTest extends RestDocsTestSupport {
                                 fieldWithPath("data.goals[].strategicActivities[].activityMetric").description("전략적 활동 지표"),
                                 fieldWithPath("data.goals[].strategicActivities[].interCriteria").description("내재화 기준"),
                                 fieldWithPath("data.goals[].strategicActivities[].orderNo").description("활동 순서"),
-                                fieldWithPath("data.submitted").description("제출 여부"),
-                                fieldWithPath("data.imageUrl").description("이미지 URL").optional()
+                                fieldWithPath("data.submitted").description("제출 여부")
                         )
                 ));
     }
@@ -183,8 +181,7 @@ class FlowCanvasControllerTest extends RestDocsTestSupport {
                                 fieldWithPath("data.goals[].strategicActivities[].activityMetric").description("전략적 활동 지표"),
                                 fieldWithPath("data.goals[].strategicActivities[].interCriteria").description("내재화 기준"),
                                 fieldWithPath("data.goals[].strategicActivities[].orderNo").description("활동 순서"),
-                                fieldWithPath("data.submitted").description("제출 여부"),
-                                fieldWithPath("data.imageUrl").description("이미지 URL").optional()
+                                fieldWithPath("data.submitted").description("제출 여부")
                         )
                 ));
     }
@@ -258,8 +255,7 @@ class FlowCanvasControllerTest extends RestDocsTestSupport {
                                 fieldWithPath("data.goals[].strategicActivities[].activityMetric").description("전략적 활동 지표"),
                                 fieldWithPath("data.goals[].strategicActivities[].interCriteria").description("내재화 기준"),
                                 fieldWithPath("data.goals[].strategicActivities[].orderNo").description("활동 순서"),
-                                fieldWithPath("data.submitted").description("제출 여부"),
-                                fieldWithPath("data.imageUrl").description("이미지 URL").optional()
+                                fieldWithPath("data.submitted").description("제출 여부")
                         )
                 ));
     }

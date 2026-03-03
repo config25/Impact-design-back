@@ -75,7 +75,6 @@ class QuickWinCanvasControllerTest extends RestDocsTestSupport {
                                 .outcomeNo(2L).outcomeType(OutcomeType.QUALITATIVE)
                                 .outcomeContent("주민 만족도 향상").orderNo(2).build()
                 ))
-                .imageUrl("http://iptdesign.mycafe24.com/uploads/class/1/image.png")
                 .build();
     }
 
@@ -144,8 +143,7 @@ class QuickWinCanvasControllerTest extends RestDocsTestSupport {
                                 fieldWithPath("data.taskOutcomes[].outcomeNo").description("성과 번호"),
                                 fieldWithPath("data.taskOutcomes[].outcomeType").description("성과 유형 (QUANTITATIVE, QUALITATIVE)"),
                                 fieldWithPath("data.taskOutcomes[].outcomeContent").description("성과 내용"),
-                                fieldWithPath("data.taskOutcomes[].orderNo").description("순서"),
-                                fieldWithPath("data.imageUrl").description("이미지 URL").optional()
+                                fieldWithPath("data.taskOutcomes[].orderNo").description("순서")
                         )
                 ));
     }
@@ -220,8 +218,7 @@ class QuickWinCanvasControllerTest extends RestDocsTestSupport {
                                 fieldWithPath("data.taskOutcomes[].outcomeNo").description("성과 번호"),
                                 fieldWithPath("data.taskOutcomes[].outcomeType").description("성과 유형 (QUANTITATIVE, QUALITATIVE)"),
                                 fieldWithPath("data.taskOutcomes[].outcomeContent").description("성과 내용"),
-                                fieldWithPath("data.taskOutcomes[].orderNo").description("순서"),
-                                fieldWithPath("data.imageUrl").description("이미지 URL").optional()
+                                fieldWithPath("data.taskOutcomes[].orderNo").description("순서")
                         )
                 ));
     }
@@ -316,8 +313,7 @@ class QuickWinCanvasControllerTest extends RestDocsTestSupport {
                                 fieldWithPath("data.taskOutcomes[].outcomeNo").description("성과 번호"),
                                 fieldWithPath("data.taskOutcomes[].outcomeType").description("성과 유형 (QUANTITATIVE, QUALITATIVE)"),
                                 fieldWithPath("data.taskOutcomes[].outcomeContent").description("성과 내용"),
-                                fieldWithPath("data.taskOutcomes[].orderNo").description("순서"),
-                                fieldWithPath("data.imageUrl").description("이미지 URL").optional()
+                                fieldWithPath("data.taskOutcomes[].orderNo").description("순서")
                         )
                 ));
     }

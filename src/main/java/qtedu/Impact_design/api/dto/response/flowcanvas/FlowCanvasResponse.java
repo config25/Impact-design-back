@@ -15,7 +15,6 @@ public class FlowCanvasResponse {
     private String newVision;
     private List<GoalItem> goals;
     private Boolean submitted;
-    private String imageUrl;
 
     @Getter
     @Builder

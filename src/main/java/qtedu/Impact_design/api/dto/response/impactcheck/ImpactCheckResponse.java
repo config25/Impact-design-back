@@ -26,7 +26,6 @@ public class ImpactCheckResponse {
     private String q16Text;
     private Long userId;
     private Boolean submitted;
-    private String gameName;
 
     public static ImpactCheckResponse from(ImpactCheckModel model) {
         return ImpactCheckResponse.builder()
@@ -52,35 +51,10 @@ public class ImpactCheckResponse {
                 .build();
     }
 
-    public static ImpactCheckResponse from(ImpactCheckModel model, String gameName) {
+    public static ImpactCheckResponse empty() {
         return ImpactCheckResponse.builder()
-                .answerId(model.getAnswerId())
-                .q1Score(model.getQ1Score())
-                .q2Score(model.getQ2Score())
-                .q3Score(model.getQ3Score())
-                .q4Score(model.getQ4Score())
-                .q5Score(model.getQ5Score())
-                .q6Score(model.getQ6Score())
-                .q7Score(model.getQ7Score())
-                .q8Score(model.getQ8Score())
-                .q9Score(model.getQ9Score())
-                .q10Score(model.getQ10Score())
-                .q11Score(model.getQ11Score())
-                .q12Score(model.getQ12Score())
-                .q13Text(model.getQ13Text())
-                .q14Text(model.getQ14Text())
-                .q15Text(model.getQ15Text())
-                .q16Text(model.getQ16Text())
-                .userId(model.getUserId())
-                .submitted(model.getSubmitted())
-                .gameName(gameName)
+                .submitted(false)
                 .build();
     }
 
-    public static ImpactCheckResponse empty(String gameName) {
-        return ImpactCheckResponse.builder()
-                .submitted(false)
-                .gameName(gameName)
-                .build();
-    }
 }

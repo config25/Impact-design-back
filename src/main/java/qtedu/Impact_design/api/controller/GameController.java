@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import qtedu.Impact_design.api.dto.response.game.StudentDashboardResponse;
 import qtedu.Impact_design.api.util.ResponseHelper;
 import qtedu.Impact_design.api.util.security.CurrentUser;
 import qtedu.Impact_design.common.response.HttpResponse;
@@ -29,5 +30,13 @@ public class GameController {
     ) {
         String step = gameService.getUserStep(userId.getId());
         return ResponseHelper.success(Map.of("step", step));
+    }
+
+    @GetMapping("/dashboard")
+    public ResponseEntity<HttpResponse<StudentDashboardResponse>> getDashboard(
+            @CurrentUser UserId userId
+    ) {
+        StudentDashboardResponse response = gameService.getDashboard(userId.getId());
+        return ResponseHelper.success(response);
     }
 }

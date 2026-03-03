@@ -44,7 +44,10 @@
       "Bash(ls:*)",
       "Bash(git remote:*)",
       "WebFetch(domain:iptdesign.mycafe24.com)",
-      "Bash(cd:*)"
+      "Bash(cd:*)",
+      "Bash(wc:*)",
+      "Bash(git checkout:*)",
+      "Bash(./gradlew asciidoctor:*)"
     ]
   }
 }

@@ -65,7 +65,6 @@ class ImpactCheckControllerTest extends RestDocsTestSupport {
                 .q16Text("더 많은 사례를 보고 싶습니다.")
                 .userId(1L)
                 .submitted(false)
-                .gameName("임팩트디자인 1반")
                 .build();
     }
 
@@ -122,8 +121,7 @@ class ImpactCheckControllerTest extends RestDocsTestSupport {
                                 fieldWithPath("data.q15Text").description("15번 텍스트 답변"),
                                 fieldWithPath("data.q16Text").description("16번 텍스트 답변"),
                                 fieldWithPath("data.userId").description("사용자 ID"),
-                                fieldWithPath("data.submitted").description("제출 여부"),
-                                fieldWithPath("data.gameName").description("강의실 이름").optional()
+                                fieldWithPath("data.submitted").description("제출 여부")
                         )
                 ));
     }
@@ -180,8 +178,7 @@ class ImpactCheckControllerTest extends RestDocsTestSupport {
                                 fieldWithPath("data.q15Text").description("15번 텍스트 답변"),
                                 fieldWithPath("data.q16Text").description("16번 텍스트 답변"),
                                 fieldWithPath("data.userId").description("사용자 ID"),
-                                fieldWithPath("data.submitted").description("제출 여부"),
-                                fieldWithPath("data.gameName").description("강의실 이름").optional()
+                                fieldWithPath("data.submitted").description("제출 여부")
                         )
                 ));
     }
@@ -222,7 +219,6 @@ class ImpactCheckControllerTest extends RestDocsTestSupport {
                 .q16Text("더 많은 사례를 보고 싶습니다.")
                 .userId(1L)
                 .submitted(true)
-                .gameName("임팩트디자인 1반")
                 .build();
 
         given(impactCheckService.submitImpactCheck(anyLong(), any()))
@@ -271,8 +267,7 @@ class ImpactCheckControllerTest extends RestDocsTestSupport {
                                 fieldWithPath("data.q15Text").description("15번 텍스트 답변"),
                                 fieldWithPath("data.q16Text").description("16번 텍스트 답변"),
                                 fieldWithPath("data.userId").description("사용자 ID"),
-                                fieldWithPath("data.submitted").description("제출 여부"),
-                                fieldWithPath("data.gameName").description("게임 이름").optional()
+                                fieldWithPath("data.submitted").description("제출 여부")
                         )
                 ));
     }

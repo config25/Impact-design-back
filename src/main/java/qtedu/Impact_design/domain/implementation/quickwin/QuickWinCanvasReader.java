@@ -7,7 +7,6 @@ import qtedu.Impact_design.domain.model.FLetterOfIntentModel;
 import qtedu.Impact_design.domain.model.en.CanvasType;
 import qtedu.Impact_design.domain.model.win_canvas.*;
 import qtedu.Impact_design.domain.repository.FLetterOfIntentRepository;
-import qtedu.Impact_design.domain.repository.teach.TbGameRepository;
 import qtedu.Impact_design.domain.repository.win_canvas.*;
 
 import java.util.Collections;
@@ -24,13 +23,11 @@ public class QuickWinCanvasReader {
     private final TeamworkRepository teamworkRepository;
     private final TaskOutcomeRepository taskOutcomeRepository;
     private final FLetterOfIntentRepository fLetterOfIntentRepository;
-    private final TbGameRepository tbGameRepository;
 
     public QuickWinCanvasResponse read(Long userId) {
-        String imageUrl = tbGameRepository.findGameImageUrlByUserId(userId);
         Optional<WinCanvasModel> canvasOpt = winCanvasRepository.findByUserIdAndCanvasType(userId, CanvasType.QUICK);
         if (canvasOpt.isEmpty()) {
-            return QuickWinCanvasResponse.builder().imageUrl(imageUrl).build();
+            return QuickWinCanvasResponse.builder().build();
         }
 
         WinCanvasModel canvas = canvasOpt.get();
@@ -41,7 +38,7 @@ public class QuickWinCanvasReader {
         TeamworkModel teamwork = teamworkRepository.findByCanvasId(canvasId).orElse(null);
         List<TaskOutcomeModel> outcomes = taskOutcomeRepository.findByCanvasId(canvasId);
 
-        return QuickWinCanvasResponse.from(canvas, inputs, activities, teamwork, outcomes, imageUrl);
+        return QuickWinCanvasResponse.from(canvas, inputs, activities, teamwork, outcomes);
     }
 
     public List<WinCanvasModel> readCanvasesByUserIds(List<Long> userIds) {

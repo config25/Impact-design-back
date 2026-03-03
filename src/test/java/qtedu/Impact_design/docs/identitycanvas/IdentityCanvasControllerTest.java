@@ -63,7 +63,6 @@ class IdentityCanvasControllerTest extends RestDocsTestSupport {
                 .newValue("새로운 가치")
                 .userId(1L)
                 .submitted(submitted)
-                .imageUrl("http://iptdesign.mycafe24.com/uploads/class/1/image.png")
                 .build();
     }
 
@@ -116,8 +115,7 @@ class IdentityCanvasControllerTest extends RestDocsTestSupport {
                                 fieldWithPath("data.newVision").description("새로운 비전"),
                                 fieldWithPath("data.newValue").description("새로운 가치"),
                                 fieldWithPath("data.userId").description("사용자 ID"),
-                                fieldWithPath("data.submitted").description("제출 여부"),
-                                fieldWithPath("data.imageUrl").description("이미지 URL").optional()
+                                fieldWithPath("data.submitted").description("제출 여부")
                         )
                 ));
     }
@@ -170,8 +168,7 @@ class IdentityCanvasControllerTest extends RestDocsTestSupport {
                                 fieldWithPath("data.newVision").description("새로운 비전"),
                                 fieldWithPath("data.newValue").description("새로운 가치"),
                                 fieldWithPath("data.userId").description("사용자 ID"),
-                                fieldWithPath("data.submitted").description("제출 여부"),
-                                fieldWithPath("data.imageUrl").description("이미지 URL").optional()
+                                fieldWithPath("data.submitted").description("제출 여부")
                         )
                 ));
     }
@@ -244,8 +241,7 @@ class IdentityCanvasControllerTest extends RestDocsTestSupport {
                                 fieldWithPath("data.newVision").description("새로운 비전"),
                                 fieldWithPath("data.newValue").description("새로운 가치"),
                                 fieldWithPath("data.userId").description("사용자 ID"),
-                                fieldWithPath("data.submitted").description("제출 여부"),
-                                fieldWithPath("data.imageUrl").description("이미지 URL").optional()
+                                fieldWithPath("data.submitted").description("제출 여부")
                         )
                 ));
     }
