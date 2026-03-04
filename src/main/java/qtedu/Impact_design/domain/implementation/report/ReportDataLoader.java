@@ -14,7 +14,12 @@ import qtedu.Impact_design.domain.model.win_canvas.WinCanvasModel;
 import qtedu.Impact_design.domain.repository.FLetterOfIntentRepository;
 import qtedu.Impact_design.domain.repository.FLetterOfIntent2Repository;
 import qtedu.Impact_design.domain.repository.auth.TeamUserRepository;
-import qtedu.Impact_design.domain.service.*;
+import qtedu.Impact_design.domain.implementation.buildwin.BuildWinCanvasReader;
+import qtedu.Impact_design.domain.implementation.flowcanvas.FlowCanvasReader;
+import qtedu.Impact_design.domain.implementation.identitycanvas.IdentityCanvasReader;
+import qtedu.Impact_design.domain.implementation.impactcheck.ImpactCheckReader;
+import qtedu.Impact_design.domain.implementation.quickwin.QuickWinCanvasReader;
+import qtedu.Impact_design.domain.implementation.team.TeamReader;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -23,33 +28,33 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ReportDataLoader {
 
-    private final TeamService teamService;
-    private final ImpactCheckService impactCheckService;
-    private final IdentityCanvasService identityCanvasService;
-    private final FlowCanvasService flowCanvasService;
-    private final QuickWinCanvasService quickWinCanvasService;
-    private final BuildWinCanvasService buildWinCanvasService;
+    private final TeamReader teamReader;
+    private final ImpactCheckReader impactCheckReader;
+    private final IdentityCanvasReader identityCanvasReader;
+    private final FlowCanvasReader flowCanvasReader;
+    private final QuickWinCanvasReader quickWinCanvasReader;
+    private final BuildWinCanvasReader buildWinCanvasReader;
     private final FLetterOfIntentRepository fLetterOfIntentRepository;
     private final FLetterOfIntent2Repository fLetterOfIntent2Repository;
     private final TeamUserRepository teamUserRepository;
 
     public ReportRawData load(Integer teamId) {
-        List<Long> userIds = teamService.getTeamMemberUserIdsByTeamId(teamId);
+        List<Long> userIds = teamReader.readTeamMemberUserIdsByTeamId(teamId);
 
-        List<FlowCanvasModel> flowCanvases = flowCanvasService.getFlowCanvasesByUserIds(userIds);
+        List<FlowCanvasModel> flowCanvases = flowCanvasReader.readByUserIds(userIds);
         List<Long> goalIds = flowCanvases.stream()
                 .map(FlowCanvasModel::getGoalId)
                 .collect(Collectors.toList());
 
-        List<WinCanvasModel> quickCanvases = quickWinCanvasService.getCanvasesByUserIds(userIds);
-        List<WinCanvasModel> buildCanvases = buildWinCanvasService.getCanvasesByUserIds(userIds);
+        List<WinCanvasModel> quickCanvases = quickWinCanvasReader.readCanvasesByUserIds(userIds);
+        List<WinCanvasModel> buildCanvases = buildWinCanvasReader.readCanvasesByUserIds(userIds);
 
         return ReportRawData.builder()
-                .impactChecks(impactCheckService.getImpactChecksByUserIds(userIds))
-                .identityCanvases(identityCanvasService.getIdentityCanvasesByUserIds(userIds))
+                .impactChecks(impactCheckReader.readByUserIds(userIds))
+                .identityCanvases(identityCanvasReader.readByUserIds(userIds))
                 .flowCanvases(flowCanvases)
-                .tacticals(flowCanvasService.getTacticalsByGoalIds(goalIds))
-                .strategicActivities(flowCanvasService.getStrategicActivitiesByGoalIds(goalIds))
+                .tacticals(flowCanvasReader.readTacticalsByGoalIds(goalIds))
+                .strategicActivities(flowCanvasReader.readStrategicActivitiesByGoalIds(goalIds))
                 .quickCanvases(quickCanvases)
                 .buildCanvases(buildCanvases)
                 .quickIntents(fLetterOfIntent2Repository.findByTargetTeamId(teamId))
@@ -73,17 +78,17 @@ public class ReportDataLoader {
                 .collect(Collectors.toList());
 
         // 3. 전체 데이터를 한번에 배치 조회
-        List<ImpactCheckModel> allImpactChecks = impactCheckService.getImpactChecksByUserIds(allUserIds);
-        List<IdentityCanvasModel> allIdentityCanvases = identityCanvasService.getIdentityCanvasesByUserIds(allUserIds);
-        List<FlowCanvasModel> allFlowCanvases = flowCanvasService.getFlowCanvasesByUserIds(allUserIds);
-        List<WinCanvasModel> allQuickCanvases = quickWinCanvasService.getCanvasesByUserIds(allUserIds);
-        List<WinCanvasModel> allBuildCanvases = buildWinCanvasService.getCanvasesByUserIds(allUserIds);
+        List<ImpactCheckModel> allImpactChecks = impactCheckReader.readByUserIds(allUserIds);
+        List<IdentityCanvasModel> allIdentityCanvases = identityCanvasReader.readByUserIds(allUserIds);
+        List<FlowCanvasModel> allFlowCanvases = flowCanvasReader.readByUserIds(allUserIds);
+        List<WinCanvasModel> allQuickCanvases = quickWinCanvasReader.readCanvasesByUserIds(allUserIds);
+        List<WinCanvasModel> allBuildCanvases = buildWinCanvasReader.readCanvasesByUserIds(allUserIds);
 
         List<Long> allGoalIds = allFlowCanvases.stream()
                 .map(FlowCanvasModel::getGoalId)
                 .collect(Collectors.toList());
-        List<TacticalModel> allTacticals = flowCanvasService.getTacticalsByGoalIds(allGoalIds);
-        List<StrategicActivityModel> allStrategicActivities = flowCanvasService.getStrategicActivitiesByGoalIds(allGoalIds);
+        List<TacticalModel> allTacticals = flowCanvasReader.readTacticalsByGoalIds(allGoalIds);
+        List<StrategicActivityModel> allStrategicActivities = flowCanvasReader.readStrategicActivitiesByGoalIds(allGoalIds);
 
         List<FLetterOfIntentModel> allBuildIntents = fLetterOfIntentRepository.findByTargetTeamIds(teamIds);
         List<FLetterOfIntent2Model> allQuickIntents = fLetterOfIntent2Repository.findByTargetTeamIds(teamIds);

@@ -22,7 +22,7 @@ public class BuildWinCanvasReader {
     private final TaskActivityRepository taskActivityRepository;
     private final TeamworkRepository teamworkRepository;
     private final TaskOutcomeRepository taskOutcomeRepository;
-    private final FLetterOfIntent2Repository fLetterOfIntent2Repository;
+
 
     public BuildWinCanvasResponse read(Long userId) {
         Optional<WinCanvasModel> canvasOpt = winCanvasRepository.findByUserIdAndCanvasType(userId, CanvasType.BUILD);
@@ -45,7 +45,4 @@ public class BuildWinCanvasReader {
         return winCanvasRepository.findByUserIdInAndCanvasType(userIds, CanvasType.BUILD);
     }
 
-    public List<FLetterOfIntent2Model> readEvaluationsByCanvasIds(List<Long> canvasIds) {
-        return canvasIds.isEmpty() ? Collections.emptyList() : fLetterOfIntent2Repository.findByCanvasIdIn(canvasIds);
-    }
 }

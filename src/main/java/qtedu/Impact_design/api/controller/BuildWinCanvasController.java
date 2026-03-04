@@ -3,7 +3,7 @@ package qtedu.Impact_design.api.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import qtedu.Impact_design.api.dto.request.buildwin.BuildWinCanvasSaveRequest;
+import qtedu.Impact_design.api.dto.request.wincanvas.WinCanvasSaveRequest;
 import qtedu.Impact_design.api.dto.response.buildwin.BuildWinCanvasResponse;
 import qtedu.Impact_design.api.util.ResponseHelper;
 import qtedu.Impact_design.api.util.security.CurrentUser;
@@ -29,7 +29,7 @@ public class BuildWinCanvasController {
     @PostMapping
     public ResponseEntity<HttpResponse<BuildWinCanvasResponse>> saveBuildWinCanvas(
             @CurrentUser UserId userId,
-            @RequestBody BuildWinCanvasSaveRequest request
+            @RequestBody WinCanvasSaveRequest request
     ) {
         BuildWinCanvasResponse response = buildWinCanvasService.saveBuildWinCanvas(userId.getId(), request);
         return ResponseHelper.success(response);
@@ -38,7 +38,7 @@ public class BuildWinCanvasController {
     @PatchMapping("/submit")
     public ResponseEntity<HttpResponse<BuildWinCanvasResponse>> submitBuildWinCanvas(
             @CurrentUser UserId userId,
-            @RequestBody BuildWinCanvasSaveRequest request
+            @RequestBody WinCanvasSaveRequest request
     ) {
         BuildWinCanvasResponse response = buildWinCanvasService.submitBuildWinCanvas(userId.getId(), request);
         return ResponseHelper.success(response);

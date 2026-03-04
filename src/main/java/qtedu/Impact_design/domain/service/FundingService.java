@@ -7,7 +7,6 @@ import qtedu.Impact_design.api.dto.response.funding.*;
 import qtedu.Impact_design.api.dto.response.funding.FundingMyResultResponse;
 import qtedu.Impact_design.domain.implementation.funding.FundingAppender;
 import qtedu.Impact_design.domain.implementation.funding.FundingReader;
-import qtedu.Impact_design.domain.implementation.funding.FundingUpdater;
 
 @Service
 @RequiredArgsConstructor
@@ -15,7 +14,6 @@ public class FundingService {
 
     private final FundingReader fundingReader;
     private final FundingAppender fundingAppender;
-    private final FundingUpdater fundingUpdater;
 
     public FundingTeamListResponse getTeamList(String canvasType, Long userId) {
         return fundingReader.getTeamList(canvasType, userId);
@@ -38,7 +36,7 @@ public class FundingService {
     }
 
     public FundingSubmitResponse submit(String canvasType, Long userId, FundingInvestmentRequest request) {
-        return fundingUpdater.submit(canvasType, userId, request);
+        return fundingAppender.submit(canvasType, userId, request);
     }
 
     public FundingMyResultResponse getMyResult(Long userId) {

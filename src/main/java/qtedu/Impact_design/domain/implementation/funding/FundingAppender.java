@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import qtedu.Impact_design.api.dto.request.funding.FundingInvestmentRequest;
 import qtedu.Impact_design.api.dto.response.funding.FundingInvestmentResponse;
+import qtedu.Impact_design.api.dto.response.funding.FundingSubmitResponse;
 import qtedu.Impact_design.common.error.ConflictException;
 import qtedu.Impact_design.common.error.ErrorCode;
 import qtedu.Impact_design.common.error.NotFoundException;
@@ -153,11 +154,15 @@ public class FundingAppender {
      * 대상 팀의 대표작성자(writer) 캔버스 ID를 찾는다.
      */
     private Long resolveCanvasId(Integer targetTeamId, CanvasType canvasType) {
-        List<Long> writerIds = teamUserRepository.findByTeamId(targetTeamId).stream()
+        List<Long> userIds = teamUserRepository.findByTeamId(targetTeamId).stream()
                 .map(TeamUserModel::getUserId)
-                .filter(uid -> userinfoRepository.findByUserId(uid)
-                        .map(UserinfoModel::isWriter)
-                        .orElse(false))
+                .collect(Collectors.toList());
+
+        if (userIds.isEmpty()) return null;
+
+        List<Long> writerIds = userinfoRepository.findAllByUserIds(userIds).stream()
+                .filter(UserinfoModel::isWriter)
+                .map(UserinfoModel::getUserId)
                 .collect(Collectors.toList());
 
         if (writerIds.isEmpty()) return null;
@@ -166,6 +171,12 @@ public class FundingAppender {
         if (canvases.isEmpty()) return null;
 
         return canvases.get(0).getCanvasId();
+    }
+
+    @Transactional
+    public FundingSubmitResponse submit(String canvasType, Long userId, FundingInvestmentRequest request) {
+        saveInvestment(canvasType, userId, request);
+        return FundingSubmitResponse.builder().submitted(true).build();
     }
 
     private boolean isBuildType(String canvasType) {

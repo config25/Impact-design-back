@@ -1,4 +1,4 @@
-package qtedu.Impact_design.api.dto.request.buildwin;
+package qtedu.Impact_design.api.dto.request.wincanvas;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class BuildWinCanvasSaveRequest {
+public class WinCanvasSaveRequest {
     private String strategicGoal;
     private String taskName;
     private String taskDescription;

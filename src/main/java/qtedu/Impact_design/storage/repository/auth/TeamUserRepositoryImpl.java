@@ -51,6 +51,11 @@ public class TeamUserRepositoryImpl implements TeamUserRepository {
     }
 
     @Override
+    public Optional<String> findTeamNameByUserId(Long userId) {
+        return teamUserJpaRepository.findTeamNameByUserId(userId);
+    }
+
+    @Override
     public void deleteByUserId(Long userId) {
         teamUserJpaRepository.deleteByUserId(userId);
     }

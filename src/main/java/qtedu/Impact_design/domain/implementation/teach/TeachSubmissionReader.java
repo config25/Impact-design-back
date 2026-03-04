@@ -95,37 +95,31 @@ public class TeachSubmissionReader {
 
     public ImpactCheckResponse getImpactCheck(Integer teamId) {
         Long writerUserId = submitStatusChecker.findWriterUserId(teamId);
-        if (writerUserId == null) return null;
         return impactCheckReader.read(writerUserId);
     }
 
     public IdentityCanvasResponse getIdentityCanvas(Integer teamId) {
         Long writerUserId = submitStatusChecker.findWriterUserId(teamId);
-        if (writerUserId == null) return null;
         return identityCanvasReader.read(writerUserId);
     }
 
     public FlowCanvasResponse getFlowCanvas(Integer teamId) {
         Long writerUserId = submitStatusChecker.findWriterUserId(teamId);
-        if (writerUserId == null) return null;
         return flowCanvasReader.read(writerUserId);
     }
 
     public QuickWinCanvasResponse getQuickWinCanvas(Integer teamId) {
         Long writerUserId = submitStatusChecker.findWriterUserId(teamId);
-        if (writerUserId == null) return null;
         return quickWinCanvasReader.read(writerUserId);
     }
 
     public BuildWinCanvasResponse getBuildWinCanvas(Integer teamId) {
         Long writerUserId = submitStatusChecker.findWriterUserId(teamId);
-        if (writerUserId == null) return null;
         return buildWinCanvasReader.read(writerUserId);
     }
 
     public List<FundingInvestmentResponse> getFunding(String canvasType, Integer teamId) {
         Long writerUserId = submitStatusChecker.findWriterUserId(teamId);
-        if (writerUserId == null) return List.of();
         return fundingReader.readByUserId(canvasType, writerUserId);
     }
 

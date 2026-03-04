@@ -26,7 +26,7 @@ public class FlowCanvasService {
     public FlowCanvasResponse saveFlowCanvas(Long userId, FlowCanvasSaveRequest request) {
         return flowCanvasAppender.append(userId, request);
     }
-
+    //리포트
     public List<FlowCanvasModel> getFlowCanvasesByUserIds(List<Long> userIds) {
         return flowCanvasReader.readByUserIds(userIds);
     }
@@ -38,7 +38,7 @@ public class FlowCanvasService {
     public List<StrategicActivityModel> getStrategicActivitiesByGoalIds(List<Long> goalIds) {
         return flowCanvasReader.readStrategicActivitiesByGoalIds(goalIds);
     }
-
+    //
     public FlowCanvasResponse submitFlowCanvas(Long userId, FlowCanvasSaveRequest request) {
         return flowCanvasAppender.submit(userId, request);
     }

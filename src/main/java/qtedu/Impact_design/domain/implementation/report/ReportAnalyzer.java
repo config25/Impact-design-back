@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class ReportAnalysisService {
+public class ReportAnalyzer {
 
     private final AiService aiService;
 

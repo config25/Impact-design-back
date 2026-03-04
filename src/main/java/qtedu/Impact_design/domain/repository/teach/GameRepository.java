@@ -6,6 +6,5 @@ import java.util.List;
 
 public interface GameRepository {
     List<ClassInfoProjection> findClassList(Long userId, Integer status);
-    List<ClassInfoProjection> findAllClassList();
     List<ClassInfoProjection> findAllClassListByStatus(Integer status);
 }

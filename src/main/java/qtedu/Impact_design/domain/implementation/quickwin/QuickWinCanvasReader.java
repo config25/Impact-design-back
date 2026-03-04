@@ -45,7 +45,4 @@ public class QuickWinCanvasReader {
         return winCanvasRepository.findByUserIdInAndCanvasType(userIds, CanvasType.QUICK);
     }
 
-    public List<FLetterOfIntentModel> readEvaluationsByCanvasIds(List<Long> canvasIds) {
-        return canvasIds.isEmpty() ? Collections.emptyList() : fLetterOfIntentRepository.findByCanvasIdIn(canvasIds);
-    }
 }

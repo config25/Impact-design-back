@@ -20,11 +20,6 @@ public class GameRepositoryImpl implements GameRepository {
     }
 
     @Override
-    public List<ClassInfoProjection> findAllClassList() {
-        return tbGameJpaRepository.findAllClassList();
-    }
-
-    @Override
     public List<ClassInfoProjection> findAllClassListByStatus(Integer status) {
         return tbGameJpaRepository.findAllClassListByStatus(status);
     }

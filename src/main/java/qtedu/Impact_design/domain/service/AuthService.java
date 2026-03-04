@@ -3,11 +3,13 @@ package qtedu.Impact_design.domain.service;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import qtedu.Impact_design.api.dto.response.auth.TeamInfoResponse;
-import qtedu.Impact_design.domain.implementation.auth.AccountFacade;
+import qtedu.Impact_design.domain.implementation.auth.*;
 import qtedu.Impact_design.domain.model.JwtToken;
 import qtedu.Impact_design.domain.model.UserId;
 import qtedu.Impact_design.domain.model.en.UserRole;
+import qtedu.Impact_design.domain.model.user.UserinfoModel;
 
 import java.util.List;
 
@@ -15,29 +17,41 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final AccountFacade accountFacade;
+    private final AuthReader authReader;
+    private final AuthValidator authValidator;
+    private final AuthGenerator authGenerator;
+    private final AuthAppender authAppender;
+    private final AuthRemover authRemover;
 
+    @Transactional
     public JwtToken login(String loginId, String password) {
-        return accountFacade.login(loginId, password);
+        UserinfoModel userinfo = authReader.findUserByLoginId(loginId);
+        authValidator.validatePassword(password, userinfo.getPassword());
+        authValidator.validateStudentRole(userinfo);
+        return authGenerator.generateAndSaveToken(userinfo);
     }
 
+    @Transactional
     public Pair<JwtToken, UserRole> teacherLogin(String loginId, String password) {
-        return accountFacade.teacherLogin(loginId, password);
+        UserinfoModel userinfo = authReader.findUserByLoginId(loginId);
+        authValidator.validatePassword(password, userinfo.getPassword());
+        authValidator.validateTeacherRole(userinfo);
+        return Pair.of(authGenerator.generateAndSaveToken(userinfo), userinfo.getUserRole());
     }
 
     public List<TeamInfoResponse> checkCode(String code) {
-        return accountFacade.checkCode(code);
+        return authReader.checkCode(code);
     }
 
     public void checkLoginIdDuplicate(String loginId) {
-        accountFacade.checkLoginIdDuplicate(loginId);
+        authValidator.checkLoginIdDuplicate(loginId);
     }
 
     public void signup(String loginId, String password, String code, Integer teamId) {
-        accountFacade.signup(loginId, password, code, teamId);
+        authAppender.signup(loginId, password, code, teamId);
     }
 
     public void logout(UserId userId) {
-        accountFacade.logout(userId);
+        authRemover.logout(userId);
     }
 }

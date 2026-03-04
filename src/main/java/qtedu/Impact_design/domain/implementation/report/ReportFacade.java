@@ -7,9 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import qtedu.Impact_design.api.dto.response.report.ReportResponse;
 import qtedu.Impact_design.domain.model.team.TbGameModel;
 import qtedu.Impact_design.domain.model.team.TbTeamModel;
-import qtedu.Impact_design.domain.repository.auth.TbTeamRepository;
-import qtedu.Impact_design.domain.repository.teach.GameTeamRepository;
-import qtedu.Impact_design.domain.repository.teach.TbGameRepository;
 
 import java.util.List;
 import java.util.Map;
@@ -22,11 +19,9 @@ import java.util.stream.Collectors;
 public class ReportFacade {
 
     private final ReportDataLoader reportDataLoader;
-    private final ReportAnalysisService reportAnalysisService;
+    private final ReportAnalyzer reportAnalyzer;
     private final WinCanvasScoreCalculator winCanvasScoreCalculator;
-    private final TbGameRepository tbGameRepository;
-    private final TbTeamRepository tbTeamRepository;
-    private final GameTeamRepository gameTeamRepository;
+    private final ReportReader reportReader;
     private final ExecutorService ioExecutor;
 
     @Value("${file.base-url:}")
@@ -34,29 +29,25 @@ public class ReportFacade {
 
     public ReportFacade(
             ReportDataLoader reportDataLoader,
-            ReportAnalysisService reportAnalysisService,
+            ReportAnalyzer reportAnalyzer,
             WinCanvasScoreCalculator winCanvasScoreCalculator,
-            TbGameRepository tbGameRepository,
-            TbTeamRepository tbTeamRepository,
-            GameTeamRepository gameTeamRepository,
+            ReportReader reportReader,
             @Qualifier("ioExecutor") ExecutorService ioExecutor
     ) {
         this.reportDataLoader = reportDataLoader;
-        this.reportAnalysisService = reportAnalysisService;
+        this.reportAnalyzer = reportAnalyzer;
         this.winCanvasScoreCalculator = winCanvasScoreCalculator;
-        this.tbGameRepository = tbGameRepository;
-        this.tbTeamRepository = tbTeamRepository;
-        this.gameTeamRepository = gameTeamRepository;
+        this.reportReader = reportReader;
         this.ioExecutor = ioExecutor;
     }
 
     @Transactional(readOnly = true)
     public ReportResponse getReport(Integer teamId) {
         ReportRawData raw = reportDataLoader.load(teamId);
-        ReportAiResult aiResult = reportAnalysisService.analyze(raw);
+        ReportAiResult aiResult = reportAnalyzer.analyze(raw);
         ReportScoreResult scoreResult = winCanvasScoreCalculator.calculate(raw);
-        TbGameModel game = tbGameRepository.findByTeamId(teamId).orElse(null);
-        TbTeamModel team = tbTeamRepository.findByTeamId(teamId).orElse(null);
+        TbGameModel game = reportReader.findGameByTeamId(teamId).orElse(null);
+        TbTeamModel team = reportReader.findTeamById(teamId).orElse(null);
 
         String imageUrl = null;
         String className = null;
@@ -91,14 +82,14 @@ public class ReportFacade {
 
     @Transactional(readOnly = true)
     public List<ReportResponse> getReportsByGameId(Integer gameId) {
-        List<Integer> teamIds = gameTeamRepository.findTeamIdsByGameId(gameId);
+        List<Integer> teamIds = reportReader.findTeamIdsByGameId(gameId);
 
         // 1. 전체 팀 데이터를 한번에 배치 로드
         Map<Integer, ReportRawData> rawDataMap = reportDataLoader.loadBulk(teamIds);
 
         // 2. 게임/팀 정보를 한번에 조회
-        TbGameModel game = tbGameRepository.findById(gameId).orElse(null);
-        Map<Integer, TbTeamModel> teamMap = tbTeamRepository.findByTeamIdIn(teamIds).stream()
+        TbGameModel game = reportReader.findGameById(gameId).orElse(null);
+        Map<Integer, TbTeamModel> teamMap = reportReader.findTeamsByIds(teamIds).stream()
                 .collect(Collectors.toMap(TbTeamModel::getTeamId, Function.identity()));
 
         String imageUrl = null;
@@ -130,7 +121,7 @@ public class ReportFacade {
                                 .buildCanvases(List.of()).quickIntents(List.of())
                                 .buildIntents(List.of()).build();
                     }
-                    ReportAiResult aiResult = reportAnalysisService.analyze(raw);
+                    ReportAiResult aiResult = reportAnalyzer.analyze(raw);
                     ReportScoreResult scoreResult = winCanvasScoreCalculator.calculate(raw);
                     TbTeamModel team = teamMap.get(teamId);
 

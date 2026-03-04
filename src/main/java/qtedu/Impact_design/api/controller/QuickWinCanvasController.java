@@ -3,7 +3,7 @@ package qtedu.Impact_design.api.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import qtedu.Impact_design.api.dto.request.quickwin.QuickWinCanvasSaveRequest;
+import qtedu.Impact_design.api.dto.request.wincanvas.WinCanvasSaveRequest;
 import qtedu.Impact_design.api.dto.response.quickwin.QuickWinCanvasResponse;
 import qtedu.Impact_design.api.util.ResponseHelper;
 import qtedu.Impact_design.api.util.security.CurrentUser;
@@ -29,7 +29,7 @@ public class QuickWinCanvasController {
     @PostMapping
     public ResponseEntity<HttpResponse<QuickWinCanvasResponse>> saveQuickWinCanvas(
             @CurrentUser UserId userId,
-            @RequestBody QuickWinCanvasSaveRequest request
+            @RequestBody WinCanvasSaveRequest request
     ) {
         QuickWinCanvasResponse response = quickWinCanvasService.saveQuickWinCanvas(userId.getId(), request);
         return ResponseHelper.success(response);
@@ -38,7 +38,7 @@ public class QuickWinCanvasController {
     @PatchMapping("/submit")
     public ResponseEntity<HttpResponse<QuickWinCanvasResponse>> submitQuickWinCanvas(
             @CurrentUser UserId userId,
-            @RequestBody QuickWinCanvasSaveRequest request
+            @RequestBody WinCanvasSaveRequest request
     ) {
         QuickWinCanvasResponse response = quickWinCanvasService.submitQuickWinCanvas(userId.getId(), request);
         return ResponseHelper.success(response);

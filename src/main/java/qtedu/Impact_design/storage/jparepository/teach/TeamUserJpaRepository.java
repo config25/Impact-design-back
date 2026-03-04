@@ -26,4 +26,12 @@ public interface TeamUserJpaRepository extends JpaRepository<TeamUser, Integer> 
     void deleteByUserId(Long userId);
 
     List<TeamUser> findByTeamIdAndIsDoing(Integer teamId, Integer isDoing);
+
+    @Query(value = """
+            SELECT t.name FROM teamuser tu
+            INNER JOIN tbteam t ON tu.team_id = t.team_id
+            WHERE tu.user_id = :userId
+            LIMIT 1
+            """, nativeQuery = true)
+    Optional<String> findTeamNameByUserId(@Param("userId") Long userId);
 }

@@ -13,6 +13,9 @@ import qtedu.Impact_design.domain.repository.flow_canvas.FlowCanvasRepository;
 import qtedu.Impact_design.domain.repository.user.UserinfoRepository;
 import qtedu.Impact_design.domain.repository.win_canvas.WinCanvasRepository;
 
+import qtedu.Impact_design.common.error.ErrorCode;
+import qtedu.Impact_design.common.error.NotFoundException;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -43,7 +46,7 @@ public class TeamSubmitStatusChecker {
     public Long findWriterUserId(Integer teamId) {
         List<TeamUserModel> teamUsers = teamUserRepository.findByTeamId(teamId);
         if (teamUsers.isEmpty()) {
-            return null;
+            throw new NotFoundException(ErrorCode.TEAM_NOT_FOUND);
         }
 
         List<Long> userIds = teamUsers.stream()
@@ -60,7 +63,6 @@ public class TeamSubmitStatusChecker {
      * submitA: 성과관리 현황진단 (ImpactCheck)
      */
     public String checkSubmitA(Long writerUserId) {
-        if (writerUserId == null) return "미제출";
         return impactCheckRepository.existsSubmittedByUserId(writerUserId)
                 ? "제출" : "미제출";
     }
@@ -69,7 +71,6 @@ public class TeamSubmitStatusChecker {
      * submitB: 정체성 설계 (IdentityCanvas)
      */
     public String checkSubmitB(Long writerUserId) {
-        if (writerUserId == null) return "미제출";
         return identityCanvasRepository.existsSubmittedByUserId(writerUserId)
                 ? "제출" : "미제출";
     }
@@ -78,7 +79,6 @@ public class TeamSubmitStatusChecker {
      * submitC: 성과경로 설계 (FlowCanvas)
      */
     public String checkSubmitC(Long writerUserId) {
-        if (writerUserId == null) return "미제출";
         return flowCanvasRepository.existsSubmittedByUserId(writerUserId)
                 ? "제출" : "미제출";
     }
@@ -87,7 +87,6 @@ public class TeamSubmitStatusChecker {
      * submitD: 전술적 실행과제 (WinCanvas - QUICK)
      */
     public String checkSubmitD(Long writerUserId) {
-        if (writerUserId == null) return "미제출";
         return winCanvasRepository.existsSubmittedByUserIdAndCanvasType(writerUserId, CanvasType.QUICK)
                 ? "제출" : "미제출";
     }
@@ -96,7 +95,6 @@ public class TeamSubmitStatusChecker {
      * submitE: 전략적 실행과제 (WinCanvas - BUILD)
      */
     public String checkSubmitE(Long writerUserId) {
-        if (writerUserId == null) return "미제출";
         return winCanvasRepository.existsSubmittedByUserIdAndCanvasType(writerUserId, CanvasType.BUILD)
                 ? "제출" : "미제출";
     }
@@ -105,7 +103,6 @@ public class TeamSubmitStatusChecker {
      * submitF: 실행과제 검증 (FLetterOfIntent + FLetterOfIntent2)
      */
     public String checkSubmitF(Long writerUserId) {
-        if (writerUserId == null) return "미제출";
         boolean intent1 = fLetterOfIntentRepository.existsSubmittedByUserId(writerUserId);
         boolean intent2 = fLetterOfIntent2Repository.existsSubmittedByUserId(writerUserId);
         return (intent1 || intent2) ? "제출" : "미제출";
