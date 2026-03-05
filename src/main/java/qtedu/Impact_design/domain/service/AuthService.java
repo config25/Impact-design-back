@@ -28,7 +28,9 @@ public class AuthService {
         UserinfoModel userinfo = authReader.findUserByLoginId(loginId);
         authValidator.validatePassword(password, userinfo.getPassword());
         authValidator.validateStudentRole(userinfo);
-        return authGenerator.generateAndSaveToken(userinfo);
+        JwtToken jwtToken = authGenerator.generateToken(userinfo);
+        authAppender.saveLoggedIn(userinfo.getUserId(), jwtToken);
+        return jwtToken;
     }
 
     @Transactional
@@ -36,7 +38,9 @@ public class AuthService {
         UserinfoModel userinfo = authReader.findUserByLoginId(loginId);
         authValidator.validatePassword(password, userinfo.getPassword());
         authValidator.validateTeacherRole(userinfo);
-        return Pair.of(authGenerator.generateAndSaveToken(userinfo), userinfo.getUserRole());
+        JwtToken jwtToken = authGenerator.generateToken(userinfo);
+        authAppender.saveLoggedIn(userinfo.getUserId(), jwtToken);
+        return Pair.of(jwtToken, userinfo.getUserRole());
     }
 
     public List<TeamInfoResponse> checkCode(String code) {
