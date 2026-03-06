@@ -28,7 +28,7 @@
  │ Impact  │    │Identity │    │Perform- │    │  Quick  │    │  Build  │    │ Impact  │
  │  Check  │    │ Canvas  │    │ance Flow│    │   Win   │    │   Win   │    │ Review  │
  └─────────┘    └─────────┘    └─────────┘    └─────────┘    └─────────┘    └─────────┘
-   자가 진단      비전/미션       실행 흐름       빠른 실행       장기 실행       종합 검토
+   자가 진단      비전/미션       실행 흐름       빠른 실행       장기 실행         종합 검토
                    설정            설계            과제            과제
 ```
 
@@ -49,7 +49,7 @@
 
 ---
 
-## 🏗 Architecture
+## 🏗 Architecture 
 
 계층형 아키텍처에 CQRS(Reader/Appender) 패턴을 적용합니다.
 
@@ -68,7 +68,7 @@ Controller → Service → Facade/Implementation → Domain Repository → Repos
 ```
 qtedu.Impact_design/
 ├── api/
-│   ├── controller/          # REST 컨트롤러 (14개)
+│   ├── controller/          # REST 컨트롤러 (12개)
 │   ├── config/              # Security, Web, SPA, AI, S3 설정
 │   ├── dto/request/         # 요청 DTO (기능별)
 │   ├── dto/response/        # 응답 DTO (기능별)
@@ -85,7 +85,7 @@ qtedu.Impact_design/
 │   └── repository/          # 레포지토리 구현체
 ├── external/                # 외부 서비스 구현 (OpenAI, S3, LocalFile)
 └── common/
-    ├── error/               # 예외 클래스 (NotFoundException, ConflictException 등)
+    ├── error/               # 예외 클래스 (BadRequestException, NotFoundException, ConflictException 등)
     └── response/            # 공통 응답 (HttpResponse, ErrorResponse)
 ```
 
@@ -119,16 +119,17 @@ qtedu.Impact_design/
 |------|------|
 | `POST /api/auth/**` | 인증 (로그인, 회원가입, 코드 확인) |
 | `GET /api/game/step` | 현재 진행 단계 조회 |
+| `*/api/impact-check/**` | A단계 - Impact Check CRUD |
 | `*/api/identity-canvas/**` | B단계 - Identity Canvas CRUD |
 | `*/api/flow-canvas/**` | C단계 - Performance Flow CRUD |
 | `*/api/quick-win-canvas/**` | D단계 - Quick Win CRUD |
 | `*/api/build-win-canvas/**` | E단계 - Build Win CRUD |
-| `*/api/impact-check/**` | A단계 - Impact Check CRUD |
 | `*/api/funding/**` | F단계 - Impact Review |
 | `*/api/teach/**` | 강사 수업/팀/제출물 관리 |
 | `*/api/teach/report/**` | 팀 성과 리포트 |
 | `*/api/admin/**` | 관리자 대시보드 |
-| `POST /api/ai/chat` | AI 채팅(테스트용) |
+> D/E단계는 `WinCanvasController`에서 `CanvasType`으로 분기하여 통합 처리
+
 
 ### 📄 API 문서 (Spring REST Docs)
 
@@ -137,6 +138,11 @@ qtedu.Impact_design/
 ```
 빌드 시 자동 생성:
   테스트 실행 → Asciidoctor 스니펫 생성 → HTML 변환 → static/docs/index.html
+  
+  업데이트 명령어
+    - ./gradlew test asciidoctor
+    - cp build/docs/asciidoc/index.html src/main/resources/static/docs/index.html
+  
 ```
 
 | 테스트 클래스 | 커버 영역 |
@@ -154,6 +160,8 @@ qtedu.Impact_design/
 | `TeachSubmissionControllerTest` | 제출물 조회 |
 | `ReportControllerTest` | 리포트 생성 |
 | `AdminControllerTest` | 관리자 기능 |
+
+> D/E단계 테스트는 동일한 `WinCanvasController`를 대상으로 합니다.
 
 ---
 
@@ -349,6 +357,7 @@ java -jar build/libs/Impact_design-0.0.1-SNAPSHOT.jar --spring.profiles.active=l
 ### 🖥 서버 관리 명령어
 
 ```bash
+ssh root@iptdesign.mycafe24.com       # 서버 접속
 systemctl status impact               # 상태 확인
 sudo systemctl restart impact          # 재시작
 sudo systemctl stop impact             # 중지

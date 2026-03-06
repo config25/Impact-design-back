@@ -25,16 +25,16 @@ public class TbTeam {
     @Column(name = "status")
     private Integer status;
 
-    @Column(name = "aiPlay")
+    @Column(name = "ai_play")
     private Integer aiPlay;
 
     @Column(name = "code", length = 32)
     private String code;
 
-    @Column(name = "isDoing")
+    @Column(name = "is_doing")
     private Integer isDoing;
 
-    @Column(name = "team_gubun")
+    @Column(name = "team_category")
     private Integer teamCategory;
 
     @Column(name = "num_user")

@@ -2,6 +2,7 @@ package qtedu.Impact_design.storage.jpaentity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import qtedu.Impact_design.domain.model.en.CanvasType;
 
 import java.time.LocalDateTime;
 
@@ -18,10 +19,10 @@ public class FLetterOfIntent {
     @Column(name = "intent_index")
     private Integer intentIndex;
 
-    @Column(name = "stdntNo", nullable = false)
-    private Long stdntNo;
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
 
-    @Column(name = "courseCd", nullable = false, length = 32)
+    @Column(name = "course_cd", nullable = false, length = 32)
     private String courseCd;
 
     @Column(name = "investment_target", length = 32)
@@ -63,7 +64,7 @@ public class FLetterOfIntent {
     @Column(name = "opinion", columnDefinition = "TEXT")
     private String opinion;
 
-    @Column(name = "del_Yn", length = 8)
+    @Column(name = "del_yn", length = 8)
     private String delYn;
 
     @Column(name = "reg_id", length = 32)
@@ -88,11 +89,15 @@ public class FLetterOfIntent {
     @Column(name = "game_id")
     private Integer gameId;
 
-    @Column(name = "categoryCd", nullable = false, length = 32)
+    @Column(name = "category_cd", nullable = false, length = 32)
     private String categoryCd;
 
     @Column(name = "canvas_id")
     private Long canvasId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "canvas_type")
+    private CanvasType canvasType;
 
     public void update(String investmentPrice, Integer score1, Integer score2, Integer score3,
                        Integer score4, Integer score5, Integer score6, Integer score7,

@@ -14,6 +14,6 @@ public class AuthRemover {
 
     @Transactional
     public void logout(UserId userId) {
-        loggedInRepository.deleteByUserNo(userId.getId());
+        loggedInRepository.deleteByUserId(userId.getId());
     }
 }

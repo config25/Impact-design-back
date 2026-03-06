@@ -32,13 +32,13 @@ public class AuthAppender {
     }
 
     @Transactional
-    public void saveLoggedIn(Long userNo, JwtToken jwtToken) {
-        loggedInRepository.findByUserNo(userNo)
+    public void saveLoggedIn(Long userId, JwtToken jwtToken) {
+        loggedInRepository.findByUserId(userId)
                 .ifPresentOrElse(
                         loggedIn -> {
                             LoggedInModel updated = LoggedInModel.builder()
                                     .loggedInId(loggedIn.getLoggedInId())
-                                    .userNo(loggedIn.getUserNo())
+                                    .userId(loggedIn.getUserId())
                                     .refreshToken(jwtToken.getRefreshToken().getToken())
                                     .expiredAt(jwtToken.getRefreshToken().getExpiredAt())
                                     .build();
@@ -46,7 +46,7 @@ public class AuthAppender {
                         },
                         () -> {
                             LoggedInModel newLoggedIn = LoggedInModel.create(
-                                    userNo,
+                                    userId,
                                     jwtToken.getRefreshToken().getToken(),
                                     jwtToken.getRefreshToken().getExpiredAt()
                             );

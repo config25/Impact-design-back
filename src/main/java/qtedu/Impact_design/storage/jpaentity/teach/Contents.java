@@ -42,13 +42,13 @@ public class Contents {
     @Column(name = "ext_dir", length = 255)
     private String extDir;
 
-    @Column(name = "orgfilenm", length = 255)
+    @Column(name = "org_filename", length = 255)
     private String orgFilename;
 
-    @Column(name = "newfilenm", length = 255)
+    @Column(name = "new_filename", length = 255)
     private String newFilename;
 
-    @Column(name = "st_tp")
+    @Column(name = "status_type")
     private Integer statusType;
 
     @Column(name = "world_id")

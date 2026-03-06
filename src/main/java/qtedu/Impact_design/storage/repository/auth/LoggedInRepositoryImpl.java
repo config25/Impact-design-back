@@ -17,8 +17,8 @@ public class LoggedInRepositoryImpl implements LoggedInRepository {
     private final LoggedInJpaRepository loggedInJpaRepository;
 
     @Override
-    public Optional<LoggedInModel> findByUserNo(Long userNo) {
-        return loggedInJpaRepository.findByUserNo(userNo)
+    public Optional<LoggedInModel> findByUserId(Long userId) {
+        return loggedInJpaRepository.findByUserId(userId)
                 .map(this::toModel);
     }
 
@@ -31,7 +31,7 @@ public class LoggedInRepositoryImpl implements LoggedInRepository {
             entity.updateRefreshToken(model.getRefreshToken(), model.getExpiredAt());
         } else {
             entity = LoggedIn.builder()
-                    .userNo(model.getUserNo())
+                    .userId(model.getUserId())
                     .refreshToken(model.getRefreshToken())
                     .expiredAt(model.getExpiredAt())
                     .build();
@@ -42,8 +42,8 @@ public class LoggedInRepositoryImpl implements LoggedInRepository {
 
     @Override
     @Transactional
-    public void deleteByUserNo(Long userNo) {
-        loggedInJpaRepository.deleteByUserNo(userNo);
+    public void deleteByUserId(Long userId) {
+        loggedInJpaRepository.deleteByUserId(userId);
     }
 
     private LoggedInModel toModel(LoggedIn entity) {
@@ -51,7 +51,7 @@ public class LoggedInRepositoryImpl implements LoggedInRepository {
                 .loggedInId(entity.getLoggedInId())
                 .refreshToken(entity.getRefreshToken())
                 .expiredAt(entity.getExpiredAt())
-                .userNo(entity.getUserNo())
+                .userId(entity.getUserId())
                 .build();
     }
 }

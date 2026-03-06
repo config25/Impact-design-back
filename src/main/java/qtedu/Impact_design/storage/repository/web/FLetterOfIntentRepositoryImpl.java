@@ -3,6 +3,7 @@ package qtedu.Impact_design.storage.repository.web;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import qtedu.Impact_design.domain.model.FLetterOfIntentModel;
+import qtedu.Impact_design.domain.model.en.CanvasType;
 import qtedu.Impact_design.domain.repository.FLetterOfIntentRepository;
 import qtedu.Impact_design.storage.jpaentity.FLetterOfIntent;
 import qtedu.Impact_design.storage.jparepository.web.FLetterOfIntentJpaRepository;
@@ -28,16 +29,16 @@ public class FLetterOfIntentRepositoryImpl implements FLetterOfIntentRepository 
     }
 
     @Override
-    public List<FLetterOfIntentModel> findByUserId(Long userId) {
-        return fLetterOfIntentJpaRepository.findByStdntNoAndDelYn(userId, "N").stream()
+    public List<FLetterOfIntentModel> findByUserId(Long userId, CanvasType canvasType) {
+        return fLetterOfIntentJpaRepository.findByUserIdAndDelYnAndCanvasType(userId, "N", canvasType).stream()
                 .map(this::toModel)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<FLetterOfIntentModel> findByUserIdAndTargetTeamId(Long userId, Integer targetTeamId) {
+    public Optional<FLetterOfIntentModel> findByUserIdAndTargetTeamId(Long userId, Integer targetTeamId, CanvasType canvasType) {
         return fLetterOfIntentJpaRepository
-                .findByStdntNoAndInvestmentTargetAndDelYn(userId, String.valueOf(targetTeamId), "N")
+                .findByUserIdAndInvestmentTargetAndDelYnAndCanvasType(userId, String.valueOf(targetTeamId), "N", canvasType)
                 .map(this::toModel);
     }
 
@@ -57,7 +58,7 @@ public class FLetterOfIntentRepositoryImpl implements FLetterOfIntentRepository 
             );
         } else {
             entity = FLetterOfIntent.builder()
-                    .stdntNo(model.getStdntNo())
+                    .userId(model.getUserId())
                     .courseCd(model.getCourseCd() != null ? model.getCourseCd() : "C0001")
                     .categoryCd(model.getCategoryCd() != null ? model.getCategoryCd() : "CT001")
                     .investmentTarget(model.getInvestmentTarget())
@@ -73,12 +74,13 @@ public class FLetterOfIntentRepositoryImpl implements FLetterOfIntentRepository 
                     .score9(model.getScore9())
                     .opinion(model.getOpinion())
                     .delYn("N")
-                    .regId(String.valueOf(model.getStdntNo()))
+                    .regId(String.valueOf(model.getUserId()))
                     .regDt(LocalDateTime.now())
                     .submitted(Boolean.TRUE.equals(model.getSubmitted()))
                     .teamId(model.getTeamId())
                     .gameId(model.getGameId())
                     .canvasId(model.getCanvasId())
+                    .canvasType(model.getCanvasType())
                     .build();
         }
 
@@ -86,42 +88,42 @@ public class FLetterOfIntentRepositoryImpl implements FLetterOfIntentRepository 
     }
 
     @Override
-    public boolean existsSubmittedByUserId(Long userId) {
-        return fLetterOfIntentJpaRepository.existsByStdntNoAndSubmittedAndDelYn(userId, true, "N");
+    public boolean existsSubmittedByUserId(Long userId, CanvasType canvasType) {
+        return fLetterOfIntentJpaRepository.existsByUserIdAndSubmittedAndDelYnAndCanvasType(userId, true, "N", canvasType);
     }
 
     @Override
-    public void submitAllByUserId(Long userId) {
-        List<FLetterOfIntent> entities = fLetterOfIntentJpaRepository.findByStdntNoAndDelYn(userId, "N");
+    public void submitAllByUserId(Long userId, CanvasType canvasType) {
+        List<FLetterOfIntent> entities = fLetterOfIntentJpaRepository.findByUserIdAndDelYnAndCanvasType(userId, "N", canvasType);
         entities.forEach(FLetterOfIntent::submit);
         fLetterOfIntentJpaRepository.saveAll(entities);
     }
 
     @Override
-    public List<FLetterOfIntentModel> findByTargetTeamId(Integer teamId) {
+    public List<FLetterOfIntentModel> findByTargetTeamId(Integer teamId, CanvasType canvasType) {
         return fLetterOfIntentJpaRepository
-                .findByInvestmentTargetAndDelYn(String.valueOf(teamId), "N")
+                .findByInvestmentTargetAndDelYnAndCanvasType(String.valueOf(teamId), "N", canvasType)
                 .stream()
                 .map(this::toModel)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<FLetterOfIntentModel> findByTargetTeamIds(List<Integer> teamIds) {
+    public List<FLetterOfIntentModel> findByTargetTeamIds(List<Integer> teamIds, CanvasType canvasType) {
         List<String> targets = teamIds.stream().map(String::valueOf).collect(Collectors.toList());
         return fLetterOfIntentJpaRepository
-                .findByInvestmentTargetInAndDelYn(targets, "N")
+                .findByInvestmentTargetInAndDelYnAndCanvasType(targets, "N", canvasType)
                 .stream()
                 .map(this::toModel)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Set<Long> findSubmittedUserIds(List<Long> userIds) {
+    public Set<Long> findSubmittedUserIds(List<Long> userIds, CanvasType canvasType) {
         return fLetterOfIntentJpaRepository
-                .findByStdntNoInAndSubmittedAndDelYn(userIds, true, "N")
+                .findByUserIdInAndSubmittedAndDelYnAndCanvasType(userIds, true, "N", canvasType)
                 .stream()
-                .map(e -> e.getStdntNo())
+                .map(FLetterOfIntent::getUserId)
                 .collect(Collectors.toCollection(HashSet::new));
     }
 
@@ -133,7 +135,7 @@ public class FLetterOfIntentRepositoryImpl implements FLetterOfIntentRepository 
     private FLetterOfIntentModel toModel(FLetterOfIntent entity) {
         return FLetterOfIntentModel.builder()
                 .intentIndex(entity.getIntentIndex())
-                .stdntNo(entity.getStdntNo())
+                .userId(entity.getUserId())
                 .courseCd(entity.getCourseCd())
                 .investmentTarget(entity.getInvestmentTarget())
                 .investmentPrice(entity.getInvestmentPrice())
@@ -158,6 +160,7 @@ public class FLetterOfIntentRepositoryImpl implements FLetterOfIntentRepository 
                 .gameId(entity.getGameId())
                 .categoryCd(entity.getCategoryCd())
                 .canvasId(entity.getCanvasId())
+                .canvasType(entity.getCanvasType())
                 .build();
     }
 }

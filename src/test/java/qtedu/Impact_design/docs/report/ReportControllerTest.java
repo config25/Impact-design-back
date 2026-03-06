@@ -46,7 +46,7 @@ class ReportControllerTest extends RestDocsTestSupport {
         authenticateAs(1L);
 
         ReportResponse.ScoreDetail scoreDetail = ReportResponse.ScoreDetail.builder()
-                .intentIndex(1).stdntNo(10L)
+                .intentIndex(1).userId(10L)
                 .score1(4).score2(3).score3(5).score4(4).score5(3)
                 .score6(4).score7(5).score8(3).score9(4).totalScore(35)
                 .build();
@@ -210,7 +210,7 @@ class ReportControllerTest extends RestDocsTestSupport {
                                 fieldWithPath("data.quickWinCanvasList[].totalScore").description("총 점수"),
                                 fieldWithPath("data.quickWinCanvasList[].evaluations[]").description("평가 목록"),
                                 fieldWithPath("data.quickWinCanvasList[].evaluations[].intentIndex").description("투자 의향서 인덱스"),
-                                fieldWithPath("data.quickWinCanvasList[].evaluations[].stdntNo").description("학생 번호"),
+                                fieldWithPath("data.quickWinCanvasList[].evaluations[].userId").description("학생 번호"),
                                 fieldWithPath("data.quickWinCanvasList[].evaluations[].score1").description("점수1"),
                                 fieldWithPath("data.quickWinCanvasList[].evaluations[].score2").description("점수2"),
                                 fieldWithPath("data.quickWinCanvasList[].evaluations[].score3").description("점수3"),
@@ -231,7 +231,7 @@ class ReportControllerTest extends RestDocsTestSupport {
                                 fieldWithPath("data.buildWinCanvasList[].totalScore").description("총 점수"),
                                 fieldWithPath("data.buildWinCanvasList[].evaluations[]").description("평가 목록"),
                                 fieldWithPath("data.buildWinCanvasList[].evaluations[].intentIndex").description("투자 의향서 인덱스"),
-                                fieldWithPath("data.buildWinCanvasList[].evaluations[].stdntNo").description("학생 번호"),
+                                fieldWithPath("data.buildWinCanvasList[].evaluations[].userId").description("학생 번호"),
                                 fieldWithPath("data.buildWinCanvasList[].evaluations[].score1").description("점수1"),
                                 fieldWithPath("data.buildWinCanvasList[].evaluations[].score2").description("점수2"),
                                 fieldWithPath("data.buildWinCanvasList[].evaluations[].score3").description("점수3"),
@@ -252,7 +252,7 @@ class ReportControllerTest extends RestDocsTestSupport {
         authenticateAs(1L);
 
         ReportResponse.ScoreDetail scoreDetail = ReportResponse.ScoreDetail.builder()
-                .intentIndex(1).stdntNo(10L)
+                .intentIndex(1).userId(10L)
                 .score1(4).score2(3).score3(5).score4(4).score5(3)
                 .score6(4).score7(5).score8(3).score9(4).totalScore(35)
                 .build();
@@ -416,7 +416,7 @@ class ReportControllerTest extends RestDocsTestSupport {
                                 fieldWithPath("data[].quickWinCanvasList[].totalScore").description("총 점수"),
                                 fieldWithPath("data[].quickWinCanvasList[].evaluations[]").description("평가 목록"),
                                 fieldWithPath("data[].quickWinCanvasList[].evaluations[].intentIndex").description("투자 의향서 인덱스"),
-                                fieldWithPath("data[].quickWinCanvasList[].evaluations[].stdntNo").description("학생 번호"),
+                                fieldWithPath("data[].quickWinCanvasList[].evaluations[].userId").description("학생 번호"),
                                 fieldWithPath("data[].quickWinCanvasList[].evaluations[].score1").description("점수1"),
                                 fieldWithPath("data[].quickWinCanvasList[].evaluations[].score2").description("점수2"),
                                 fieldWithPath("data[].quickWinCanvasList[].evaluations[].score3").description("점수3"),
@@ -437,7 +437,7 @@ class ReportControllerTest extends RestDocsTestSupport {
                                 fieldWithPath("data[].buildWinCanvasList[].totalScore").description("총 점수"),
                                 fieldWithPath("data[].buildWinCanvasList[].evaluations[]").description("평가 목록"),
                                 fieldWithPath("data[].buildWinCanvasList[].evaluations[].intentIndex").description("투자 의향서 인덱스"),
-                                fieldWithPath("data[].buildWinCanvasList[].evaluations[].stdntNo").description("학생 번호"),
+                                fieldWithPath("data[].buildWinCanvasList[].evaluations[].userId").description("학생 번호"),
                                 fieldWithPath("data[].buildWinCanvasList[].evaluations[].score1").description("점수1"),
                                 fieldWithPath("data[].buildWinCanvasList[].evaluations[].score2").description("점수2"),
                                 fieldWithPath("data[].buildWinCanvasList[].evaluations[].score3").description("점수3"),

@@ -2,7 +2,6 @@ package qtedu.Impact_design.api.dto.response.funding;
 
 import lombok.Builder;
 import lombok.Getter;
-import qtedu.Impact_design.domain.model.FLetterOfIntent2Model;
 import qtedu.Impact_design.domain.model.FLetterOfIntentModel;
 
 @Getter
@@ -26,27 +25,6 @@ public class FundingInvestmentResponse {
     private Boolean submitted;
 
     public static FundingInvestmentResponse from(FLetterOfIntentModel model, String teamName, String businessName) {
-        return FundingInvestmentResponse.builder()
-                .intentIndex(model.getIntentIndex())
-                .investmentTarget(Integer.parseInt(model.getInvestmentTarget()))
-                .teamName(teamName)
-                .businessName(businessName)
-                .investmentPrice(model.getInvestmentPrice())
-                .score1(model.getScore1())
-                .score2(model.getScore2())
-                .score3(model.getScore3())
-                .score4(model.getScore4())
-                .score5(model.getScore5())
-                .score6(model.getScore6())
-                .score7(model.getScore7())
-                .score8(model.getScore8())
-                .score9(model.getScore9())
-                .opinion(model.getOpinion())
-                .submitted(Boolean.TRUE.equals(model.getSubmitted()))
-                .build();
-    }
-
-    public static FundingInvestmentResponse from(FLetterOfIntent2Model model, String teamName, String businessName) {
         return FundingInvestmentResponse.builder()
                 .intentIndex(model.getIntentIndex())
                 .investmentTarget(Integer.parseInt(model.getInvestmentTarget()))

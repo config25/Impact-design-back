@@ -6,9 +6,9 @@ import java.util.Optional;
 
 public interface LoggedInRepository {
 
-    Optional<LoggedInModel> findByUserNo(Long userNo);
+    Optional<LoggedInModel> findByUserId(Long userId);
 
     LoggedInModel save(LoggedInModel loggedInModel);
 
-    void deleteByUserNo(Long userNo);
+    void deleteByUserId(Long userId);
 }

@@ -25,7 +25,7 @@ public class TeamUser {
     @Column(name = "userlevel", nullable = false)
     private Integer userlevel;
 
-    @Column(name = "isDoing", nullable = false)
+    @Column(name = "is_doing", nullable = false)
     private Integer isDoing;
 
     public static TeamUser createStudent(Long userId, Integer teamId) {

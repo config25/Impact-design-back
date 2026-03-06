@@ -32,17 +32,17 @@ class LoggedInRepositoryImplTest {
     private final LocalDateTime expiredAt = LocalDateTime.of(2026, 3, 12, 0, 0);
 
     @Nested
-    @DisplayName("findByUserNo")
+    @DisplayName("findByUserId")
     class FindByUserNo {
 
         @Test
         @DisplayName("존재하면 Model로 변환하여 반환한다")
         void returnsModel() {
             LoggedIn entity = LoggedIn.builder()
-                    .loggedInId(1L).userNo(10L).refreshToken("token").expiredAt(expiredAt).build();
-            given(loggedInJpaRepository.findByUserNo(10L)).willReturn(Optional.of(entity));
+                    .loggedInId(1L).userId(10L).refreshToken("token").expiredAt(expiredAt).build();
+            given(loggedInJpaRepository.findByUserId(10L)).willReturn(Optional.of(entity));
 
-            Optional<LoggedInModel> result = loggedInRepository.findByUserNo(10L);
+            Optional<LoggedInModel> result = loggedInRepository.findByUserId(10L);
 
             assertThat(result).isPresent();
             assertThat(result.get().getLoggedInId()).isEqualTo(1L);
@@ -52,9 +52,9 @@ class LoggedInRepositoryImplTest {
         @Test
         @DisplayName("존재하지 않으면 빈 Optional을 반환한다")
         void returnsEmpty() {
-            given(loggedInJpaRepository.findByUserNo(999L)).willReturn(Optional.empty());
+            given(loggedInJpaRepository.findByUserId(999L)).willReturn(Optional.empty());
 
-            assertThat(loggedInRepository.findByUserNo(999L)).isEmpty();
+            assertThat(loggedInRepository.findByUserId(999L)).isEmpty();
         }
     }
 
@@ -66,9 +66,9 @@ class LoggedInRepositoryImplTest {
         @DisplayName("ID가 없으면 새 Entity를 생성하여 저장한다")
         void createsNew() {
             LoggedInModel model = LoggedInModel.builder()
-                    .userNo(10L).refreshToken("newToken").expiredAt(expiredAt).build();
+                    .userId(10L).refreshToken("newToken").expiredAt(expiredAt).build();
             LoggedIn savedEntity = LoggedIn.builder()
-                    .loggedInId(1L).userNo(10L).refreshToken("newToken").expiredAt(expiredAt).build();
+                    .loggedInId(1L).userId(10L).refreshToken("newToken").expiredAt(expiredAt).build();
             given(loggedInJpaRepository.save(any(LoggedIn.class))).willReturn(savedEntity);
 
             LoggedInModel result = loggedInRepository.save(model);
@@ -81,9 +81,9 @@ class LoggedInRepositoryImplTest {
         @DisplayName("ID가 있으면 기존 Entity를 찾아 업데이트한다")
         void updatesExisting() {
             LoggedInModel model = LoggedInModel.builder()
-                    .loggedInId(1L).userNo(10L).refreshToken("updatedToken").expiredAt(expiredAt).build();
+                    .loggedInId(1L).userId(10L).refreshToken("updatedToken").expiredAt(expiredAt).build();
             LoggedIn existingEntity = LoggedIn.builder()
-                    .loggedInId(1L).userNo(10L).refreshToken("oldToken").expiredAt(expiredAt).build();
+                    .loggedInId(1L).userId(10L).refreshToken("oldToken").expiredAt(expiredAt).build();
             given(loggedInJpaRepository.findById(1L)).willReturn(Optional.of(existingEntity));
             given(loggedInJpaRepository.save(existingEntity)).willReturn(existingEntity);
 
@@ -96,7 +96,7 @@ class LoggedInRepositoryImplTest {
         @DisplayName("ID가 있지만 Entity가 없으면 예외가 발생한다")
         void throwsWhenNotFound() {
             LoggedInModel model = LoggedInModel.builder()
-                    .loggedInId(999L).userNo(10L).refreshToken("token").expiredAt(expiredAt).build();
+                    .loggedInId(999L).userId(10L).refreshToken("token").expiredAt(expiredAt).build();
             given(loggedInJpaRepository.findById(999L)).willReturn(Optional.empty());
 
             assertThatThrownBy(() -> loggedInRepository.save(model))
@@ -105,10 +105,10 @@ class LoggedInRepositoryImplTest {
     }
 
     @Test
-    @DisplayName("deleteByUserNo - JPA에 위임한다")
-    void deleteByUserNo() {
-        loggedInRepository.deleteByUserNo(10L);
+    @DisplayName("deleteByUserId - JPA에 위임한다")
+    void deleteByUserId() {
+        loggedInRepository.deleteByUserId(10L);
 
-        then(loggedInJpaRepository).should().deleteByUserNo(10L);
+        then(loggedInJpaRepository).should().deleteByUserId(10L);
     }
 }

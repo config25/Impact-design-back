@@ -3,7 +3,6 @@ package qtedu.Impact_design.domain.implementation.report;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import qtedu.Impact_design.domain.model.FLetterOfIntentModel;
-import qtedu.Impact_design.domain.model.FLetterOfIntent2Model;
 import qtedu.Impact_design.domain.model.ImpactCheckModel;
 import qtedu.Impact_design.domain.model.IdentityCanvasModel;
 import qtedu.Impact_design.domain.model.flow_canvas.FlowCanvasModel;
@@ -12,7 +11,6 @@ import qtedu.Impact_design.domain.model.flow_canvas.TacticalModel;
 import qtedu.Impact_design.domain.model.team.TeamUserModel;
 import qtedu.Impact_design.domain.model.win_canvas.WinCanvasModel;
 import qtedu.Impact_design.domain.repository.FLetterOfIntentRepository;
-import qtedu.Impact_design.domain.repository.FLetterOfIntent2Repository;
 import qtedu.Impact_design.domain.repository.auth.TeamUserRepository;
 import qtedu.Impact_design.domain.implementation.flowcanvas.FlowCanvasReader;
 import qtedu.Impact_design.domain.implementation.identitycanvas.IdentityCanvasReader;
@@ -34,7 +32,6 @@ public class ReportDataAggregator {
     private final FlowCanvasReader flowCanvasReader;
     private final WinCanvasReader winCanvasReader;
     private final FLetterOfIntentRepository fLetterOfIntentRepository;
-    private final FLetterOfIntent2Repository fLetterOfIntent2Repository;
     private final TeamUserRepository teamUserRepository;
 
     public ReportRawData load(Integer teamId) {
@@ -56,13 +53,12 @@ public class ReportDataAggregator {
                 .strategicActivities(flowCanvasReader.readStrategicActivitiesByGoalIds(goalIds))
                 .quickCanvases(quickCanvases)
                 .buildCanvases(buildCanvases)
-                .quickIntents(fLetterOfIntent2Repository.findByTargetTeamId(teamId))
-                .buildIntents(fLetterOfIntentRepository.findByTargetTeamId(teamId))
+                .quickIntents(fLetterOfIntentRepository.findByTargetTeamId(teamId, CanvasType.QUICK))
+                .buildIntents(fLetterOfIntentRepository.findByTargetTeamId(teamId, CanvasType.BUILD))
                 .build();
     }
 
     public Map<Integer, ReportRawData> loadBulk(List<Integer> teamIds) {
-        // 1. 전체 팀의 userId 매핑을 한번에 조회
         List<TeamUserModel> allTeamUsers = teamUserRepository.findByTeamIdIn(teamIds);
         Map<Integer, List<Long>> teamUserMap = allTeamUsers.stream()
                 .collect(Collectors.groupingBy(
@@ -70,13 +66,11 @@ public class ReportDataAggregator {
                         Collectors.mapping(TeamUserModel::getUserId, Collectors.toList())
                 ));
 
-        // 2. 전체 userIds 합치기
         List<Long> allUserIds = allTeamUsers.stream()
                 .map(TeamUserModel::getUserId)
                 .distinct()
                 .collect(Collectors.toList());
 
-        // 3. 전체 데이터를 한번에 배치 조회
         List<ImpactCheckModel> allImpactChecks = impactCheckReader.readByUserIds(allUserIds);
         List<IdentityCanvasModel> allIdentityCanvases = identityCanvasReader.readByUserIds(allUserIds);
         List<FlowCanvasModel> allFlowCanvases = flowCanvasReader.readByUserIds(allUserIds);
@@ -89,10 +83,9 @@ public class ReportDataAggregator {
         List<TacticalModel> allTacticals = flowCanvasReader.readTacticalsByGoalIds(allGoalIds);
         List<StrategicActivityModel> allStrategicActivities = flowCanvasReader.readStrategicActivitiesByGoalIds(allGoalIds);
 
-        List<FLetterOfIntentModel> allBuildIntents = fLetterOfIntentRepository.findByTargetTeamIds(teamIds);
-        List<FLetterOfIntent2Model> allQuickIntents = fLetterOfIntent2Repository.findByTargetTeamIds(teamIds);
+        List<FLetterOfIntentModel> allBuildIntents = fLetterOfIntentRepository.findByTargetTeamIds(teamIds, CanvasType.BUILD);
+        List<FLetterOfIntentModel> allQuickIntents = fLetterOfIntentRepository.findByTargetTeamIds(teamIds, CanvasType.QUICK);
 
-        // 4. userId 기준으로 그룹핑
         Map<Long, List<ImpactCheckModel>> impactCheckByUser = allImpactChecks.stream()
                 .collect(Collectors.groupingBy(ImpactCheckModel::getUserId));
         Map<Long, List<IdentityCanvasModel>> identityByUser = allIdentityCanvases.stream()
@@ -108,17 +101,14 @@ public class ReportDataAggregator {
         Map<Long, List<StrategicActivityModel>> strategicByGoal = allStrategicActivities.stream()
                 .collect(Collectors.groupingBy(StrategicActivityModel::getGoalId));
 
-        // teamId 기준으로 intent 그룹핑
         Map<String, List<FLetterOfIntentModel>> buildIntentByTeam = allBuildIntents.stream()
                 .collect(Collectors.groupingBy(FLetterOfIntentModel::getInvestmentTarget));
-        Map<String, List<FLetterOfIntent2Model>> quickIntentByTeam = allQuickIntents.stream()
-                .collect(Collectors.groupingBy(FLetterOfIntent2Model::getInvestmentTarget));
+        Map<String, List<FLetterOfIntentModel>> quickIntentByTeam = allQuickIntents.stream()
+                .collect(Collectors.groupingBy(FLetterOfIntentModel::getInvestmentTarget));
 
-        // 5. 팀별로 ReportRawData 조립
         Map<Integer, ReportRawData> result = new HashMap<>();
         for (Integer teamId : teamIds) {
             List<Long> userIds = teamUserMap.getOrDefault(teamId, Collections.emptyList());
-            Set<Long> userIdSet = new HashSet<>(userIds);
 
             List<FlowCanvasModel> teamFlowCanvases = userIds.stream()
                     .flatMap(uid -> flowByUser.getOrDefault(uid, Collections.emptyList()).stream())
@@ -127,7 +117,6 @@ public class ReportDataAggregator {
             List<Long> teamGoalIds = teamFlowCanvases.stream()
                     .map(FlowCanvasModel::getGoalId)
                     .collect(Collectors.toList());
-            Set<Long> teamGoalIdSet = new HashSet<>(teamGoalIds);
 
             result.put(teamId, ReportRawData.builder()
                     .impactChecks(userIds.stream()

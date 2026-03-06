@@ -9,7 +9,7 @@ import java.util.Optional;
 @Repository
 public interface LoggedInJpaRepository extends JpaRepository<LoggedIn, Long> {
 
-    Optional<LoggedIn> findByUserNo(Long userNo);
+    Optional<LoggedIn> findByUserId(Long userId);
 
-    void deleteByUserNo(Long userNo);
+    void deleteByUserId(Long userId);
 }

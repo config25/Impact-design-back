@@ -14,7 +14,7 @@ public class TaskOutcome {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "outcomeNo")
+    @Column(name = "outcome_no")
     private Long outcomeNo;
 
     @Enumerated(EnumType.STRING)

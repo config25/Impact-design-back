@@ -17,10 +17,10 @@ public class Userinfo {
     @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "id", nullable = false, length = 128)
+    @Column(name = "login_id", nullable = false, length = 128)
     private String loginId;
 
-    @Column(name = "pwd", nullable = false, length = 128)
+    @Column(name = "password", nullable = false, length = 128)
     private String password;
 
     @Column(name = "user_name", nullable = false, length = 128)

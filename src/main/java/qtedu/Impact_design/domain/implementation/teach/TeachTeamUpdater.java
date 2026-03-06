@@ -9,7 +9,6 @@ import qtedu.Impact_design.common.error.NotFoundException;
 import qtedu.Impact_design.domain.model.team.TbGameModel;
 import qtedu.Impact_design.domain.model.team.TbTeamModel;
 import qtedu.Impact_design.domain.model.team.TeamUserModel;
-import qtedu.Impact_design.domain.repository.FLetterOfIntent2Repository;
 import qtedu.Impact_design.domain.repository.FLetterOfIntentRepository;
 import qtedu.Impact_design.domain.repository.auth.TbTeamRepository;
 import qtedu.Impact_design.domain.repository.auth.TeamUserRepository;
@@ -28,7 +27,6 @@ public class TeachTeamUpdater {
     private final TeamUserRepository teamUserRepository;
     private final UserinfoRepository userinfoRepository;
     private final FLetterOfIntentRepository fLetterOfIntentRepository;
-    private final FLetterOfIntent2Repository fLetterOfIntent2Repository;
 
     @Transactional
     public void saveStep(Integer gameId, String step) {
@@ -68,7 +66,6 @@ public class TeachTeamUpdater {
         TbTeamModel team = tbTeamRepository.findByTeamId(teamId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.TEAM_NOT_FOUND));
 
-        // 이미 활성 상태인 팀은 복원하지 않음 (numTeam 중복 증가 방지)
         if (team.getStatus() != null && team.getStatus() != -1) {
             return;
         }
@@ -95,7 +92,6 @@ public class TeachTeamUpdater {
                 .filter(user -> user.isWriter())
                 .ifPresent(user -> { throw new ConflictException(ErrorCode.WRITER_CANNOT_MOVE); });
 
-        // 이전 팀 멤버 수 감소, 새 팀 멤버 수 증가
         teamUserRepository.findByUserId(userId).ifPresent(teamUser ->
                 tbTeamRepository.decrementNumUser(teamUser.getTeamId())
         );
@@ -104,7 +100,6 @@ public class TeachTeamUpdater {
         teamUserRepository.updateTeamId(userId, teamId);
         String teamIdStr = String.valueOf(teamId);
         fLetterOfIntentRepository.updateInvestmentTargetByCanvasOwner(userId, teamIdStr);
-        fLetterOfIntent2Repository.updateInvestmentTargetByCanvasOwner(userId, teamIdStr);
     }
 
     @Transactional
@@ -113,7 +108,6 @@ public class TeachTeamUpdater {
                 .map(TeamUserModel::getUserId)
                 .collect(Collectors.toList());
 
-        // 해당 유저가 팀 소속인지 검증
         if (!teamUserIds.contains(userId)) {
             throw new NotFoundException(ErrorCode.TEAM_NOT_FOUND);
         }

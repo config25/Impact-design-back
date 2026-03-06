@@ -24,12 +24,12 @@ public class LoggedIn {
     @Column(name = "expired_at")
     private LocalDateTime expiredAt;
 
-    @Column(name = "userNo", nullable = false)
-    private Long userNo;
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
 
-    public static LoggedIn create(Long userNo, String refreshToken, LocalDateTime expiredAt) {
+    public static LoggedIn create(Long userId, String refreshToken, LocalDateTime expiredAt) {
         return LoggedIn.builder()
-                .userNo(userNo)
+                .userId(userId)
                 .refreshToken(refreshToken)
                 .expiredAt(expiredAt)
                 .build();
