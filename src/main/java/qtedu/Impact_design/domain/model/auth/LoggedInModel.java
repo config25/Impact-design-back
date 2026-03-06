@@ -11,11 +11,11 @@ public class LoggedInModel {
     private final Long loggedInId;
     private final String refreshToken;
     private final LocalDateTime expiredAt;
-    private final Long userNo;
+    private final Long userId;
 
-    public static LoggedInModel create(Long userNo, String refreshToken, LocalDateTime expiredAt) {
+    public static LoggedInModel create(Long userId, String refreshToken, LocalDateTime expiredAt) {
         return LoggedInModel.builder()
-                .userNo(userNo)
+                .userId(userId)
                 .refreshToken(refreshToken)
                 .expiredAt(expiredAt)
                 .build();

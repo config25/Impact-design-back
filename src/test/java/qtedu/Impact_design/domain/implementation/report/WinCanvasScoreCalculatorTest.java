@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import qtedu.Impact_design.api.dto.response.report.ReportResponse.ImpactCheckScoreItem;
 import qtedu.Impact_design.api.dto.response.report.ReportResponse.WinCanvasWithScore;
 import qtedu.Impact_design.domain.model.FLetterOfIntentModel;
-import qtedu.Impact_design.domain.model.FLetterOfIntent2Model;
 import qtedu.Impact_design.domain.model.ImpactCheckModel;
 import qtedu.Impact_design.domain.model.win_canvas.WinCanvasModel;
 
@@ -80,7 +79,7 @@ class WinCanvasScoreCalculatorTest {
                     .build();
 
             FLetterOfIntentModel intent = FLetterOfIntentModel.builder()
-                    .intentIndex(1).stdntNo(100L)
+                    .intentIndex(1).userId(100L)
                     .score1(1).score2(2).score3(3).score4(4).score5(5)
                     .score6(1).score7(2).score8(3).score9(4)
                     .build();
@@ -111,13 +110,13 @@ class WinCanvasScoreCalculatorTest {
                     .build();
 
             FLetterOfIntentModel intent1 = FLetterOfIntentModel.builder()
-                    .intentIndex(1).stdntNo(100L)
+                    .intentIndex(1).userId(100L)
                     .score1(1).score2(1).score3(1).score4(1).score5(1)
                     .score6(1).score7(1).score8(1).score9(1)
                     .build();
 
             FLetterOfIntentModel intent2 = FLetterOfIntentModel.builder()
-                    .intentIndex(2).stdntNo(200L)
+                    .intentIndex(2).userId(200L)
                     .score1(2).score2(2).score3(2).score4(2).score5(2)
                     .score6(2).score7(2).score8(2).score9(2)
                     .build();
@@ -145,7 +144,7 @@ class WinCanvasScoreCalculatorTest {
                     .build();
 
             FLetterOfIntentModel intent = FLetterOfIntentModel.builder()
-                    .intentIndex(1).stdntNo(100L)
+                    .intentIndex(1).userId(100L)
                     .score1(5).score2(null).score3(null).score4(null).score5(null)
                     .score6(null).score7(null).score8(null).score9(null)
                     .build();
@@ -169,15 +168,15 @@ class WinCanvasScoreCalculatorTest {
     class QuickWinScores {
 
         @Test
-        @DisplayName("FLetterOfIntent2Model 기반으로 점수를 계산한다")
-        void calculatesFromIntent2Model() {
+        @DisplayName("FLetterOfIntentModel(QUICK) 기반으로 점수를 계산한다")
+        void calculatesFromQuickIntentModel() {
             WinCanvasModel canvas = WinCanvasModel.builder()
                     .canvasId(20L).userId(2L)
                     .taskName("퀵태스크").taskDescription("퀵설명")
                     .build();
 
-            FLetterOfIntent2Model intent = FLetterOfIntent2Model.builder()
-                    .intentIndex(1).stdntNo(100L)
+            FLetterOfIntentModel intent = FLetterOfIntentModel.builder()
+                    .intentIndex(1).userId(100L)
                     .score1(3).score2(3).score3(3).score4(3).score5(3)
                     .score6(3).score7(3).score8(3).score9(3)
                     .build();

@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import qtedu.Impact_design.domain.model.en.CanvasType;
 import qtedu.Impact_design.domain.model.team.TeamUserModel;
-import qtedu.Impact_design.domain.repository.FLetterOfIntent2Repository;
 import qtedu.Impact_design.domain.repository.FLetterOfIntentRepository;
 import qtedu.Impact_design.domain.repository.ImpactCheckRepository;
 import qtedu.Impact_design.domain.repository.IdentityCanvasRepository;
@@ -23,10 +22,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- * 팀별 제출 상태 체크
- * 각 팀의 대표작성자(writer=1)의 제출 여부를 확인
- */
 @Component
 @RequiredArgsConstructor
 public class TeamSubmitStatusChecker {
@@ -37,12 +32,8 @@ public class TeamSubmitStatusChecker {
     private final FlowCanvasRepository flowCanvasRepository;
     private final WinCanvasRepository winCanvasRepository;
     private final FLetterOfIntentRepository fLetterOfIntentRepository;
-    private final FLetterOfIntent2Repository fLetterOfIntent2Repository;
     private final UserinfoRepository userinfoRepository;
 
-    /**
-     * 팀의 대표작성자 userId 조회
-     */
     public Long findWriterUserId(Integer teamId) {
         List<TeamUserModel> teamUsers = teamUserRepository.findByTeamId(teamId);
         if (teamUsers.isEmpty()) {
@@ -53,65 +44,42 @@ public class TeamSubmitStatusChecker {
                 .map(TeamUserModel::getUserId)
                 .toList();
 
-        // writer = 1인 사용자 찾기, 없으면 첫 번째 사용자
         return userinfoRepository.findWriterByUserIds(userIds)
                 .map(user -> user.getUserId())
                 .orElse(userIds.get(0));
     }
 
-    /**
-     * submitA: 성과관리 현황진단 (ImpactCheck)
-     */
     public String checkSubmitA(Long writerUserId) {
         return impactCheckRepository.existsSubmittedByUserId(writerUserId)
                 ? "제출" : "미제출";
     }
 
-    /**
-     * submitB: 정체성 설계 (IdentityCanvas)
-     */
     public String checkSubmitB(Long writerUserId) {
         return identityCanvasRepository.existsSubmittedByUserId(writerUserId)
                 ? "제출" : "미제출";
     }
 
-    /**
-     * submitC: 성과경로 설계 (FlowCanvas)
-     */
     public String checkSubmitC(Long writerUserId) {
         return flowCanvasRepository.existsSubmittedByUserId(writerUserId)
                 ? "제출" : "미제출";
     }
 
-    /**
-     * submitD: 전술적 실행과제 (WinCanvas - QUICK)
-     */
     public String checkSubmitD(Long writerUserId) {
         return winCanvasRepository.existsSubmittedByUserIdAndCanvasType(writerUserId, CanvasType.QUICK)
                 ? "제출" : "미제출";
     }
 
-    /**
-     * submitE: 전략적 실행과제 (WinCanvas - BUILD)
-     */
     public String checkSubmitE(Long writerUserId) {
         return winCanvasRepository.existsSubmittedByUserIdAndCanvasType(writerUserId, CanvasType.BUILD)
                 ? "제출" : "미제출";
     }
 
-    /**
-     * submitF: 실행과제 검증 (FLetterOfIntent + FLetterOfIntent2)
-     */
     public String checkSubmitF(Long writerUserId) {
-        boolean intent1 = fLetterOfIntentRepository.existsSubmittedByUserId(writerUserId);
-        boolean intent2 = fLetterOfIntent2Repository.existsSubmittedByUserId(writerUserId);
-        return (intent1 || intent2) ? "제출" : "미제출";
+        boolean intentBuild = fLetterOfIntentRepository.existsSubmittedByUserId(writerUserId, CanvasType.BUILD);
+        boolean intentQuick = fLetterOfIntentRepository.existsSubmittedByUserId(writerUserId, CanvasType.QUICK);
+        return (intentBuild || intentQuick) ? "제출" : "미제출";
     }
 
-    /**
-     * 여러 팀의 제출 상태를 한번에 조회 (배치)
-     * @return teamId → TeamSubmitResult 매핑
-     */
     public Map<Integer, TeamSubmitResult> checkAllSubmitStatuses(
             Map<Integer, List<Long>> teamUserIdsMap) {
 
@@ -119,13 +87,11 @@ public class TeamSubmitStatusChecker {
             return Collections.emptyMap();
         }
 
-        // 1. 전체 userIds 수집
         List<Long> allUserIds = teamUserIdsMap.values().stream()
                 .flatMap(List::stream)
                 .distinct()
                 .collect(Collectors.toList());
 
-        // 2. writer 찾기 (전체 userIds에서 한번에)
         Map<Long, Boolean> writerMap = userinfoRepository.findAllByUserIds(allUserIds).stream()
                 .collect(Collectors.toMap(
                         u -> u.getUserId(),
@@ -133,7 +99,6 @@ public class TeamSubmitStatusChecker {
                         (a, b) -> a
                 ));
 
-        // 3. 팀별 writerUserId 매핑
         Map<Integer, Long> teamWriterMap = new HashMap<>();
         for (Map.Entry<Integer, List<Long>> entry : teamUserIdsMap.entrySet()) {
             Long writerUserId = entry.getValue().stream()
@@ -143,7 +108,6 @@ public class TeamSubmitStatusChecker {
             teamWriterMap.put(entry.getKey(), writerUserId);
         }
 
-        // 4. writerUserIds 수집
         List<Long> writerUserIds = teamWriterMap.values().stream()
                 .filter(id -> id != null)
                 .distinct()
@@ -156,7 +120,6 @@ public class TeamSubmitStatusChecker {
             return emptyResult;
         }
 
-        // 5. 각 리포지토리에서 배치 조회 → submitted userIds 수집
         Set<Long> impactSubmitted = impactCheckRepository.findByUserIdIn(writerUserIds).stream()
                 .filter(m -> Boolean.TRUE.equals(m.getSubmitted()))
                 .map(m -> m.getUserId())
@@ -184,10 +147,9 @@ public class TeamSubmitStatusChecker {
                 .map(m -> m.getUserId())
                 .collect(Collectors.toSet());
 
-        Set<Long> intent1Submitted = fLetterOfIntentRepository.findSubmittedUserIds(writerUserIds);
-        Set<Long> intent2Submitted = fLetterOfIntent2Repository.findSubmittedUserIds(writerUserIds);
+        Set<Long> intentBuildSubmitted = fLetterOfIntentRepository.findSubmittedUserIds(writerUserIds, CanvasType.BUILD);
+        Set<Long> intentQuickSubmitted = fLetterOfIntentRepository.findSubmittedUserIds(writerUserIds, CanvasType.QUICK);
 
-        // 6. 팀별 결과 조합
         Map<Integer, TeamSubmitResult> result = new HashMap<>();
         for (Map.Entry<Integer, Long> entry : teamWriterMap.entrySet()) {
             Integer teamId = entry.getKey();
@@ -204,7 +166,7 @@ public class TeamSubmitStatusChecker {
                     flowSubmitted.contains(writerUserId) ? "제출" : "미제출",
                     quickWinSubmitted.contains(writerUserId) ? "제출" : "미제출",
                     buildWinSubmitted.contains(writerUserId) ? "제출" : "미제출",
-                    (intent1Submitted.contains(writerUserId) || intent2Submitted.contains(writerUserId))
+                    (intentBuildSubmitted.contains(writerUserId) || intentQuickSubmitted.contains(writerUserId))
                             ? "제출" : "미제출"
             ));
         }

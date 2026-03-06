@@ -1,6 +1,7 @@
 package qtedu.Impact_design.domain.repository;
 
 import qtedu.Impact_design.domain.model.FLetterOfIntentModel;
+import qtedu.Impact_design.domain.model.en.CanvasType;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,26 +10,20 @@ import java.util.Set;
 public interface FLetterOfIntentRepository {
     List<FLetterOfIntentModel> findByCanvasIdIn(List<Long> canvasIds);
 
-    // 사용자의 모든 투자 목록
-    List<FLetterOfIntentModel> findByUserId(Long userId);
+    List<FLetterOfIntentModel> findByUserId(Long userId, CanvasType canvasType);
 
-    // 특정 팀에 대한 투자 조회
-    Optional<FLetterOfIntentModel> findByUserIdAndTargetTeamId(Long userId, Integer targetTeamId);
+    Optional<FLetterOfIntentModel> findByUserIdAndTargetTeamId(Long userId, Integer targetTeamId, CanvasType canvasType);
 
-    // 투자 저장/수정
     FLetterOfIntentModel save(FLetterOfIntentModel model);
 
-    // 제출 완료 여부
-    boolean existsSubmittedByUserId(Long userId);
+    boolean existsSubmittedByUserId(Long userId, CanvasType canvasType);
 
-    // 제출 처리
-    void submitAllByUserId(Long userId);
+    void submitAllByUserId(Long userId, CanvasType canvasType);
 
-    // 내 팀을 투자 대상으로 한 모든 투자 (F3용)
-    List<FLetterOfIntentModel> findByTargetTeamId(Integer teamId);
-    List<FLetterOfIntentModel> findByTargetTeamIds(List<Integer> teamIds);
+    List<FLetterOfIntentModel> findByTargetTeamId(Integer teamId, CanvasType canvasType);
+    List<FLetterOfIntentModel> findByTargetTeamIds(List<Integer> teamIds, CanvasType canvasType);
 
     void updateInvestmentTargetByCanvasOwner(Long userId, String teamId);
 
-    Set<Long> findSubmittedUserIds(List<Long> userIds);
+    Set<Long> findSubmittedUserIds(List<Long> userIds, CanvasType canvasType);
 }

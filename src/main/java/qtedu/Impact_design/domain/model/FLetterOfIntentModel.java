@@ -2,6 +2,7 @@ package qtedu.Impact_design.domain.model;
 
 import lombok.Builder;
 import lombok.Getter;
+import qtedu.Impact_design.domain.model.en.CanvasType;
 
 import java.time.LocalDateTime;
 
@@ -9,7 +10,7 @@ import java.time.LocalDateTime;
 @Builder
 public class FLetterOfIntentModel {
     private final Integer intentIndex;
-    private final Long stdntNo;
+    private final Long userId;
     private final String courseCd;
     private final String investmentTarget;
     private final String investmentPrice;
@@ -34,4 +35,5 @@ public class FLetterOfIntentModel {
     private final Integer gameId;
     private final String categoryCd;
     private final Long canvasId;
+    private final CanvasType canvasType;
 }

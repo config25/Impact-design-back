@@ -11,7 +11,6 @@ import qtedu.Impact_design.common.error.NotFoundException;
 import qtedu.Impact_design.domain.model.en.CanvasType;
 import qtedu.Impact_design.domain.model.team.TeamUserModel;
 import qtedu.Impact_design.domain.model.user.UserinfoModel;
-import qtedu.Impact_design.domain.repository.FLetterOfIntent2Repository;
 import qtedu.Impact_design.domain.repository.FLetterOfIntentRepository;
 import qtedu.Impact_design.domain.repository.ImpactCheckRepository;
 import qtedu.Impact_design.domain.repository.IdentityCanvasRepository;
@@ -38,7 +37,6 @@ class TeamSubmitStatusCheckerTest {
     @Mock private FlowCanvasRepository flowCanvasRepository;
     @Mock private WinCanvasRepository winCanvasRepository;
     @Mock private FLetterOfIntentRepository fLetterOfIntentRepository;
-    @Mock private FLetterOfIntent2Repository fLetterOfIntent2Repository;
     @Mock private UserinfoRepository userinfoRepository;
 
     @Nested
@@ -102,26 +100,26 @@ class TeamSubmitStatusCheckerTest {
         }
 
         @Test
-        @DisplayName("submitF - intent1만 제출해도 '제출'")
-        void submitF_onlyIntent1() {
-            given(fLetterOfIntentRepository.existsSubmittedByUserId(1L)).willReturn(true);
-            given(fLetterOfIntent2Repository.existsSubmittedByUserId(1L)).willReturn(false);
+        @DisplayName("submitF - BUILD만 제출해도 '제출'")
+        void submitF_onlyBuild() {
+            given(fLetterOfIntentRepository.existsSubmittedByUserId(1L, CanvasType.BUILD)).willReturn(true);
+            given(fLetterOfIntentRepository.existsSubmittedByUserId(1L, CanvasType.QUICK)).willReturn(false);
             assertThat(checker.checkSubmitF(1L)).isEqualTo("제출");
         }
 
         @Test
-        @DisplayName("submitF - intent2만 제출해도 '제출'")
-        void submitF_onlyIntent2() {
-            given(fLetterOfIntentRepository.existsSubmittedByUserId(1L)).willReturn(false);
-            given(fLetterOfIntent2Repository.existsSubmittedByUserId(1L)).willReturn(true);
+        @DisplayName("submitF - QUICK만 제출해도 '제출'")
+        void submitF_onlyQuick() {
+            given(fLetterOfIntentRepository.existsSubmittedByUserId(1L, CanvasType.BUILD)).willReturn(false);
+            given(fLetterOfIntentRepository.existsSubmittedByUserId(1L, CanvasType.QUICK)).willReturn(true);
             assertThat(checker.checkSubmitF(1L)).isEqualTo("제출");
         }
 
         @Test
         @DisplayName("submitF - 둘 다 미제출이면 '미제출'")
         void submitF_neitherSubmitted() {
-            given(fLetterOfIntentRepository.existsSubmittedByUserId(1L)).willReturn(false);
-            given(fLetterOfIntent2Repository.existsSubmittedByUserId(1L)).willReturn(false);
+            given(fLetterOfIntentRepository.existsSubmittedByUserId(1L, CanvasType.BUILD)).willReturn(false);
+            given(fLetterOfIntentRepository.existsSubmittedByUserId(1L, CanvasType.QUICK)).willReturn(false);
             assertThat(checker.checkSubmitF(1L)).isEqualTo("미제출");
         }
     }

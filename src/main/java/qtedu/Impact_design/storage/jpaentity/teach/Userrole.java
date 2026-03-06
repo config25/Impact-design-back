@@ -16,7 +16,7 @@ public class Userrole {
     @Column(name = "user_role_id")
     private Integer userRoleId;
 
-    @Column(name = "isDoing", nullable = false)
+    @Column(name = "is_doing", nullable = false)
     private Integer isDoing;
 
     @Column(name = "role_id")

@@ -9,13 +9,11 @@ import qtedu.Impact_design.api.dto.response.funding.FundingSubmitResponse;
 import qtedu.Impact_design.common.error.ConflictException;
 import qtedu.Impact_design.common.error.ErrorCode;
 import qtedu.Impact_design.common.error.NotFoundException;
-import qtedu.Impact_design.domain.model.FLetterOfIntent2Model;
 import qtedu.Impact_design.domain.model.FLetterOfIntentModel;
 import qtedu.Impact_design.domain.model.en.CanvasType;
 import qtedu.Impact_design.domain.model.team.TeamUserModel;
 import qtedu.Impact_design.domain.model.user.UserinfoModel;
 import qtedu.Impact_design.domain.model.win_canvas.WinCanvasModel;
-import qtedu.Impact_design.domain.repository.FLetterOfIntent2Repository;
 import qtedu.Impact_design.domain.repository.FLetterOfIntentRepository;
 import qtedu.Impact_design.domain.repository.auth.TeamUserRepository;
 import qtedu.Impact_design.domain.repository.user.UserinfoRepository;
@@ -30,7 +28,6 @@ import java.util.stream.Collectors;
 public class FundingAppender {
 
     private final FLetterOfIntentRepository fLetterOfIntentRepository;
-    private final FLetterOfIntent2Repository fLetterOfIntent2Repository;
     private final TeamUserRepository teamUserRepository;
     private final UserinfoRepository userinfoRepository;
     private final WinCanvasRepository winCanvasRepository;
@@ -45,15 +42,10 @@ public class FundingAppender {
                 request.getScore4(), request.getScore5(), request.getScore6(),
                 request.getScore7(), request.getScore8(), request.getScore9()
         );
-        if (isBuildType(canvasType)) {
-            return saveInvestmentBuild(userId, request);
-        } else {
-            return saveInvestmentQuick(userId, request);
-        }
-    }
 
-    private FundingInvestmentResponse saveInvestmentBuild(Long userId, FundingInvestmentRequest request) {
-        if (fLetterOfIntentRepository.existsSubmittedByUserId(userId)) {
+        CanvasType type = toCanvasType(canvasType);
+
+        if (fLetterOfIntentRepository.existsSubmittedByUserId(userId, type)) {
             throw new ConflictException(ErrorCode.ALREADY_SUBMITTED);
         }
 
@@ -63,9 +55,9 @@ public class FundingAppender {
         Integer myTeamId = teamUser.getTeamId();
 
         Optional<FLetterOfIntentModel> existing = fLetterOfIntentRepository
-                .findByUserIdAndTargetTeamId(userId, request.getInvestmentTarget());
+                .findByUserIdAndTargetTeamId(userId, request.getInvestmentTarget(), type);
 
-        long currentTotal = fLetterOfIntentRepository.findByUserId(userId).stream()
+        long currentTotal = fLetterOfIntentRepository.findByUserId(userId, type).stream()
                 .mapToLong(inv -> fundingValidator.parsePrice(inv.getInvestmentPrice()))
                 .sum();
         long existingPrice = existing.map(inv -> fundingValidator.parsePrice(inv.getInvestmentPrice())).orElse(0L);
@@ -73,12 +65,12 @@ public class FundingAppender {
 
         Long canvasId = existing.map(FLetterOfIntentModel::getCanvasId).orElse(null);
         if (canvasId == null) {
-            canvasId = resolveCanvasId(request.getInvestmentTarget(), CanvasType.BUILD);
+            canvasId = resolveCanvasId(request.getInvestmentTarget(), type);
         }
 
         FLetterOfIntentModel model = FLetterOfIntentModel.builder()
                 .intentIndex(existing.map(FLetterOfIntentModel::getIntentIndex).orElse(null))
-                .stdntNo(userId)
+                .userId(userId)
                 .investmentTarget(String.valueOf(request.getInvestmentTarget()))
                 .investmentPrice(request.getInvestmentPrice())
                 .score1(request.getScore1())
@@ -97,68 +89,14 @@ public class FundingAppender {
                 .categoryCd(existing.map(FLetterOfIntentModel::getCategoryCd).orElse("CT001"))
                 .gameId(existing.map(FLetterOfIntentModel::getGameId).orElse(null))
                 .canvasId(canvasId)
+                .canvasType(type)
                 .build();
 
         fLetterOfIntentRepository.save(model);
 
-        return fundingReader.getInvestment("build", userId, request.getInvestmentTarget());
+        return fundingReader.getInvestment(canvasType, userId, request.getInvestmentTarget());
     }
 
-    private FundingInvestmentResponse saveInvestmentQuick(Long userId, FundingInvestmentRequest request) {
-        if (fLetterOfIntent2Repository.existsSubmittedByUserId(userId)) {
-            throw new ConflictException(ErrorCode.ALREADY_SUBMITTED);
-        }
-
-        TeamUserModel teamUser = teamUserRepository.findByUserId(userId)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.TEAM_NOT_FOUND));
-
-        Integer myTeamId = teamUser.getTeamId();
-
-        Optional<FLetterOfIntent2Model> existing = fLetterOfIntent2Repository
-                .findByUserIdAndTargetTeamId(userId, request.getInvestmentTarget());
-
-        long currentTotal = fLetterOfIntent2Repository.findByUserId(userId).stream()
-                .mapToLong(inv -> fundingValidator.parsePrice(inv.getInvestmentPrice()))
-                .sum();
-        long existingPrice = existing.map(inv -> fundingValidator.parsePrice(inv.getInvestmentPrice())).orElse(0L);
-        fundingValidator.validateInvestmentLimit(currentTotal - existingPrice, request.getInvestmentPrice());
-
-        Long canvasId = existing.map(FLetterOfIntent2Model::getCanvasId).orElse(null);
-        if (canvasId == null) {
-            canvasId = resolveCanvasId(request.getInvestmentTarget(), CanvasType.QUICK);
-        }
-
-        FLetterOfIntent2Model model = FLetterOfIntent2Model.builder()
-                .intentIndex(existing.map(FLetterOfIntent2Model::getIntentIndex).orElse(null))
-                .stdntNo(userId)
-                .investmentTarget(String.valueOf(request.getInvestmentTarget()))
-                .investmentPrice(request.getInvestmentPrice())
-                .score1(request.getScore1())
-                .score2(request.getScore2())
-                .score3(request.getScore3())
-                .score4(request.getScore4())
-                .score5(request.getScore5())
-                .score6(request.getScore6())
-                .score7(request.getScore7())
-                .score8(request.getScore8())
-                .score9(request.getScore9())
-                .opinion(request.getOpinion())
-                .submitted(Boolean.TRUE.equals(request.getSubmit()))
-                .teamId(myTeamId)
-                .courseCd(existing.map(FLetterOfIntent2Model::getCourseCd).orElse("C0001"))
-                .categoryCd(existing.map(FLetterOfIntent2Model::getCategoryCd).orElse("CT001"))
-                .gameId(existing.map(FLetterOfIntent2Model::getGameId).orElse(null))
-                .canvasId(canvasId)
-                .build();
-
-        fLetterOfIntent2Repository.save(model);
-
-        return fundingReader.getInvestment("quick", userId, request.getInvestmentTarget());
-    }
-
-    /**
-     * 대상 팀의 대표작성자(writer) 캔버스 ID를 찾는다.
-     */
     private Long resolveCanvasId(Integer targetTeamId, CanvasType canvasType) {
         List<Long> userIds = teamUserRepository.findByTeamId(targetTeamId).stream()
                 .map(TeamUserModel::getUserId)
@@ -191,7 +129,7 @@ public class FundingAppender {
         return FundingSubmitResponse.builder().submitted(true).build();
     }
 
-    private boolean isBuildType(String canvasType) {
-        return "build".equalsIgnoreCase(canvasType);
+    private CanvasType toCanvasType(String canvasType) {
+        return "build".equalsIgnoreCase(canvasType) ? CanvasType.BUILD : CanvasType.QUICK;
     }
 }
