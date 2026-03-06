@@ -357,7 +357,7 @@ class AuthControllerTest extends RestDocsTestSupport {
         mockMvc.perform(post("/api/auth/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andDo(document("auth/signup",
                         requestFields(
                                 fieldWithPath("loginId").description("로그인 ID"),

@@ -90,7 +90,7 @@ public class TeachController {
             @RequestPart(value = "image", required = false) MultipartFile image
     ) {
         Integer gameId = teachService.createClass(userId.getId(), request, image);
-        return ResponseHelper.success(gameId);
+        return ResponseHelper.successCreate(gameId);
     }
 
     /**

@@ -13,6 +13,7 @@ import qtedu.Impact_design.api.dto.response.teach.*;
 import qtedu.Impact_design.domain.implementation.teach.TeachAppender;
 import qtedu.Impact_design.domain.implementation.teach.TeachReader;
 import qtedu.Impact_design.domain.implementation.teach.TeachUpdater;
+import qtedu.Impact_design.domain.implementation.teach.TeachValidator;
 
 import java.util.Collections;
 import java.util.List;
@@ -32,6 +33,8 @@ class TeachServiceTest {
     private TeachAppender teachAppender;
     @Mock
     private TeachUpdater teachUpdater;
+    @Mock
+    private TeachValidator teachValidator;
 
     @Test
     @DisplayName("getTeachIndex - reader에서 수업 인덱스를 조회한다")

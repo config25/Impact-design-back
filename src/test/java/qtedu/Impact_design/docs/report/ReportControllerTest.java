@@ -12,7 +12,7 @@ import qtedu.Impact_design.api.dto.response.report.ReportResponse;
 import qtedu.Impact_design.api.util.security.JwtAuthenticationFilter;
 import qtedu.Impact_design.api.util.security.UserArgumentResolver;
 import qtedu.Impact_design.docs.RestDocsTestSupport;
-import qtedu.Impact_design.domain.service.ReportService;
+import qtedu.Impact_design.domain.implementation.report.ReportFacade;
 
 import java.util.List;
 
@@ -38,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ReportControllerTest extends RestDocsTestSupport {
 
     @MockitoBean
-    private ReportService reportService;
+    private ReportFacade reportFacade;
 
     @Test
     @DisplayName("팀별 리포트 조회")
@@ -113,7 +113,7 @@ class ReportControllerTest extends RestDocsTestSupport {
                         .build()))
                 .build();
 
-        given(reportService.getReport(anyInt())).willReturn(response);
+        given(reportFacade.getReport(anyInt())).willReturn(response);
 
         mockMvc.perform(get("/api/teach/report/{teamId}", 1))
                 .andExpect(status().isOk())
@@ -319,7 +319,7 @@ class ReportControllerTest extends RestDocsTestSupport {
                         .build()))
                 .build();
 
-        given(reportService.getReportsByGameId(anyInt())).willReturn(List.of(response));
+        given(reportFacade.getReportsByGameId(anyInt())).willReturn(List.of(response));
 
         mockMvc.perform(get("/api/teach/report/bulk/{gameId}", 1))
                 .andExpect(status().isOk())

@@ -42,7 +42,7 @@ public class TeachTeamController {
             @RequestParam Integer gameId
     ) {
         Integer teamId = teachTeamService.addTeam(gameId);
-        return ResponseHelper.success(teamId);
+        return ResponseHelper.successCreate(teamId);
     }
 
     /**
@@ -53,7 +53,7 @@ public class TeachTeamController {
             @RequestParam Integer gameId
     ) {
         Integer teamId = teachTeamService.addEvaluationTeam(gameId);
-        return ResponseHelper.success(teamId);
+        return ResponseHelper.successCreate(teamId);
     }
 
     /**
@@ -65,7 +65,7 @@ public class TeachTeamController {
             @RequestParam Integer gameId
     ) {
         String loginId = teachTeamService.addTeamMember(teamId, gameId);
-        return ResponseHelper.success(loginId);
+        return ResponseHelper.successCreate(loginId);
     }
 
     /**

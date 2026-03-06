@@ -25,6 +25,7 @@ public class AuthService {
 
     @Transactional
     public JwtToken login(String loginId, String password) {
+        authValidator.validateLoginInput(loginId, password);
         UserinfoModel userinfo = authReader.findUserByLoginId(loginId);
         authValidator.validatePassword(password, userinfo.getPassword());
         authValidator.validateStudentRole(userinfo);
@@ -35,6 +36,7 @@ public class AuthService {
 
     @Transactional
     public Pair<JwtToken, UserRole> teacherLogin(String loginId, String password) {
+        authValidator.validateLoginInput(loginId, password);
         UserinfoModel userinfo = authReader.findUserByLoginId(loginId);
         authValidator.validatePassword(password, userinfo.getPassword());
         authValidator.validateTeacherRole(userinfo);
@@ -52,6 +54,7 @@ public class AuthService {
     }
 
     public void signup(String loginId, String password, String code, Integer teamId) {
+        authValidator.validateSignupInput(loginId, password, code);
         authAppender.signup(loginId, password, code, teamId);
     }
 

@@ -506,7 +506,7 @@ class TeachControllerTest extends RestDocsTestSupport {
         mockMvc.perform(multipart("/api/teach/class")
                         .file(requestPart)
                         .file(imagePart))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andDo(document("teach/create-class",
                         requestParts(
                                 partWithName("request").description("강의실 생성 정보 (JSON)"),

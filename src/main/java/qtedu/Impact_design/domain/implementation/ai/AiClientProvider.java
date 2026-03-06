@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class AiClientFactory {
+public class AiClientProvider {
 
     private final List<AiClient> aiClients;
 

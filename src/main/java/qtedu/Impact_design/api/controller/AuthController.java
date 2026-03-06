@@ -12,6 +12,7 @@ import qtedu.Impact_design.api.util.ResponseHelper;
 import java.util.List;
 import qtedu.Impact_design.api.util.security.CurrentUser;
 import qtedu.Impact_design.common.response.HttpResponse;
+import qtedu.Impact_design.common.response.SuccessCreateResponse;
 import qtedu.Impact_design.common.response.SuccessOnlyResponse;
 import org.apache.commons.lang3.tuple.Pair;
 import qtedu.Impact_design.domain.model.JwtToken;
@@ -27,7 +28,6 @@ public class AuthController {
     private final AuthService authService;
     private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
-    // 테스트용 - 나중에 삭제
     @GetMapping("/encode")
     public String encode(@RequestParam String password) {
         return passwordEncoder.encode(password);
@@ -76,11 +76,11 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<HttpResponse<SuccessOnlyResponse>> signup(
+    public ResponseEntity<HttpResponse<SuccessCreateResponse>> signup(
             @RequestBody SignupRequest request
     ) {
         authService.signup(request.getLoginId(), request.getPassword(), request.getCode(), request.getTeamId());
-        return ResponseHelper.successOnly();
+        return ResponseHelper.successCreateOnly();
     }
 
     @PostMapping("/logout")

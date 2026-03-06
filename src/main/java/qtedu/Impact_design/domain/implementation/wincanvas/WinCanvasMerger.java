@@ -26,22 +26,13 @@ public class WinCanvasMerger {
 
         for (WinCanvasSaveRequest.TaskInputItem item : request.getTaskInputs()) {
             TaskInputModel existing = existingMap.get(item.getOrderNo());
-            if (existing != null) {
-                taskInputRepository.save(TaskInputModel.builder()
-                        .inputId(existing.getInputId())
-                        .canvasId(canvasId)
-                        .resourceName(item.getResourceName())
-                        .quantity(item.getQuantity())
-                        .orderNo(item.getOrderNo())
-                        .build());
-            } else {
-                taskInputRepository.save(TaskInputModel.builder()
-                        .canvasId(canvasId)
-                        .resourceName(item.getResourceName())
-                        .quantity(item.getQuantity())
-                        .orderNo(item.getOrderNo())
-                        .build());
-            }
+            taskInputRepository.save(TaskInputModel.builder()
+                    .inputId(existing != null ? existing.getInputId() : null)
+                    .canvasId(canvasId)
+                    .resourceName(item.getResourceName())
+                    .quantity(item.getQuantity())
+                    .orderNo(item.getOrderNo())
+                    .build());
         }
     }
 
@@ -53,44 +44,29 @@ public class WinCanvasMerger {
 
         for (WinCanvasSaveRequest.TaskActivityItem item : request.getTaskActivities()) {
             TaskActivityModel existing = existingMap.get(item.getOrderNo());
-            if (existing != null) {
-                taskActivityRepository.save(TaskActivityModel.builder()
-                        .activityId(existing.getActivityId())
-                        .canvasId(canvasId)
-                        .processStep(item.getProcessStep())
-                        .activityContent(item.getActivityContent())
-                        .duration(item.getDuration())
-                        .orderNo(item.getOrderNo())
-                        .build());
-            } else {
-                taskActivityRepository.save(TaskActivityModel.builder()
-                        .canvasId(canvasId)
-                        .processStep(item.getProcessStep())
-                        .activityContent(item.getActivityContent())
-                        .duration(item.getDuration())
-                        .orderNo(item.getOrderNo())
-                        .build());
-            }
+            taskActivityRepository.save(TaskActivityModel.builder()
+                    .activityId(existing != null ? existing.getActivityId() : null)
+                    .canvasId(canvasId)
+                    .processStep(item.getProcessStep())
+                    .activityContent(item.getActivityContent())
+                    .duration(item.getDuration())
+                    .orderNo(item.getOrderNo())
+                    .build());
         }
     }
 
     public void mergeTeamwork(Long canvasId, WinCanvasSaveRequest request) {
         if (request.getTeamwork() == null) return;
 
-        teamworkRepository.findByCanvasId(canvasId)
-                .ifPresentOrElse(
-                        existing -> teamworkRepository.save(TeamworkModel.builder()
-                                .teamworkId(existing.getTeamworkId())
-                                .canvasId(canvasId)
-                                .activityTeamwork(request.getTeamwork().getActivityTeamwork())
-                                .workType(request.getTeamwork().getWorkType())
-                                .build()),
-                        () -> teamworkRepository.save(TeamworkModel.builder()
-                                .canvasId(canvasId)
-                                .activityTeamwork(request.getTeamwork().getActivityTeamwork())
-                                .workType(request.getTeamwork().getWorkType())
-                                .build())
-                );
+        Long existingId = teamworkRepository.findByCanvasId(canvasId)
+                .map(TeamworkModel::getTeamworkId).orElse(null);
+
+        teamworkRepository.save(TeamworkModel.builder()
+                .teamworkId(existingId)
+                .canvasId(canvasId)
+                .activityTeamwork(request.getTeamwork().getActivityTeamwork())
+                .workType(request.getTeamwork().getWorkType())
+                .build());
     }
 
     public void mergeTaskOutcomes(Long canvasId, WinCanvasSaveRequest request) {
@@ -101,22 +77,13 @@ public class WinCanvasMerger {
 
         for (WinCanvasSaveRequest.TaskOutcomeItem item : request.getTaskOutcomes()) {
             TaskOutcomeModel existing = existingMap.get(item.getOrderNo());
-            if (existing != null) {
-                taskOutcomeRepository.save(TaskOutcomeModel.builder()
-                        .outcomeNo(existing.getOutcomeNo())
-                        .canvasId(canvasId)
-                        .outcomeType(item.getOutcomeType())
-                        .outcomeContent(item.getOutcomeContent())
-                        .orderNo(item.getOrderNo())
-                        .build());
-            } else {
-                taskOutcomeRepository.save(TaskOutcomeModel.builder()
-                        .canvasId(canvasId)
-                        .outcomeType(item.getOutcomeType())
-                        .outcomeContent(item.getOutcomeContent())
-                        .orderNo(item.getOrderNo())
-                        .build());
-            }
+            taskOutcomeRepository.save(TaskOutcomeModel.builder()
+                    .outcomeNo(existing != null ? existing.getOutcomeNo() : null)
+                    .canvasId(canvasId)
+                    .outcomeType(item.getOutcomeType())
+                    .outcomeContent(item.getOutcomeContent())
+                    .orderNo(item.getOrderNo())
+                    .build());
         }
     }
 }

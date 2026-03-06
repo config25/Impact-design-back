@@ -6,8 +6,8 @@ import qtedu.Impact_design.api.dto.response.report.ReportResponse.GoalAnalysis;
 import qtedu.Impact_design.api.dto.response.report.ReportResponse.GoalItem;
 import qtedu.Impact_design.api.dto.response.report.ReportResponse.StrategicActivityItem;
 import qtedu.Impact_design.api.dto.response.report.ReportResponse.TacticalItem;
-import qtedu.Impact_design.domain.implementation.ai.AiImplementation.FullReportAiResult;
-import qtedu.Impact_design.domain.service.AiService;
+import qtedu.Impact_design.domain.implementation.ai.AiSender;
+import qtedu.Impact_design.domain.implementation.ai.AiSender.FullReportAiResult;
 import qtedu.Impact_design.domain.model.IdentityCanvasModel;
 import qtedu.Impact_design.domain.model.flow_canvas.FlowCanvasModel;
 import qtedu.Impact_design.domain.model.flow_canvas.StrategicActivityModel;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ReportAnalyzer {
 
-    private final AiService aiService;
+    private final AiSender aiSender;
 
     public ReportAiResult analyze(ReportRawData raw) {
         // 데이터 추출
@@ -56,7 +56,7 @@ public class ReportAnalyzer {
                 .collect(Collectors.toList());
 
         // AI 통합 분석 (1회 호출)
-        FullReportAiResult aiResult = aiService.analyzeFullReport(
+        FullReportAiResult aiResult = aiSender.analyzeFullReport(
                 externalThreatData, internalLimitationData,
                 visions, missions, values,
                 goalTitles, tacticalPairs, strategicActivityPairs

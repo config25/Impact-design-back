@@ -55,7 +55,6 @@ public class SecurityConfig {
                                 "/api/auth/check-id",
                                 "/api/auth/check-code",
                                 "/api/auth/encode",
-                                "/api/ai/**",
                                 "/docs/**",
                                 "/uploads/**",
                                 "/health",

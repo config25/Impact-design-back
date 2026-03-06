@@ -14,6 +14,7 @@ import qtedu.Impact_design.domain.repository.auth.TeamUserRepository;
 import qtedu.Impact_design.domain.repository.user.UserinfoRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -33,6 +34,14 @@ public class TeachTeamReader {
                         .sequence(team.getSequence())
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    public Optional<TbTeamModel> findByTeamId(Integer teamId) {
+        return tbTeamRepository.findByTeamId(teamId);
+    }
+
+    public List<TbTeamModel> findByTeamIds(List<Integer> teamIds) {
+        return tbTeamRepository.findByTeamIdIn(teamIds);
     }
 
     public TeamInfoResponse getTeamInfo(Integer teamId) {

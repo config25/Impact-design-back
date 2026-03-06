@@ -47,7 +47,9 @@
       "Bash(cd:*)",
       "Bash(wc:*)",
       "Bash(git checkout:*)",
-      "Bash(./gradlew asciidoctor:*)"
+      "Bash(./gradlew asciidoctor:*)",
+      "Bash(cat:*)",
+      "Bash(mv:*)"
     ]
   }
 }

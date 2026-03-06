@@ -830,7 +830,21 @@ include::{snippets}/funding/my-result/response-fields.adoc[]
 
 NOTE: 모든 Game API는 인증 필요 (`Authorization: Bearer {token}`)
 
-=== 1. 학생용 공개범위(step) 조회
+=== 1. 학생 대시보드 조회
+
+==== 요청(Request)
+
+include::{snippets}/game/dashboard/http-request.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/game/dashboard/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/game/dashboard/response-fields.adoc[]
+
+=== 2. 학생용 공개범위(step) 조회
 
 ==== 요청(Request)
 

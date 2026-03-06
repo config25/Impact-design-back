@@ -12,13 +12,13 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class AiClientFactoryTest {
+class AiClientProviderTest {
 
     @Test
     @DisplayName("모델의 provider와 일치하는 클라이언트를 반환한다")
     void returnsMatchingClient() {
         AiClient openaiClient = new FakeAiClient("openai");
-        AiClientFactory factory = new AiClientFactory(List.of(openaiClient));
+        AiClientProvider factory = new AiClientProvider(List.of(openaiClient));
 
         AiClient result = factory.getClient(AiModel.GPT_4_1);
 
@@ -30,7 +30,7 @@ class AiClientFactoryTest {
     void selectsCorrectProvider() {
         AiClient openaiClient = new FakeAiClient("openai");
         AiClient googleClient = new FakeAiClient("google");
-        AiClientFactory factory = new AiClientFactory(List.of(openaiClient, googleClient));
+        AiClientProvider factory = new AiClientProvider(List.of(openaiClient, googleClient));
 
         AiClient result = factory.getClient(AiModel.GPT_4_1_MINI);
 
@@ -41,7 +41,7 @@ class AiClientFactoryTest {
     @DisplayName("지원하지 않는 provider면 IllegalArgumentException이 발생한다")
     void throwsForUnsupportedProvider() {
         AiClient googleClient = new FakeAiClient("google");
-        AiClientFactory factory = new AiClientFactory(List.of(googleClient));
+        AiClientProvider factory = new AiClientProvider(List.of(googleClient));
 
         assertThatThrownBy(() -> factory.getClient(AiModel.GPT_4_1))
                 .isInstanceOf(IllegalArgumentException.class)

@@ -13,6 +13,7 @@ import qtedu.Impact_design.api.dto.response.teach.TeachListResponse;
 import qtedu.Impact_design.domain.implementation.teach.TeachAppender;
 import qtedu.Impact_design.domain.implementation.teach.TeachReader;
 import qtedu.Impact_design.domain.implementation.teach.TeachUpdater;
+import qtedu.Impact_design.domain.implementation.teach.TeachValidator;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class TeachService {
     private final TeachReader teachReader;
     private final TeachAppender teachAppender;
     private final TeachUpdater teachUpdater;
+    private final TeachValidator teachValidator;
 
     public List<ClassInfoResponse> getTeachIndex(Long userId) {
         return teachReader.getTeachIndex(userId);
@@ -45,18 +47,22 @@ public class TeachService {
     }
 
     public Integer createClass(Long userId, ClassSaveRequest request, MultipartFile image) {
+        teachValidator.validateClassSaveInput(request.getName(), request.getNumTeam(), request.getNumMember());
         return teachAppender.createClass(userId, request, image);
     }
 
     public Integer updateClass(Integer gameId, ClassSaveRequest request, MultipartFile image) {
+        teachValidator.validateClassSaveInput(request.getName(), request.getNumTeam(), request.getNumMember());
         return teachUpdater.updateClass(gameId, request, image);
     }
 
     public Integer updateClass(Integer gameId, ClassUpdateRequest request) {
+        teachValidator.validateClassUpdateInput(request.getName());
         return teachUpdater.updateClass(gameId, request);
     }
 
     public void startClass(Integer gameId, String enddate) {
+        teachValidator.validateEnddate(enddate);
         teachUpdater.startClass(gameId, enddate);
     }
 
@@ -65,10 +71,12 @@ public class TeachService {
     }
 
     public void restoreClass(Integer gameId, String enddate) {
+        teachValidator.validateEnddate(enddate);
         teachUpdater.restoreClass(gameId, enddate);
     }
 
     public void startNextStage(Integer gameId, String enddate) {
+        teachValidator.validateEnddate(enddate);
         teachUpdater.startNextStage(gameId, enddate);
     }
 }

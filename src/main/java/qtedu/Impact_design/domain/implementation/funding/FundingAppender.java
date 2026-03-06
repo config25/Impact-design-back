@@ -39,6 +39,12 @@ public class FundingAppender {
 
     @Transactional
     public FundingInvestmentResponse saveInvestment(String canvasType, Long userId, FundingInvestmentRequest request) {
+        fundingValidator.validateInvestmentInput(
+                request.getInvestmentTarget(), request.getInvestmentPrice(),
+                request.getScore1(), request.getScore2(), request.getScore3(),
+                request.getScore4(), request.getScore5(), request.getScore6(),
+                request.getScore7(), request.getScore8(), request.getScore9()
+        );
         if (isBuildType(canvasType)) {
             return saveInvestmentBuild(userId, request);
         } else {
@@ -175,6 +181,12 @@ public class FundingAppender {
 
     @Transactional
     public FundingSubmitResponse submit(String canvasType, Long userId, FundingInvestmentRequest request) {
+        fundingValidator.validateSubmitInput(
+                request.getInvestmentTarget(), request.getInvestmentPrice(),
+                request.getScore1(), request.getScore2(), request.getScore3(),
+                request.getScore4(), request.getScore5(), request.getScore6(),
+                request.getScore7(), request.getScore8(), request.getScore9()
+        );
         saveInvestment(canvasType, userId, request);
         return FundingSubmitResponse.builder().submitted(true).build();
     }

@@ -44,23 +44,13 @@ public class FlowCanvasAppender {
         for (FlowCanvasSaveRequest.GoalItem goalItem : requestGoals) {
             FlowCanvasModel existing = existingGoalMap.get(goalItem.getOrderNo());
 
-            FlowCanvasModel goalModel;
-            if (existing != null) {
-                goalModel = FlowCanvasModel.builder()
-                        .goalId(existing.getGoalId())
-                        .userId(userId)
-                        .goalTitle(goalItem.getGoalTitle())
-                        .goalDescription(goalItem.getGoalDescription())
-                        .orderNo(goalItem.getOrderNo())
-                        .build();
-            } else {
-                goalModel = FlowCanvasModel.builder()
-                        .userId(userId)
-                        .goalTitle(goalItem.getGoalTitle())
-                        .goalDescription(goalItem.getGoalDescription())
-                        .orderNo(goalItem.getOrderNo())
-                        .build();
-            }
+            FlowCanvasModel goalModel = FlowCanvasModel.builder()
+                    .goalId(existing != null ? existing.getGoalId() : null)
+                    .userId(userId)
+                    .goalTitle(goalItem.getGoalTitle())
+                    .goalDescription(goalItem.getGoalDescription())
+                    .orderNo(goalItem.getOrderNo())
+                    .build();
 
             FlowCanvasModel savedGoal = flowCanvasRepository.save(goalModel);
             Long goalId = savedGoal.getGoalId();
@@ -83,25 +73,13 @@ public class FlowCanvasAppender {
         for (FlowCanvasSaveRequest.TacticalItem item : items) {
             TacticalModel existing = existingMap.get(item.getOrderNo());
 
-            TacticalModel model;
-            if (existing != null) {
-                model = TacticalModel.builder()
-                        .metricId(existing.getMetricId())
-                        .goalId(goalId)
-                        .tacticalMetric(item.getTacticalMetric())
-                        .tacticalGoal(item.getTacticalGoal())
-                        .orderNo(item.getOrderNo())
-                        .build();
-            } else {
-                model = TacticalModel.builder()
-                        .goalId(goalId)
-                        .tacticalMetric(item.getTacticalMetric())
-                        .tacticalGoal(item.getTacticalGoal())
-                        .orderNo(item.getOrderNo())
-                        .build();
-            }
-
-            tacticalRepository.save(model);
+            tacticalRepository.save(TacticalModel.builder()
+                    .metricId(existing != null ? existing.getMetricId() : null)
+                    .goalId(goalId)
+                    .tacticalMetric(item.getTacticalMetric())
+                    .tacticalGoal(item.getTacticalGoal())
+                    .orderNo(item.getOrderNo())
+                    .build());
         }
     }
 
@@ -116,25 +94,13 @@ public class FlowCanvasAppender {
         for (FlowCanvasSaveRequest.StrategicActivityItem item : items) {
             StrategicActivityModel existing = existingMap.get(item.getOrderNo());
 
-            StrategicActivityModel model;
-            if (existing != null) {
-                model = StrategicActivityModel.builder()
-                        .activityId(existing.getActivityId())
-                        .goalId(goalId)
-                        .activityMetric(item.getActivityMetric())
-                        .interCriteria(item.getInterCriteria())
-                        .orderNo(item.getOrderNo())
-                        .build();
-            } else {
-                model = StrategicActivityModel.builder()
-                        .goalId(goalId)
-                        .activityMetric(item.getActivityMetric())
-                        .interCriteria(item.getInterCriteria())
-                        .orderNo(item.getOrderNo())
-                        .build();
-            }
-
-            strategicActivityRepository.save(model);
+            strategicActivityRepository.save(StrategicActivityModel.builder()
+                    .activityId(existing != null ? existing.getActivityId() : null)
+                    .goalId(goalId)
+                    .activityMetric(item.getActivityMetric())
+                    .interCriteria(item.getInterCriteria())
+                    .orderNo(item.getOrderNo())
+                    .build());
         }
     }
 

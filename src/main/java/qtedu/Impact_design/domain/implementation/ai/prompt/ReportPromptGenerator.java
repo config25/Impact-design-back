@@ -2,9 +2,9 @@ package qtedu.Impact_design.domain.implementation.ai.prompt;
 
 import java.util.List;
 
-public class ReportPromptBuilder {
+public class ReportPromptGenerator {
 
-    private ReportPromptBuilder() {}
+    private ReportPromptGenerator() {}
 
     /**
      * 리포트 전체 분석을 위한 통합 프롬프트 (AI 1회 호출)

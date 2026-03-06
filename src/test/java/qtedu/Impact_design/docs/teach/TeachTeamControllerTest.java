@@ -105,7 +105,7 @@ class TeachTeamControllerTest extends RestDocsTestSupport {
                 .willReturn(10);
 
         mockMvc.perform(post("/api/teach/team?gameId={gameId}", "1"))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andDo(document("teach-team/add-team",
                         queryParameters(
                                 parameterWithName("gameId").description("강의실 ID")
@@ -160,7 +160,7 @@ class TeachTeamControllerTest extends RestDocsTestSupport {
                 .willReturn(11);
 
         mockMvc.perform(post("/api/teach/evaluation-team?gameId={gameId}", "1"))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andDo(document("teach-team/add-evaluation-team",
                         queryParameters(
                                 parameterWithName("gameId").description("강의실 ID")
@@ -198,7 +198,7 @@ class TeachTeamControllerTest extends RestDocsTestSupport {
                 .willReturn("a11");
 
         mockMvc.perform(post("/api/teach/team/{teamId}/members?gameId={gameId}", 1, "1"))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andDo(document("teach-team/add-team-member",
                         pathParameters(
                                 parameterWithName("teamId").description("팀 ID")
@@ -598,7 +598,7 @@ class TeachTeamControllerTest extends RestDocsTestSupport {
                 .andDo(document("teach-team/set-writer-not-found",
                         responseFields(
                                 fieldWithPath("status").description("404"),
-                                fieldWithPath("data.errorCode").description("TEAM_1"),
+                                fieldWithPath("data.errorCode").description("TEAM_2"),
                                 fieldWithPath("data.message").description("팀을 찾을 수 없습니다.")
                         )
                 ));

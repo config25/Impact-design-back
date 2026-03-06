@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import qtedu.Impact_design.api.dto.response.report.ReportResponse.FrequencyAnalysis;
 import qtedu.Impact_design.api.dto.response.report.ReportResponse.FrequencyItem;
 import qtedu.Impact_design.api.dto.response.report.ReportResponse.VisionMissionValue;
-import qtedu.Impact_design.domain.implementation.ai.prompt.ReportPromptBuilder;
+import qtedu.Impact_design.domain.implementation.ai.prompt.ReportPromptGenerator;
 import qtedu.Impact_design.domain.model.ai.AiModel;
 import qtedu.Impact_design.domain.model.ai.AiRequest;
 import qtedu.Impact_design.domain.model.ai.AiResponse;
@@ -21,25 +21,18 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class AiImplementation {
+public class AiSender {
 
-    private final AiClientFactory aiClientFactory;
+    private final AiClientProvider aiClientProvider;
     private final ObjectMapper objectMapper;
 
     private static final String AI_JSON_SYSTEM_PROMPT = "반드시 JSON 형식으로만 응답하세요. 다른 텍스트 없이 순수 JSON만 출력하세요.";
     private static final int MIN_DATA_FOR_AI = 3;
 
     // ── 범용 AI 호출 ──
-
-    public AiResponse chat(AiModel model, String systemPrompt, String userPrompt) {
-        AiClient client = aiClientFactory.getClient(model);
-        AiRequest request = AiRequest.of(model, systemPrompt, userPrompt);
-        return client.chat(request);
-    }
-
     public AiResponse chatWithOptions(AiModel model, String systemPrompt, String userPrompt,
                                       Double temperature, Integer maxTokens) {
-        AiClient client = aiClientFactory.getClient(model);
+        AiClient client = aiClientProvider.getClient(model);
         AiRequest request = AiRequest.withOptions(model, systemPrompt, userPrompt, temperature, maxTokens);
         return client.chat(request);
     }
@@ -66,7 +59,7 @@ public class AiImplementation {
         }
 
         try {
-            String prompt = ReportPromptBuilder.fullReport(
+            String prompt = ReportPromptGenerator.fullReport(
                     externalThreats, internalLimitations,
                     visions, missions, values,
                     goalTitles, tacticalPairs, strategicActivityPairs

@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class ReportDataLoader {
+public class ReportDataAggregator {
 
     private final TeamReader teamReader;
     private final ImpactCheckReader impactCheckReader;

@@ -10,8 +10,8 @@ import qtedu.Impact_design.api.dto.response.report.ReportResponse;
 import qtedu.Impact_design.api.util.ResponseHelper;
 import qtedu.Impact_design.api.util.security.CurrentUser;
 import qtedu.Impact_design.common.response.HttpResponse;
+import qtedu.Impact_design.domain.implementation.report.ReportFacade;
 import qtedu.Impact_design.domain.model.UserId;
-import qtedu.Impact_design.domain.service.ReportService;
 
 import java.util.List;
 
@@ -20,14 +20,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReportController {
 
-    private final ReportService reportService;
+    private final ReportFacade reportFacade;
 
     @GetMapping("/report/{teamId}")
     public ResponseEntity<HttpResponse<ReportResponse>> getReport(
             @CurrentUser UserId userId,
             @PathVariable Integer teamId
     ) {
-        ReportResponse response = reportService.getReport(teamId);
+        ReportResponse response = reportFacade.getReport(teamId);
         return ResponseHelper.success(response);
     }
 
@@ -36,7 +36,7 @@ public class ReportController {
             @CurrentUser UserId userId,
             @PathVariable Integer gameId
     ) {
-        List<ReportResponse> responses = reportService.getReportsByGameId(gameId);
+        List<ReportResponse> responses = reportFacade.getReportsByGameId(gameId);
         return ResponseHelper.success(responses);
     }
 }
