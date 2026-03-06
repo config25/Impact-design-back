@@ -3,16 +3,16 @@ package qtedu.Impact_design.api.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import qtedu.Impact_design.api.dto.response.buildwin.BuildWinCanvasResponse;
 import qtedu.Impact_design.api.dto.response.flowcanvas.FlowCanvasResponse;
 import qtedu.Impact_design.api.dto.response.funding.FundingInvestmentResponse;
 import qtedu.Impact_design.api.dto.response.funding.FundingMyResultResponse;
 import qtedu.Impact_design.api.dto.response.identitycanvas.IdentityCanvasResponse;
 import qtedu.Impact_design.api.dto.response.impactcheck.ImpactCheckResponse;
-import qtedu.Impact_design.api.dto.response.quickwin.QuickWinCanvasResponse;
 import qtedu.Impact_design.api.dto.response.teach.TeamSubmissionListResponse;
+import qtedu.Impact_design.api.dto.response.wincanvas.WinCanvasResponse;
 import qtedu.Impact_design.api.util.ResponseHelper;
 import qtedu.Impact_design.common.response.HttpResponse;
+import qtedu.Impact_design.domain.model.en.CanvasType;
 import qtedu.Impact_design.domain.service.TeachSubmissionService;
 
 import java.util.List;
@@ -75,22 +75,20 @@ public class TeachSubmissionController {
      * D: 전술적 실행과제 (WinCanvas - QUICK) 열람
      */
     @GetMapping("/quick-win")
-    public ResponseEntity<HttpResponse<QuickWinCanvasResponse>> getQuickWinCanvas(
+    public ResponseEntity<HttpResponse<WinCanvasResponse>> getQuickWinCanvas(
             @RequestParam Integer teamId
     ) {
-        QuickWinCanvasResponse response = teachSubmissionService.getQuickWinCanvas(teamId);
-        return ResponseHelper.success(response);
+        return ResponseHelper.success(teachSubmissionService.getWinCanvas(teamId, CanvasType.QUICK));
     }
 
     /**
      * E: 전략적 실행과제 (WinCanvas - BUILD) 열람
      */
     @GetMapping("/build-win")
-    public ResponseEntity<HttpResponse<BuildWinCanvasResponse>> getBuildWinCanvas(
+    public ResponseEntity<HttpResponse<WinCanvasResponse>> getBuildWinCanvas(
             @RequestParam Integer teamId
     ) {
-        BuildWinCanvasResponse response = teachSubmissionService.getBuildWinCanvas(teamId);
-        return ResponseHelper.success(response);
+        return ResponseHelper.success(teachSubmissionService.getWinCanvas(teamId, CanvasType.BUILD));
     }
 
     /**

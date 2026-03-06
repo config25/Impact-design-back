@@ -14,12 +14,12 @@ import qtedu.Impact_design.domain.model.win_canvas.WinCanvasModel;
 import qtedu.Impact_design.domain.repository.FLetterOfIntentRepository;
 import qtedu.Impact_design.domain.repository.FLetterOfIntent2Repository;
 import qtedu.Impact_design.domain.repository.auth.TeamUserRepository;
-import qtedu.Impact_design.domain.implementation.buildwin.BuildWinCanvasReader;
 import qtedu.Impact_design.domain.implementation.flowcanvas.FlowCanvasReader;
 import qtedu.Impact_design.domain.implementation.identitycanvas.IdentityCanvasReader;
 import qtedu.Impact_design.domain.implementation.impactcheck.ImpactCheckReader;
-import qtedu.Impact_design.domain.implementation.quickwin.QuickWinCanvasReader;
 import qtedu.Impact_design.domain.implementation.team.TeamReader;
+import qtedu.Impact_design.domain.implementation.wincanvas.WinCanvasReader;
+import qtedu.Impact_design.domain.model.en.CanvasType;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -32,8 +32,7 @@ public class ReportDataAggregator {
     private final ImpactCheckReader impactCheckReader;
     private final IdentityCanvasReader identityCanvasReader;
     private final FlowCanvasReader flowCanvasReader;
-    private final QuickWinCanvasReader quickWinCanvasReader;
-    private final BuildWinCanvasReader buildWinCanvasReader;
+    private final WinCanvasReader winCanvasReader;
     private final FLetterOfIntentRepository fLetterOfIntentRepository;
     private final FLetterOfIntent2Repository fLetterOfIntent2Repository;
     private final TeamUserRepository teamUserRepository;
@@ -46,8 +45,8 @@ public class ReportDataAggregator {
                 .map(FlowCanvasModel::getGoalId)
                 .collect(Collectors.toList());
 
-        List<WinCanvasModel> quickCanvases = quickWinCanvasReader.readCanvasesByUserIds(userIds);
-        List<WinCanvasModel> buildCanvases = buildWinCanvasReader.readCanvasesByUserIds(userIds);
+        List<WinCanvasModel> quickCanvases = winCanvasReader.readCanvasesByUserIds(userIds, CanvasType.QUICK);
+        List<WinCanvasModel> buildCanvases = winCanvasReader.readCanvasesByUserIds(userIds, CanvasType.BUILD);
 
         return ReportRawData.builder()
                 .impactChecks(impactCheckReader.readByUserIds(userIds))
@@ -81,8 +80,8 @@ public class ReportDataAggregator {
         List<ImpactCheckModel> allImpactChecks = impactCheckReader.readByUserIds(allUserIds);
         List<IdentityCanvasModel> allIdentityCanvases = identityCanvasReader.readByUserIds(allUserIds);
         List<FlowCanvasModel> allFlowCanvases = flowCanvasReader.readByUserIds(allUserIds);
-        List<WinCanvasModel> allQuickCanvases = quickWinCanvasReader.readCanvasesByUserIds(allUserIds);
-        List<WinCanvasModel> allBuildCanvases = buildWinCanvasReader.readCanvasesByUserIds(allUserIds);
+        List<WinCanvasModel> allQuickCanvases = winCanvasReader.readCanvasesByUserIds(allUserIds, CanvasType.QUICK);
+        List<WinCanvasModel> allBuildCanvases = winCanvasReader.readCanvasesByUserIds(allUserIds, CanvasType.BUILD);
 
         List<Long> allGoalIds = allFlowCanvases.stream()
                 .map(FlowCanvasModel::getGoalId)

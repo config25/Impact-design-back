@@ -8,13 +8,13 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import qtedu.Impact_design.api.config.SecurityConfig;
 import qtedu.Impact_design.api.controller.TeachSubmissionController;
-import qtedu.Impact_design.api.dto.response.buildwin.BuildWinCanvasResponse;
+import qtedu.Impact_design.api.dto.response.wincanvas.WinCanvasResponse;
 import qtedu.Impact_design.api.dto.response.flowcanvas.FlowCanvasResponse;
 import qtedu.Impact_design.api.dto.response.funding.FundingInvestmentResponse;
 import qtedu.Impact_design.api.dto.response.funding.FundingMyResultResponse;
 import qtedu.Impact_design.api.dto.response.identitycanvas.IdentityCanvasResponse;
 import qtedu.Impact_design.api.dto.response.impactcheck.ImpactCheckResponse;
-import qtedu.Impact_design.api.dto.response.quickwin.QuickWinCanvasResponse;
+import qtedu.Impact_design.domain.model.en.CanvasType;
 import qtedu.Impact_design.api.dto.response.teach.TeamSubmissionListResponse;
 import qtedu.Impact_design.api.util.security.JwtAuthenticationFilter;
 import qtedu.Impact_design.domain.model.en.OutcomeType;
@@ -228,18 +228,18 @@ class TeachSubmissionControllerTest extends RestDocsTestSupport {
     @Test
     @DisplayName("D: 전술적 실행과제 (QuickWin) 열람")
     void getQuickWinCanvas() throws Exception {
-        given(teachSubmissionService.getQuickWinCanvas(anyInt()))
-                .willReturn(QuickWinCanvasResponse.builder()
+        given(teachSubmissionService.getWinCanvas(anyInt(), any(CanvasType.class)))
+                .willReturn(WinCanvasResponse.builder()
                         .canvasId(1L).strategicGoal("전략 목표").taskName("과제명")
                         .taskDescription("주요 내용").crisisSignal("위기의 신호").painTouchPoint("페인 포인트")
                         .userId(10L).submitted(true)
-                        .taskInputs(List.of(QuickWinCanvasResponse.TaskInputItem.builder()
+                        .taskInputs(List.of(WinCanvasResponse.TaskInputItem.builder()
                                 .inputId(1L).resourceName("인적 자원").quantity(3).orderNo(1).build()))
-                        .taskActivities(List.of(QuickWinCanvasResponse.TaskActivityItem.builder()
+                        .taskActivities(List.of(WinCanvasResponse.TaskActivityItem.builder()
                                 .activityId(1L).processStep("1단계").activityContent("활동 내용").duration("2주").orderNo(1).build()))
-                        .teamwork(QuickWinCanvasResponse.TeamworkItem.builder()
+                        .teamwork(WinCanvasResponse.TeamworkItem.builder()
                                 .teamworkId(1L).activityTeamwork("협업 내용").workType("협업").build())
-                        .taskOutcomes(List.of(QuickWinCanvasResponse.TaskOutcomeItem.builder()
+                        .taskOutcomes(List.of(WinCanvasResponse.TaskOutcomeItem.builder()
                                 .outcomeNo(1L).outcomeType(OutcomeType.QUALITATIVE)
                                 .outcomeContent("산출물").orderNo(1).build()))
                         .build());
@@ -289,18 +289,18 @@ class TeachSubmissionControllerTest extends RestDocsTestSupport {
     @Test
     @DisplayName("E: 전략적 실행과제 (BuildWin) 열람")
     void getBuildWinCanvas() throws Exception {
-        given(teachSubmissionService.getBuildWinCanvas(anyInt()))
-                .willReturn(BuildWinCanvasResponse.builder()
+        given(teachSubmissionService.getWinCanvas(anyInt(), any(CanvasType.class)))
+                .willReturn(WinCanvasResponse.builder()
                         .canvasId(1L).strategicGoal("전략 목표").taskName("과제명")
                         .taskDescription("주요 내용").crisisSignal("변화의 신호").painTouchPoint("페인포인트")
                         .userId(10L).submitted(true)
-                        .taskInputs(List.of(BuildWinCanvasResponse.TaskInputItem.builder()
+                        .taskInputs(List.of(WinCanvasResponse.TaskInputItem.builder()
                                 .inputId(1L).resourceName("인적 자원").quantity(3).orderNo(1).build()))
-                        .taskActivities(List.of(BuildWinCanvasResponse.TaskActivityItem.builder()
+                        .taskActivities(List.of(WinCanvasResponse.TaskActivityItem.builder()
                                 .activityId(1L).processStep("1단계").activityContent("활동 내용").duration("2주").orderNo(1).build()))
-                        .teamwork(BuildWinCanvasResponse.TeamworkItem.builder()
+                        .teamwork(WinCanvasResponse.TeamworkItem.builder()
                                 .teamworkId(1L).activityTeamwork("협업 내용").workType("협업").build())
-                        .taskOutcomes(List.of(BuildWinCanvasResponse.TaskOutcomeItem.builder()
+                        .taskOutcomes(List.of(WinCanvasResponse.TaskOutcomeItem.builder()
                                 .outcomeNo(1L).outcomeType(OutcomeType.QUALITATIVE)
                                 .outcomeContent("산출물").orderNo(1).build()))
                         .build());

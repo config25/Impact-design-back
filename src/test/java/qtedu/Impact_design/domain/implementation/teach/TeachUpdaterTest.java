@@ -8,7 +8,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import qtedu.Impact_design.common.error.InvalidDateException;
+import qtedu.Impact_design.common.error.BadRequestException;
 import qtedu.Impact_design.common.error.NotFoundException;
 import qtedu.Impact_design.domain.external.ExternalFileClient;
 import qtedu.Impact_design.domain.model.team.TbGameModel;
@@ -84,14 +84,14 @@ class TeachUpdaterTest {
         @DisplayName("과거 날짜이면 InvalidDateException")
         void pastDateThrows() {
             assertThatThrownBy(() -> teachUpdater.startClass(1, "2020-01-01 00:00"))
-                    .isInstanceOf(InvalidDateException.class);
+                    .isInstanceOf(BadRequestException.class);
         }
 
         @Test
         @DisplayName("잘못된 날짜 형식이면 InvalidDateException")
         void invalidDateFormat() {
             assertThatThrownBy(() -> teachUpdater.startClass(1, "2099-12-31"))
-                    .isInstanceOf(InvalidDateException.class);
+                    .isInstanceOf(BadRequestException.class);
         }
 
         @Test

@@ -14,9 +14,11 @@ import qtedu.Impact_design.domain.model.ai.AiRequest;
 import qtedu.Impact_design.domain.model.ai.AiResponse;
 import qtedu.Impact_design.domain.repository.ai.AiClient;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.StreamSupport;
 
 @Slf4j
 @Component
@@ -89,13 +91,6 @@ public class AiSender {
 
     private FullReportAiResult buildEmptyResult(List<String> externalThreats, List<String> internalLimitations,
                                                  int tacticalSize, int strategicActivitySize) {
-        // 기본 순서: 0, 1, 2, 3, ...
-        List<Integer> defaultTacticalOrder = new ArrayList<>();
-        for (int i = 0; i < tacticalSize; i++) defaultTacticalOrder.add(i);
-
-        List<Integer> defaultStrategicOrder = new ArrayList<>();
-        for (int i = 0; i < strategicActivitySize; i++) defaultStrategicOrder.add(i);
-
         return FullReportAiResult.builder()
                 .externalThreats(FrequencyAnalysis.builder()
                         .allData(externalThreats)
@@ -116,8 +111,8 @@ public class AiSender {
                         .aiVision("").aiMission("").aiValue("")
                         .build())
                 .goalKeywords(Collections.emptyList())
-                .tacticalOrder(defaultTacticalOrder)
-                .strategicActivityOrder(defaultStrategicOrder)
+                .tacticalOrder(defaultOrder(tacticalSize))
+                .strategicActivityOrder(defaultOrder(strategicActivitySize))
                 .build();
     }
 
@@ -173,41 +168,34 @@ public class AiSender {
     }
 
     private List<FrequencyItem> parseFrequencyItems(JsonNode root, String fieldName) {
-        List<FrequencyItem> items = new ArrayList<>();
-        if (root.has(fieldName) && root.get(fieldName).isArray()) {
-            for (JsonNode item : root.get(fieldName)) {
-                items.add(FrequencyItem.builder()
+        if (!root.has(fieldName) || !root.get(fieldName).isArray()) return Collections.emptyList();
+        return StreamSupport.stream(root.get(fieldName).spliterator(), false)
+                .map(item -> FrequencyItem.builder()
                         .content(item.has("content") ? item.get("content").asText() : "")
                         .count(item.has("count") ? item.get("count").asInt() : 0)
-                        .build());
-            }
-        }
-        return items;
+                        .build())
+                .collect(Collectors.toList());
     }
 
     private List<String> parseStringList(JsonNode root, String fieldName) {
-        List<String> list = new ArrayList<>();
-        if (root.has(fieldName) && root.get(fieldName).isArray()) {
-            for (JsonNode node : root.get(fieldName)) {
-                list.add(node.asText());
-            }
-        }
-        return list;
+        if (!root.has(fieldName) || !root.get(fieldName).isArray()) return Collections.emptyList();
+        return StreamSupport.stream(root.get(fieldName).spliterator(), false)
+                .map(JsonNode::asText)
+                .collect(Collectors.toList());
     }
 
     private List<Integer> parseIntList(JsonNode root, String fieldName, int expectedSize) {
-        List<Integer> list = new ArrayList<>();
         if (root.has(fieldName) && root.get(fieldName).isArray()) {
-            for (JsonNode node : root.get(fieldName)) {
-                list.add(node.asInt());
-            }
+            List<Integer> list = StreamSupport.stream(root.get(fieldName).spliterator(), false)
+                    .map(JsonNode::asInt)
+                    .collect(Collectors.toList());
+            if (list.size() == expectedSize) return list;
         }
-        // AI가 정렬 배열을 제대로 반환하지 않았으면 기본 순서 반환
-        if (list.size() != expectedSize) {
-            list.clear();
-            for (int i = 0; i < expectedSize; i++) list.add(i);
-        }
-        return list;
+        return defaultOrder(expectedSize);
+    }
+
+    private List<Integer> defaultOrder(int size) {
+        return IntStream.range(0, size).boxed().collect(Collectors.toList());
     }
 
     // ── 통합 분석 결과 DTO ──

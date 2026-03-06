@@ -3,20 +3,19 @@ package qtedu.Impact_design.domain.implementation.teach;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import qtedu.Impact_design.api.dto.response.buildwin.BuildWinCanvasResponse;
 import qtedu.Impact_design.api.dto.response.flowcanvas.FlowCanvasResponse;
 import qtedu.Impact_design.api.dto.response.funding.FundingInvestmentResponse;
 import qtedu.Impact_design.api.dto.response.funding.FundingMyResultResponse;
 import qtedu.Impact_design.api.dto.response.identitycanvas.IdentityCanvasResponse;
 import qtedu.Impact_design.api.dto.response.impactcheck.ImpactCheckResponse;
-import qtedu.Impact_design.api.dto.response.quickwin.QuickWinCanvasResponse;
 import qtedu.Impact_design.api.dto.response.teach.TeamSubmissionListResponse;
-import qtedu.Impact_design.domain.implementation.buildwin.BuildWinCanvasReader;
+import qtedu.Impact_design.api.dto.response.wincanvas.WinCanvasResponse;
 import qtedu.Impact_design.domain.implementation.flowcanvas.FlowCanvasReader;
 import qtedu.Impact_design.domain.implementation.funding.FundingReader;
 import qtedu.Impact_design.domain.implementation.identitycanvas.IdentityCanvasReader;
 import qtedu.Impact_design.domain.implementation.impactcheck.ImpactCheckReader;
-import qtedu.Impact_design.domain.implementation.quickwin.QuickWinCanvasReader;
+import qtedu.Impact_design.domain.implementation.wincanvas.WinCanvasReader;
+import qtedu.Impact_design.domain.model.en.CanvasType;
 import qtedu.Impact_design.domain.repository.auth.TbTeamRepository;
 import qtedu.Impact_design.domain.repository.auth.TeamUserRepository;
 import qtedu.Impact_design.domain.repository.teach.GameTeamRepository;
@@ -41,8 +40,7 @@ public class TeachSubmissionReader {
     private final ImpactCheckReader impactCheckReader;
     private final IdentityCanvasReader identityCanvasReader;
     private final FlowCanvasReader flowCanvasReader;
-    private final QuickWinCanvasReader quickWinCanvasReader;
-    private final BuildWinCanvasReader buildWinCanvasReader;
+    private final WinCanvasReader winCanvasReader;
     private final FundingReader fundingReader;
 
     public List<TeamSubmissionListResponse> getSubmissionList(Integer gameId) {
@@ -108,14 +106,9 @@ public class TeachSubmissionReader {
         return flowCanvasReader.read(writerUserId);
     }
 
-    public QuickWinCanvasResponse getQuickWinCanvas(Integer teamId) {
+    public WinCanvasResponse getWinCanvas(Integer teamId, CanvasType canvasType) {
         Long writerUserId = submitStatusChecker.findWriterUserId(teamId);
-        return quickWinCanvasReader.read(writerUserId);
-    }
-
-    public BuildWinCanvasResponse getBuildWinCanvas(Integer teamId) {
-        Long writerUserId = submitStatusChecker.findWriterUserId(teamId);
-        return buildWinCanvasReader.read(writerUserId);
+        return winCanvasReader.read(writerUserId, canvasType);
     }
 
     public List<FundingInvestmentResponse> getFunding(String canvasType, Integer teamId) {

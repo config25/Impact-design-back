@@ -17,8 +17,8 @@ import qtedu.Impact_design.domain.repository.teach.GameAdminRepository;
 import qtedu.Impact_design.domain.repository.teach.GameTeamRepository;
 import qtedu.Impact_design.domain.repository.teach.TbGameRepository;
 
+import qtedu.Impact_design.common.error.BadRequestException;
 import qtedu.Impact_design.common.error.ErrorCode;
-import qtedu.Impact_design.common.error.InvalidDateException;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -122,10 +122,10 @@ public class TeachAppender {
         try {
             parsed = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         } catch (DateTimeParseException e) {
-            throw new InvalidDateException(ErrorCode.INVALID_DATE);
+            throw new BadRequestException(ErrorCode.INVALID_DATE);
         }
         if (parsed.isBefore(LocalDate.now())) {
-            throw new InvalidDateException(ErrorCode.DATE_IN_PAST);
+            throw new BadRequestException(ErrorCode.DATE_IN_PAST);
         }
     }
 

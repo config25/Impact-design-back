@@ -1,4 +1,4 @@
-package qtedu.Impact_design.api.dto.response.quickwin;
+package qtedu.Impact_design.api.dto.response.wincanvas;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -6,11 +6,12 @@ import qtedu.Impact_design.domain.model.en.OutcomeType;
 import qtedu.Impact_design.domain.model.win_canvas.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Getter
 @Builder
-public class QuickWinCanvasResponse {
+public class WinCanvasResponse {
     private Long canvasId;
     private String strategicGoal;
     private String taskName;
@@ -96,12 +97,12 @@ public class QuickWinCanvasResponse {
         }
     }
 
-    public static QuickWinCanvasResponse from(WinCanvasModel canvas,
-                                              List<TaskInputModel> inputs,
-                                              List<TaskActivityModel> activities,
-                                              TeamworkModel teamwork,
-                                              List<TaskOutcomeModel> outcomes) {
-        return QuickWinCanvasResponse.builder()
+    public static WinCanvasResponse from(WinCanvasModel canvas,
+                                          List<TaskInputModel> inputs,
+                                          List<TaskActivityModel> activities,
+                                          TeamworkModel teamwork,
+                                          List<TaskOutcomeModel> outcomes) {
+        return WinCanvasResponse.builder()
                 .canvasId(canvas.getCanvasId())
                 .strategicGoal(canvas.getStrategicGoal())
                 .taskName(canvas.getTaskName())
@@ -116,5 +117,4 @@ public class QuickWinCanvasResponse {
                 .taskOutcomes(outcomes.stream().map(TaskOutcomeItem::from).collect(Collectors.toList()))
                 .build();
     }
-
 }

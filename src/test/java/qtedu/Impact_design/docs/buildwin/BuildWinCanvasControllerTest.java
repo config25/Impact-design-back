@@ -8,15 +8,16 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import qtedu.Impact_design.api.config.SecurityConfig;
-import qtedu.Impact_design.api.controller.BuildWinCanvasController;
-import qtedu.Impact_design.api.dto.response.buildwin.BuildWinCanvasResponse;
+import qtedu.Impact_design.api.controller.WinCanvasController;
+import qtedu.Impact_design.api.dto.response.wincanvas.WinCanvasResponse;
 import qtedu.Impact_design.api.util.security.JwtAuthenticationFilter;
 import qtedu.Impact_design.api.util.security.UserArgumentResolver;
 import qtedu.Impact_design.common.error.ConflictException;
 import qtedu.Impact_design.common.error.ErrorCode;
 import qtedu.Impact_design.docs.RestDocsTestSupport;
 import qtedu.Impact_design.domain.model.en.OutcomeType;
-import qtedu.Impact_design.domain.service.BuildWinCanvasService;
+import qtedu.Impact_design.domain.model.en.CanvasType;
+import qtedu.Impact_design.domain.service.WinCanvasService;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -31,7 +32,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(
-        controllers = BuildWinCanvasController.class,
+        controllers = WinCanvasController.class,
         excludeFilters = @ComponentScan.Filter(
                 type = FilterType.ASSIGNABLE_TYPE,
                 classes = {SecurityConfig.class, JwtAuthenticationFilter.class}
@@ -44,10 +45,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class BuildWinCanvasControllerTest extends RestDocsTestSupport {
 
     @MockitoBean
-    private BuildWinCanvasService buildWinCanvasService;
+    private WinCanvasService winCanvasService;
 
-    private BuildWinCanvasResponse sampleResponse(boolean submitted) {
-        return BuildWinCanvasResponse.builder()
+    private WinCanvasResponse sampleResponse(boolean submitted) {
+        return WinCanvasResponse.builder()
                 .canvasId(1L)
                 .strategicGoal("비즈니스 모델 구축")
                 .taskName("서비스 프로토타입 개발")
@@ -57,21 +58,21 @@ class BuildWinCanvasControllerTest extends RestDocsTestSupport {
                 .userId(1L)
                 .submitted(submitted)
                 .taskInputs(List.of(
-                        BuildWinCanvasResponse.TaskInputItem.builder()
+                        WinCanvasResponse.TaskInputItem.builder()
                                 .inputId(1L).resourceName("개발 인력").quantity(3).orderNo(1).build()
                 ))
                 .taskActivities(List.of(
-                        BuildWinCanvasResponse.TaskActivityItem.builder()
+                        WinCanvasResponse.TaskActivityItem.builder()
                                 .activityId(1L).processStep("설계").activityContent("서비스 아키텍처 설계")
                                 .duration("3주").orderNo(1).build()
                 ))
-                .teamwork(BuildWinCanvasResponse.TeamworkItem.builder()
+                .teamwork(WinCanvasResponse.TeamworkItem.builder()
                         .teamworkId(1L).activityTeamwork("주간 스프린트 회의").workType("협업").build())
                 .taskOutcomes(List.of(
-                        BuildWinCanvasResponse.TaskOutcomeItem.builder()
+                        WinCanvasResponse.TaskOutcomeItem.builder()
                                 .outcomeNo(1L).outcomeType(OutcomeType.QUANTITATIVE)
                                 .outcomeContent("프로토타입 완성률 100%").orderNo(1).build(),
-                        BuildWinCanvasResponse.TaskOutcomeItem.builder()
+                        WinCanvasResponse.TaskOutcomeItem.builder()
                                 .outcomeNo(2L).outcomeType(OutcomeType.QUALITATIVE)
                                 .outcomeContent("사용자 테스트 완료").orderNo(2).build()
                 ))
@@ -108,7 +109,7 @@ class BuildWinCanvasControllerTest extends RestDocsTestSupport {
     @DisplayName("BuildWin 캔버스 조회")
     void getBuildWinCanvas() throws Exception {
         authenticateAs(1L);
-        given(buildWinCanvasService.getBuildWinCanvas(anyLong()))
+        given(winCanvasService.getWinCanvas(anyLong(), any(CanvasType.class)))
                 .willReturn(sampleResponse(false));
 
         mockMvc.perform(get("/api/build-win-canvas"))
@@ -154,7 +155,7 @@ class BuildWinCanvasControllerTest extends RestDocsTestSupport {
     @DisplayName("BuildWin 캔버스 저장")
     void saveBuildWinCanvas() throws Exception {
         authenticateAs(1L);
-        given(buildWinCanvasService.saveBuildWinCanvas(anyLong(), any()))
+        given(winCanvasService.saveWinCanvas(anyLong(), any(), any(CanvasType.class)))
                 .willReturn(sampleResponse(false));
 
         mockMvc.perform(post("/api/build-win-canvas")
@@ -227,7 +228,7 @@ class BuildWinCanvasControllerTest extends RestDocsTestSupport {
     @DisplayName("BuildWin 캔버스 저장 - 이미 제출 완료")
     void saveBuildWinCanvas_alreadySubmitted() throws Exception {
         authenticateAs(1L);
-        given(buildWinCanvasService.saveBuildWinCanvas(anyLong(), any()))
+        given(winCanvasService.saveWinCanvas(anyLong(), any(), any(CanvasType.class)))
                 .willThrow(new ConflictException(ErrorCode.ALREADY_SUBMITTED));
 
         mockMvc.perform(post("/api/build-win-canvas")
@@ -249,7 +250,7 @@ class BuildWinCanvasControllerTest extends RestDocsTestSupport {
     @DisplayName("BuildWin 캔버스 제출")
     void submitBuildWinCanvas() throws Exception {
         authenticateAs(1L);
-        given(buildWinCanvasService.submitBuildWinCanvas(anyLong(), any()))
+        given(winCanvasService.submitWinCanvas(anyLong(), any(), any(CanvasType.class)))
                 .willReturn(sampleResponse(true));
 
         mockMvc.perform(patch("/api/build-win-canvas/submit")
@@ -322,7 +323,7 @@ class BuildWinCanvasControllerTest extends RestDocsTestSupport {
     @DisplayName("BuildWin 캔버스 제출 - 이미 제출 완료")
     void submitBuildWinCanvas_alreadySubmitted() throws Exception {
         authenticateAs(1L);
-        given(buildWinCanvasService.submitBuildWinCanvas(anyLong(), any()))
+        given(winCanvasService.submitWinCanvas(anyLong(), any(), any(CanvasType.class)))
                 .willThrow(new ConflictException(ErrorCode.ALREADY_SUBMITTED));
 
         mockMvc.perform(patch("/api/build-win-canvas/submit")

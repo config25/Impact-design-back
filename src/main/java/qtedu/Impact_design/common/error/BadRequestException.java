@@ -3,11 +3,11 @@ package qtedu.Impact_design.common.error;
 import lombok.Getter;
 
 @Getter
-public class InvalidDateException extends RuntimeException {
+public class BadRequestException extends RuntimeException {
 
     private final ErrorCode errorCode;
 
-    public InvalidDateException(ErrorCode errorCode) {
+    public BadRequestException(ErrorCode errorCode) {
         super(errorCode.getMessage());
         this.errorCode = errorCode;
     }

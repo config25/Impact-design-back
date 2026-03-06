@@ -7,9 +7,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import qtedu.Impact_design.api.dto.request.wincanvas.WinCanvasSaveRequest;
-import qtedu.Impact_design.api.dto.response.buildwin.BuildWinCanvasResponse;
-import qtedu.Impact_design.domain.implementation.buildwin.BuildWinCanvasAppender;
-import qtedu.Impact_design.domain.implementation.buildwin.BuildWinCanvasReader;
+import qtedu.Impact_design.api.dto.response.wincanvas.WinCanvasResponse;
+import qtedu.Impact_design.domain.implementation.wincanvas.WinCanvasAppender;
+import qtedu.Impact_design.domain.implementation.wincanvas.WinCanvasReader;
+import qtedu.Impact_design.domain.model.en.CanvasType;
 import qtedu.Impact_design.domain.model.win_canvas.WinCanvasModel;
 
 import java.util.Collections;
@@ -19,58 +20,58 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class BuildWinCanvasServiceTest {
+class WinCanvasServiceTest {
 
     @InjectMocks
-    private BuildWinCanvasService buildWinCanvasService;
+    private WinCanvasService winCanvasService;
 
     @Mock
-    private BuildWinCanvasReader buildWinCanvasReader;
+    private WinCanvasReader winCanvasReader;
     @Mock
-    private BuildWinCanvasAppender buildWinCanvasAppender;
+    private WinCanvasAppender winCanvasAppender;
 
     @Test
-    @DisplayName("getBuildWinCanvas - reader에서 빌드윈캔버스를 조회한다")
-    void getBuildWinCanvas() {
-        BuildWinCanvasResponse expected = BuildWinCanvasResponse.builder()
+    @DisplayName("getWinCanvas - reader에서 캔버스를 조회한다")
+    void getWinCanvas() {
+        WinCanvasResponse expected = WinCanvasResponse.builder()
                 .canvasId(1L).userId(1L).taskName("태스크").submitted(false)
                 .taskInputs(Collections.emptyList()).taskActivities(Collections.emptyList())
                 .taskOutcomes(Collections.emptyList()).build();
-        given(buildWinCanvasReader.read(1L)).willReturn(expected);
+        given(winCanvasReader.read(1L, CanvasType.QUICK)).willReturn(expected);
 
-        BuildWinCanvasResponse result = buildWinCanvasService.getBuildWinCanvas(1L);
+        WinCanvasResponse result = winCanvasService.getWinCanvas(1L, CanvasType.QUICK);
 
         assertThat(result.getCanvasId()).isEqualTo(1L);
         assertThat(result.getTaskName()).isEqualTo("태스크");
     }
 
     @Test
-    @DisplayName("saveBuildWinCanvas - appender에 저장을 위임한다")
-    void saveBuildWinCanvas() {
+    @DisplayName("saveWinCanvas - appender에 저장을 위임한다")
+    void saveWinCanvas() {
         WinCanvasSaveRequest request = new WinCanvasSaveRequest();
-        BuildWinCanvasResponse expected = BuildWinCanvasResponse.builder()
+        WinCanvasResponse expected = WinCanvasResponse.builder()
                 .canvasId(1L).submitted(false)
                 .taskInputs(Collections.emptyList()).taskActivities(Collections.emptyList())
                 .taskOutcomes(Collections.emptyList()).build();
-        given(buildWinCanvasAppender.append(1L, request)).willReturn(expected);
+        given(winCanvasAppender.append(1L, request, CanvasType.BUILD)).willReturn(expected);
 
-        BuildWinCanvasResponse result = buildWinCanvasService.saveBuildWinCanvas(1L, request);
+        WinCanvasResponse result = winCanvasService.saveWinCanvas(1L, request, CanvasType.BUILD);
 
         assertThat(result.getSubmitted()).isFalse();
-        then(buildWinCanvasAppender).should().append(1L, request);
+        then(winCanvasAppender).should().append(1L, request, CanvasType.BUILD);
     }
 
     @Test
-    @DisplayName("submitBuildWinCanvas - appender에 제출을 위임한다")
-    void submitBuildWinCanvas() {
+    @DisplayName("submitWinCanvas - appender에 제출을 위임한다")
+    void submitWinCanvas() {
         WinCanvasSaveRequest request = new WinCanvasSaveRequest();
-        BuildWinCanvasResponse expected = BuildWinCanvasResponse.builder()
+        WinCanvasResponse expected = WinCanvasResponse.builder()
                 .canvasId(1L).submitted(true)
                 .taskInputs(Collections.emptyList()).taskActivities(Collections.emptyList())
                 .taskOutcomes(Collections.emptyList()).build();
-        given(buildWinCanvasAppender.submit(1L, request)).willReturn(expected);
+        given(winCanvasAppender.submit(1L, request, CanvasType.QUICK)).willReturn(expected);
 
-        BuildWinCanvasResponse result = buildWinCanvasService.submitBuildWinCanvas(1L, request);
+        WinCanvasResponse result = winCanvasService.submitWinCanvas(1L, request, CanvasType.QUICK);
 
         assertThat(result.getSubmitted()).isTrue();
     }
@@ -83,9 +84,9 @@ class BuildWinCanvasServiceTest {
                 WinCanvasModel.builder().canvasId(1L).userId(1L).build(),
                 WinCanvasModel.builder().canvasId(2L).userId(2L).build()
         );
-        given(buildWinCanvasReader.readCanvasesByUserIds(userIds)).willReturn(expected);
+        given(winCanvasReader.readCanvasesByUserIds(userIds, CanvasType.BUILD)).willReturn(expected);
 
-        List<WinCanvasModel> result = buildWinCanvasService.getCanvasesByUserIds(userIds);
+        List<WinCanvasModel> result = winCanvasService.getCanvasesByUserIds(userIds, CanvasType.BUILD);
 
         assertThat(result).hasSize(2);
     }

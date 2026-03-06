@@ -1,8 +1,9 @@
 package qtedu.Impact_design.domain.implementation.media;
 
-import ch.qos.logback.core.joran.sanity.Pair;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import qtedu.Impact_design.common.error.BadRequestException;
+import qtedu.Impact_design.common.error.ErrorCode;
 import qtedu.Impact_design.domain.model.UserId;
 import qtedu.Impact_design.domain.model.media.FileCategory;
 import qtedu.Impact_design.domain.model.media.FileData;
@@ -32,7 +33,7 @@ public class FileHandler {
             asyncJobExecutor.executeAsyncJobs(mediaWithFiles, pair ->
                     fileAppender.appendFile(pair.getKey(), pair.getValue()));
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new BadRequestException(ErrorCode.FILE_UPLOAD_FAILED);
         }
         return mediaWithFiles.stream().map(Map.Entry::getValue).collect(Collectors.toList());
     }
@@ -43,7 +44,7 @@ public class FileHandler {
         try {
             asyncJobExecutor.executeAsyncJob(media, item -> fileAppender.appendFile(file, media));
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new BadRequestException(ErrorCode.FILE_UPLOAD_FAILED);
         }
         return media;
     }
@@ -53,7 +54,7 @@ public class FileHandler {
             try {
                 asyncJobExecutor.executeAsyncJob(media, fileRemover::removeFile);
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                throw new BadRequestException(ErrorCode.FILE_DELETE_FAILED);
             }
         }
     }
@@ -62,7 +63,7 @@ public class FileHandler {
         try {
             asyncJobExecutor.executeAsyncJobs(medias, fileRemover::removeFile);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new BadRequestException(ErrorCode.FILE_DELETE_FAILED);
         }
     }
 }

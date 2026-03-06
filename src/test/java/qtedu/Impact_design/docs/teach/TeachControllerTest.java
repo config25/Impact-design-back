@@ -14,7 +14,7 @@ import qtedu.Impact_design.api.dto.response.teach.*;
 import qtedu.Impact_design.api.util.security.JwtAuthenticationFilter;
 import qtedu.Impact_design.api.util.security.UserArgumentResolver;
 import qtedu.Impact_design.common.error.ErrorCode;
-import qtedu.Impact_design.common.error.InvalidDateException;
+import qtedu.Impact_design.common.error.BadRequestException;
 import qtedu.Impact_design.common.error.NotFoundException;
 import qtedu.Impact_design.docs.RestDocsTestSupport;
 import qtedu.Impact_design.domain.service.TeachService;
@@ -535,7 +535,7 @@ class TeachControllerTest extends RestDocsTestSupport {
     void createClass_invalidDate() throws Exception {
         authenticateAs(1L);
         given(teachService.createClass(anyLong(), any(), any()))
-                .willThrow(new InvalidDateException(ErrorCode.INVALID_DATE));
+                .willThrow(new BadRequestException(ErrorCode.INVALID_DATE));
 
         String requestJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(java.util.Map.of(
                 "name", "새 강의실",
@@ -663,7 +663,7 @@ class TeachControllerTest extends RestDocsTestSupport {
     @Test
     @DisplayName("강의실 시작 - 유효하지 않은 날짜")
     void startClass_invalidDate() throws Exception {
-        willThrow(new InvalidDateException(ErrorCode.INVALID_DATE))
+        willThrow(new BadRequestException(ErrorCode.INVALID_DATE))
                 .given(teachService).startClass(anyInt(), any());
 
         String requestJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(java.util.Map.of(

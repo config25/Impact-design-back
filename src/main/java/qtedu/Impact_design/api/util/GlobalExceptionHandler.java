@@ -15,7 +15,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import qtedu.Impact_design.common.error.AuthorizationException;
 import qtedu.Impact_design.common.error.ConflictException;
 import qtedu.Impact_design.common.error.ErrorCode;
-import qtedu.Impact_design.common.error.InvalidDateException;
+import qtedu.Impact_design.common.error.BadRequestException;
 import qtedu.Impact_design.common.error.NotFoundException;
 import qtedu.Impact_design.common.response.ErrorResponse;
 import qtedu.Impact_design.common.response.HttpResponse;
@@ -95,9 +95,9 @@ public class GlobalExceptionHandler {
         return handleException(new InsufficientAuthenticationException("Unauthorized"), ErrorCode.NOT_AUTHORIZED, HttpStatus.UNAUTHORIZED);
     }
 
-    // 유효하지 않은 날짜 예외(정의됨)
-    @ExceptionHandler(InvalidDateException.class)
-    protected ResponseEntity<HttpResponse<ErrorResponse>> handleInvalidDateException(InvalidDateException e) {
+    // 잘못된 요청 예외(정의됨)
+    @ExceptionHandler(BadRequestException.class)
+    protected ResponseEntity<HttpResponse<ErrorResponse>> handleBadRequestException(BadRequestException e) {
         return handleException(e, e.getErrorCode(), HttpStatus.BAD_REQUEST);
     }
 

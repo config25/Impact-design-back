@@ -6,13 +6,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import qtedu.Impact_design.api.dto.response.buildwin.BuildWinCanvasResponse;
+import qtedu.Impact_design.api.dto.response.wincanvas.WinCanvasResponse;
 import qtedu.Impact_design.api.dto.response.flowcanvas.FlowCanvasResponse;
 import qtedu.Impact_design.api.dto.response.funding.FundingInvestmentResponse;
 import qtedu.Impact_design.api.dto.response.funding.FundingMyResultResponse;
 import qtedu.Impact_design.api.dto.response.identitycanvas.IdentityCanvasResponse;
 import qtedu.Impact_design.api.dto.response.impactcheck.ImpactCheckResponse;
-import qtedu.Impact_design.api.dto.response.quickwin.QuickWinCanvasResponse;
+import qtedu.Impact_design.domain.model.en.CanvasType;
 import qtedu.Impact_design.api.dto.response.teach.TeamSubmissionListResponse;
 import qtedu.Impact_design.domain.implementation.teach.TeachSubmissionReader;
 
@@ -82,29 +82,15 @@ class TeachSubmissionServiceTest {
     }
 
     @Test
-    @DisplayName("getQuickWinCanvas - reader에서 팀의 퀵윈캔버스를 조회한다")
-    void getQuickWinCanvas() {
-        QuickWinCanvasResponse expected = QuickWinCanvasResponse.builder()
+    @DisplayName("getWinCanvas - reader에서 팀의 윈캔버스를 조회한다")
+    void getWinCanvas() {
+        WinCanvasResponse expected = WinCanvasResponse.builder()
                 .canvasId(1L).submitted(true)
                 .taskInputs(Collections.emptyList()).taskActivities(Collections.emptyList())
                 .taskOutcomes(Collections.emptyList()).build();
-        given(teachSubmissionReader.getQuickWinCanvas(10)).willReturn(expected);
+        given(teachSubmissionReader.getWinCanvas(10, CanvasType.QUICK)).willReturn(expected);
 
-        QuickWinCanvasResponse result = teachSubmissionService.getQuickWinCanvas(10);
-
-        assertThat(result.getSubmitted()).isTrue();
-    }
-
-    @Test
-    @DisplayName("getBuildWinCanvas - reader에서 팀의 빌드윈캔버스를 조회한다")
-    void getBuildWinCanvas() {
-        BuildWinCanvasResponse expected = BuildWinCanvasResponse.builder()
-                .canvasId(1L).submitted(true)
-                .taskInputs(Collections.emptyList()).taskActivities(Collections.emptyList())
-                .taskOutcomes(Collections.emptyList()).build();
-        given(teachSubmissionReader.getBuildWinCanvas(10)).willReturn(expected);
-
-        BuildWinCanvasResponse result = teachSubmissionService.getBuildWinCanvas(10);
+        WinCanvasResponse result = teachSubmissionService.getWinCanvas(10, CanvasType.QUICK);
 
         assertThat(result.getSubmitted()).isTrue();
     }
