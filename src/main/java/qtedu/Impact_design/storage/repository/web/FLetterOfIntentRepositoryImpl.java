@@ -2,6 +2,8 @@ package qtedu.Impact_design.storage.repository.web;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import qtedu.Impact_design.common.error.ErrorCode;
+import qtedu.Impact_design.common.error.NotFoundException;
 import qtedu.Impact_design.domain.model.FLetterOfIntentModel;
 import qtedu.Impact_design.domain.model.en.CanvasType;
 import qtedu.Impact_design.domain.repository.FLetterOfIntentRepository;
@@ -48,7 +50,7 @@ public class FLetterOfIntentRepositoryImpl implements FLetterOfIntentRepository 
 
         if (model.getIntentIndex() != null) {
             entity = fLetterOfIntentJpaRepository.findById(model.getIntentIndex())
-                    .orElseThrow(() -> new IllegalArgumentException("FLetterOfIntent not found"));
+                    .orElseThrow(() -> new NotFoundException(ErrorCode.WRONG_ACCESS));
             entity.update(
                     model.getInvestmentPrice(),
                     model.getScore1(), model.getScore2(), model.getScore3(),

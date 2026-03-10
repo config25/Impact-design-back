@@ -7,12 +7,16 @@ import qtedu.Impact_design.common.error.ErrorCode;
 import qtedu.Impact_design.common.error.NotFoundException;
 import qtedu.Impact_design.domain.model.team.TbTeamModel;
 import qtedu.Impact_design.domain.model.team.TeamUserModel;
+import qtedu.Impact_design.domain.model.user.UserinfoModel;
 import qtedu.Impact_design.domain.repository.auth.TbTeamRepository;
 import qtedu.Impact_design.domain.repository.auth.TeamUserRepository;
 import qtedu.Impact_design.domain.repository.teach.TbGameRepository;
 import qtedu.Impact_design.domain.repository.user.UserinfoRepository;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -46,29 +50,39 @@ public class TeachTeamRemover {
 
     @Transactional
     public void deleteTeamMembers(List<Long> userIds) {
-        for (Long userId : userIds) {
-            userinfoRepository.findByUserId(userId).ifPresent(user -> {
-                if ("1".equals(user.getWriter())) {
-                    // writer가 삭제되면 같은 팀의 남는 멤버에게 writer 이전
-                    teamUserRepository.findByUserId(userId).ifPresent(teamUser -> {
-                        List<Long> remainingMemberIds = teamUserRepository.findByTeamId(teamUser.getTeamId())
-                                .stream()
-                                .map(TeamUserModel::getUserId)
-                                .filter(id -> !userIds.contains(id))
-                                .toList();
+        // 1. 배치 조회: 삭제 대상 유저 정보 + teamUser 정보
+        List<UserinfoModel> users = userinfoRepository.findAllByUserIds(userIds);
+        List<TeamUserModel> teamUsers = teamUserRepository.findByUserIdIn(userIds);
+        Set<Long> deleteSet = Set.copyOf(userIds);
 
-                        if (!remainingMemberIds.isEmpty()) {
-                            userinfoRepository.setWriter(remainingMemberIds.get(0));
-                        }
-                    });
-                    // 삭제되는 유저의 writer 해제
-                    userinfoRepository.clearWriterByUserIds(List.of(userId));
-                }
-            });
-            teamUserRepository.findByUserId(userId).ifPresent(teamUser ->
-                    tbTeamRepository.decrementNumUser(teamUser.getTeamId())
-            );
-            teamUserRepository.deleteByUserId(userId);
+        // 2. writer 이전 처리 (삭제 대상 중 writer인 유저)
+        Map<Integer, Long> teamWriterMap = teamUsers.stream()
+                .filter(tu -> users.stream()
+                        .anyMatch(u -> u.getUserId().equals(tu.getUserId()) && "1".equals(u.getWriter())))
+                .collect(Collectors.toMap(TeamUserModel::getTeamId, TeamUserModel::getUserId, (a, b) -> a));
+
+        for (Map.Entry<Integer, Long> entry : teamWriterMap.entrySet()) {
+            Integer teamId = entry.getKey();
+            List<Long> remainingMemberIds = teamUserRepository.findByTeamId(teamId).stream()
+                    .map(TeamUserModel::getUserId)
+                    .filter(id -> !deleteSet.contains(id))
+                    .toList();
+
+            if (!remainingMemberIds.isEmpty()) {
+                userinfoRepository.setWriter(remainingMemberIds.get(0));
+            }
         }
+
+        if (!teamWriterMap.isEmpty()) {
+            userinfoRepository.clearWriterByUserIds(List.copyOf(teamWriterMap.values()));
+        }
+
+        // 3. 팀별 멤버 수 감소
+        teamUsers.stream()
+                .collect(Collectors.groupingBy(TeamUserModel::getTeamId, Collectors.counting()))
+                .forEach((teamId, count) -> tbTeamRepository.decrementNumUserBy(teamId, count.intValue()));
+
+        // 4. 배치 삭제
+        teamUserRepository.deleteByUserIdIn(userIds);
     }
 }

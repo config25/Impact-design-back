@@ -51,6 +51,18 @@ public class TeamUserRepositoryImpl implements TeamUserRepository {
     }
 
     @Override
+    public List<TeamUserModel> findByUserIdIn(List<Long> userIds) {
+        return teamUserJpaRepository.findByUserIdIn(userIds).stream()
+                .map(this::toModel)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteByUserIdIn(List<Long> userIds) {
+        teamUserJpaRepository.deleteByUserIdIn(userIds);
+    }
+
+    @Override
     public Optional<String> findTeamNameByUserId(Long userId) {
         return teamUserJpaRepository.findTeamNameByUserId(userId);
     }

@@ -9,10 +9,12 @@ public interface TbTeamRepository {
     List<TbTeamModel> findByCode(String code);
     List<TbTeamModel> findByCodeExcludingTeam(String code, Integer excludeTeamId);
     Optional<TbTeamModel> findByTeamId(Integer teamId);
+    Optional<TbTeamModel> findByTeamIdForUpdate(Integer teamId);
     List<TbTeamModel> findByTeamIdIn(List<Integer> teamIds);
     TbTeamModel save(TbTeamModel model);
     List<TbTeamModel> findDeletedByGameId(Integer gameId);
     int findMaxSequenceByGameId(Integer gameId);
     void incrementNumUser(Integer teamId);
     void decrementNumUser(Integer teamId);
+    void decrementNumUserBy(Integer teamId, int count);
 }

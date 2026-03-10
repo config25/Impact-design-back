@@ -54,7 +54,7 @@
 계층형 아키텍처에 CQRS(Reader/Appender) 패턴을 적용합니다.
 
 ```
-Controller → Service → Facade/Implementation → Domain Repository → RepositoryImpl → JPA Repository
+Controller → Facade/Service → Implementation → Domain Repository → RepositoryImpl → JPA Repository
 ```
 
 - **Domain Model**: JPA 의존 없는 순수 POJO (`XxxModel`)
@@ -180,93 +180,383 @@ qtedu.Impact_design/
 ### 테이블 관계도 (논리적, FK 제약조건 없음 — 애플리케이션 레벨 조인)
 
 ```
- userinfo ─────┬──── identity_canvas      (B단계, user_id로 연결)
-   │           ├──── Impact_check          (A단계, user_id로 연결)
-   │           ├──── flow_canvas           (C단계, user_id로 연결)
-   │           │       ├── strategic_activity  (goal_id로 연결)
-   │           │       └── tactical            (goal_id로 연결)
-   │           ├──── win_canvas            (D/E단계, user_id로 연결)
-   │           │       ├── task_activity       (canvas_id로 연결)
-   │           │       ├── task_input          (canvas_id로 연결)
-   │           │       ├── task_outcome        (canvas_id로 연결)
-   │           │       └── teamwork            (canvas_id로 연결)
-   │           └──── logged_in             (세션, userNo로 연결)
+ userinfo ─────┬──── identity_canvas        (B단계, user_id)
+   │           ├──── impact_check            (A단계, user_id)
+   │           ├──── flow_canvas             (C단계, user_id)
+   │           │       ├── strategic_activity    (goal_id)
+   │           │       └── tactical              (goal_id)
+   │           ├──── win_canvas              (D/E단계, user_id + canvas_type)
+   │           │       ├── task_activity         (canvas_id)
+   │           │       ├── task_input            (canvas_id)
+   │           │       ├── task_outcome          (canvas_id)
+   │           │       └── teamwork              (canvas_id)
+   │           ├──── f_letter_of_intent      (F단계, user_id + canvas_type)
+   │           └──── logged_in               (세션, user_id)
    │
    └── teamuser ──── tbteam ──── tbgame
           (user_id,     (game_id,      ├── tbmission ── tbmissiondata
-           team_id)      team_id)      ├── f_letter_of_intent   (F단계)
-                                       ├── f_letter_of_intent2  (F단계)
-                                       └── contents
+           team_id)      team_id)      └── contents
 ```
 
 > DB에 FK 제약조건이 없으며, 모든 관계는 애플리케이션 코드에서 ID 값으로 조회합니다.
 
+---
+
 ### 👤 사용자/인증
 
-| 테이블 | 설명 | 주요 컬럼 |
-|--------|------|-----------|
-| `userinfo` | 사용자 | `user_id` (PK), `id` (로그인ID), `pwd`, `user_name`, `code`, `user_role` (STUDENT/TEACHER/ADMIN) |
-| `logged_in` | 로그인 세션 | `logged_in_id` (PK), `refresh_token`, `expired_at`, `userNo` |
-| `tbrole` | 역할 정의 | `role_id` (PK), `role_code`, `name`, `description` |
-| `userrole` | 역할 할당 | `user_role_id` (PK), `role_id`, `isDoing`, `powerlevel` |
+#### `userinfo` — 사용자 계정
+
+| 컬럼 | 타입 | 설명 |
+|------|------|------|
+| `user_id` | Long (PK, AI) | 사용자 고유 ID |
+| `login_id` | VARCHAR(128), NOT NULL | 로그인 ID (학생: 팀코드 기반 자동 생성) |
+| `password` | VARCHAR(128), NOT NULL | BCrypt 해시 비밀번호 |
+| `user_name` | VARCHAR(128), NOT NULL | 사용자 이름 (학생은 login_id와 동일) |
+| `code` | VARCHAR(128), NOT NULL | 수업 참여 코드 (tbgame.code와 매칭) |
+| `user_role` | ENUM (STRING) | STUDENT / TEACHER / ADMIN |
+| `writer` | VARCHAR(1) | 팀 대표작성자 여부 ("1" = 대표) |
+
+#### `logged_in` — JWT 리프레시 토큰 세션
+
+| 컬럼 | 타입 | 설명                   |
+|------|------|----------------------|
+| `logged_in_id` | Long (PK, AI) | 세션 고유 ID             |
+| `user_id` | Long, NOT NULL | 사용자 FK               |
+| `refresh_token` | VARCHAR(500) | JWT 리프레시 토큰(지금은 미사용) |
+| `expired_at` | DATETIME | 토큰 만료 시간             |
+
+#### `tbrole` — 역할 정의 (레거시)
+
+| 컬럼 | 타입 | 설명 |
+|------|------|------|
+| `role_id` | Integer (PK, AI) | 역할 ID |
+| `role_code` | VARCHAR(50) | 역할 코드 |
+| `name` | VARCHAR(50) | 역할 이름 |
+| `description` | VARCHAR(500) | 역할 설명 |
+
+#### `userrole` — 역할 할당 (레거시)
+
+| 컬럼 | 타입 | 설명 |
+|------|------|------|
+| `user_role_id` | Integer (PK, AI) | 할당 ID |
+| `role_id` | Integer | 역할 FK |
+| `is_doing` | Integer, NOT NULL | 활성 여부 |
+| `powerlevel` | Integer, NOT NULL | 권한 레벨 |
+
+---
 
 ### 📚 수업/팀 관리
 
-| 테이블 | 설명 | 주요 컬럼 |
-|--------|------|-----------|
-| `tbgame` | 수업 | `game_id` (PK), `name`, `code`, `status`, `step`, `is_doing`, `num_team`, `image_url`, `target`, `project_date` |
-| `tbteam` | 팀 | `team_id` (PK), `name`, `sequence`, `code`, `num_user` |
-| `teamuser` | 팀-사용자 매핑 | `team_user_id` (PK), `user_id`, `team_id`, `userlevel` |
-| `gameteam` | 수업-팀 매핑 | `game_id` + `team_id` (복합PK) |
-| `gameadmin` | 수업-강사 매핑 | `game_id` + `user_id` (복합PK) |
-| `tbmission` | 미션 | `mission_id` (PK), `sequence`, `subject`, `summary`, `game_id` |
-| `tbmissiondata` | 미션 데이터 | `mission_data_id` (PK), `team_id`, `mission_id`, 부서별 status |
-| `contents` | 콘텐츠 | `contents_id` (PK), `team_id`, `game_id`, `subject`, `detail`, 파일 정보 |
+#### `tbgame` — 수업 (게임)
+
+| 컬럼 | 타입 | 설명                                             |
+|------|------|------------------------------------------------|
+| `game_id` | Integer (PK, AI) | 수업 고유 ID                                       |
+| `name` | VARCHAR(100) | 수업 이름                                          |
+| `code` | VARCHAR(32) | 수업 참여 코드 (학생 회원가입 시 사용)                        |
+| `num` | Integer | 수업 번호                                          |
+| `num_team` | Integer | 현재 팀 수                                         |
+| `num_member` | VARCHAR(32) | 팀당 인원 수                                        |
+| `created_at` | DATETIME | 생성일                                            |
+| `ended_at` | DATETIME | 종료일                                            |
+| `status` | Integer, NOT NULL | 수업 상태 (진행중 = 10, 준비중 = 1, 종료된 = 0, 100)        |
+| `e_status` | Integer | 확장 상태                                          |
+| `summary` | TEXT | 강의실 요약(현재는 쓰지않음)                               |
+| `total_dd` | Integer, NOT NULL | 총 의사결정일 수                                      |
+| `lang` | Integer | 언어 설정 (기본값 1, 안씀)                              |
+| `world_type` | Integer | 수업 패키지 유형.('1' = 팀, '0' = 개인)                  |
+| `step` | VARCHAR(100) | 현재 진행 단계 (A~F)                                 |
+| `class_type` | VARCHAR(32) | 강의 타입. 1 = Premium, 2 = Basic, 3 = Start (미사용) |
+| `is_doing` | Integer, NOT NULL | 활성 여부 (소프트 삭제). 1 = 활성, 0 = 삭제됨                |
+| `reg_date` | DATETIME | 수업 등록 일시                                       |
+| `popup_id` | Integer | 팝업 ID                                          |
+| `image_url` | VARCHAR(255) | 수업 대표 이미지 URL                                  |
+| `target` | VARCHAR(100) | 참여 대상                                          |
+| `project_date` | VARCHAR(20) | 프로젝트 기간                                        |
+
+#### `tbteam` — 팀
+
+| 컬럼 | 타입 | 설명                            |
+|------|------|-------------------------------|
+| `team_id` | Integer (PK, AI) | 팀 고유 ID                       |
+| `name` | VARCHAR(100) | 팀 이름 (예: "팀1", "팀2", "K컴퍼니")                          |
+| `sequence` | Integer | 팀 순번 (1~6)                    |
+| `status` | Integer | 팀 상태. 1 = 정상, -1 = 소프트 삭제     |
+| `ai_play` | Integer |  AI 자동 플레이 여부. 0 = 실제 학생 팀, 1 = AI가 대신 플레이(미사용)                |
+| `code` | VARCHAR(32) | 수업 코드 (tbgame.code와 동일)       |
+| `is_doing` | Integer | 진행 중 여부(1 = 활성, 0 = 비활성)      |
+| `team_category` | Integer | 팀 구분. 0 = 일반 사용자 팀, 1 = 평가자 팀 |
+| `num_user` | Integer | 현재 팀원 수                       |
+
+#### `teamuser` — 팀-사용자 매핑
+
+| 컬럼 | 타입 | 설명                        |
+|------|------|---------------------------|
+| `team_user_id` | Integer (PK, AI) | 매핑 ID                     |
+| `user_id` | Long | 사용자 FK                    |
+| `team_id` | Integer | 팀 FK                      |
+| `userlevel` | Integer, NOT NULL | 팀 내 사용자 권한 레벨 (기본값 5, 안씀) |
+| `is_doing` | Integer, NOT NULL | 활성 여부. 1 = 활성, 0 = 비활성    |
+
+#### `gameteam` — 수업-팀 매핑
+
+| 컬럼 | 타입 | 설명 |
+|------|------|------|
+| `game_id` | Integer (복합PK) | 수업 FK |
+| `team_id` | Integer (복합PK) | 팀 FK |
+
+#### `gameadmin` — 수업-강사 매핑
+
+| 컬럼 | 타입 | 설명 |
+|------|------|------|
+| `game_id` | Integer (복합PK) | 수업 FK |
+| `user_id` | Long (복합PK) | 강사 FK |
+
+#### `tbmission` — 미션
+
+| 컬럼 | 타입 | 설명                          |
+|------|------|-----------------------------|
+| `mission_id` | Integer (PK, AI) | 미션 ID                       |
+| `sequence` | Integer, NOT NULL | 미션 순서(게임 텀 내 순서)            |
+| `subject` | TEXT | 미션 제목(미사용)                  |
+| `summary` | TEXT | 미션 설명/요약(미사용)               |
+| `startdate` | DATETIME | 미션 시작일                      |
+| `enddate` | DATETIME | 미션 종료일                      |
+| `dd_year` | Integer | 시뮬레이션 연차 (Decision Day Year) |
+| `dd_term` | Integer | 시뮬레이션 분기/텀 (1~3)            |
+| `mlevel` | Integer | 미션 활성 상태. (미사용)             |
+| `game_id` | Integer | 수업 FK                       |
+| `toinform` | VARCHAR(50) | 알림 수신 대상 (미사용)              |
+
+#### `tbmissiondata` — 미션 진행 데이터
+
+| 컬럼 | 타입 | 설명                |
+|------|------|-------------------|
+| `mission_data_id` | Integer (PK, AI) | 데이터 ID            |
+| `team_id` | Integer, NOT NULL | 팀 FK              |
+| `mission_id` | Integer, NOT NULL | 미션 FK             |
+| `status_ceo` | Integer | CEO 역할 진행 상태(미사용) |
+| `status_mar` | Integer | 마케팅 역할 진행 상태(미사용)     |
+| `status_pro` | Integer | 생산 역할 진행 상태(미사용)       |
+| `status_fin` | Integer | 재무 역할 진행 상태(미사용)       |
+| `status_cho` | Integer | CHO 역할 진행 상태(미사용)      |
+
+#### `contents` — 콘텐츠/파일 (현재는 미사용)
+
+| 컬럼 | 타입 | 설명 |
+|------|------|------|
+| `contents_id` | Integer (PK, AI) | 콘텐츠 ID |
+| `team_id` | Integer | 팀 FK |
+| `game_id` | Integer | 수업 FK |
+| `type` | Integer | 콘텐츠 유형 분류 (예: 9 = 사용자 파일)  |
+| `subject` | VARCHAR(255) | 콘텐츠 제목 (예: "강의실 로고", "사용자 파일")  |
+| `detail` | TEXT | 상세 내용 |
+| `reg_date` | DATE | 등록 일시 (INSERT 시 now()) |
+| `writer` | VARCHAR(100) | 작성자/업로더 이름 |
+| `ext_dir` | VARCHAR(255) | 파일 저장 디렉토리 경로 (예: /cxinno/data/upload/user/file/) |
+| `org_filename` | VARCHAR(255) | 원본 파일명 (예: "abl-logo.png", "자료.txt")   |
+| `new_filename` | VARCHAR(255) | 저장된 해시 파일명 (예: "A9E598CBAB074DD085C96245C1FD3C70.png") |
+| `status_type` | Integer |  상태. 1 = 활성, 0 = 삭제됨 (소프트 삭제) |
+| `world_id` | Integer | 월드/강의실 참조. 강의실 로고일 경우 game_id 값, 일반 파일은 0 |
+
+---
 
 ### 📊 A단계 - Impact Check
 
-| 테이블 | 설명 | 주요 컬럼 |
-|--------|------|-----------|
-| `Impact_check` | 자가 진단 | `answer_id` (PK), `q1_score`~`q12_score` (점수), `q13_text`~`q16_text` (주관식), `user_id` (UNIQUE), `submitted` |
+#### `impact_check` — 성과관리 현황 자가 진단
+
+| 컬럼 | 타입 | 설명                        |
+|------|------|---------------------------|
+| `answer_id` | Long (PK, AI) | 답변 고유 ID                  |
+| `q1_score` ~ `q12_score` | Integer | 객관식 12문항 점수 (각 1~5점)      |
+| `q13_text` ~ `q16_text` | TEXT | 주관식 4문항 답변                |
+| `user_id` | Long, NOT NULL, UNIQUE | 사용자 FK (1인 1회)            |
+| `submitted` | Boolean (default false) | 제출 완료 여부(0 = 미제출, 1 = 제출) |
+
+---
 
 ### 🧩 B단계 - Identity Canvas
 
-| 테이블 | 설명 | 주요 컬럼 |
-|--------|------|-----------|
-| `identity_canvas` | 비전/미션 | `identity_id` (PK), `mission`, `vision`, `value`, `macro`, `tech`, `customer`, `competitor`, `capability`, `culture`, `structure`, `new_mission`, `new_vision`, `new_value`, `user_id` (UNIQUE), `submitted` |
+#### `identity_canvas` — 조직 정체성 설계
+
+| 컬럼 | 타입 | 설명             |
+|------|------|----------------|
+| `identity_id` | Long (PK, AI) | 캔버스 고유 ID      |
+| `mission` | VARCHAR(255) | 미션             |
+| `vision` | VARCHAR(255) | 비전             |
+| `value` | VARCHAR(255) | 핵심가치           |
+| `macro` | VARCHAR(255) | 정책/경제          |
+| `tech` | VARCHAR(255) | 기술             |
+| `customer` | VARCHAR(255) | 고객/사회          |
+| `competitor` | VARCHAR(255) | 경쟁             |
+| `capability` | VARCHAR(255) | 역량             |
+| `culture` | VARCHAR(255) | 문화             |
+| `structure` | VARCHAR(255) | 조직             |
+| `etc` | VARCHAR(255) | 기타             |
+| `new_mission` | VARCHAR(255) | new 미션         |
+| `new_vision` | VARCHAR(255) | new 비전         |
+| `new_value` | VARCHAR(255) | new 가치         |
+| `user_id` | Long, NOT NULL, UNIQUE | 사용자 FK (1인 1개) |
+| `submitted` | Boolean (default false) | 제출 완료 여부       |
+
+---
 
 ### 📈 C단계 - Performance Flow
 
-| 테이블 | 설명 | 주요 컬럼 |
-|--------|------|-----------|
-| `flow_canvas` | 성과 흐름 | `goal_id` (PK), `goal_title`, `goal_description`, `order_no`, `user_id`, `submitted` |
-| `strategic_activity` | 전략 활동 | `activity_id` (PK), `activity_metric`, `inter_criteria`, `order_no`, `goal_id` |
-| `tactical` | 전술 | `metric_id` (PK), `tactical_metric`, `tactical_goal`, `order_no`, `goal_id` |
+#### `flow_canvas` — 성과경로 설계
+
+| 컬럼 | 타입 | 설명            |
+|------|------|---------------|
+| `goal_id` | Long (PK, AI) | 목표 고유 ID      |
+| `goal_title` | VARCHAR(255) | 목표 제목         |
+| `goal_description` | VARCHAR(255) | 존재 이유         |
+| `order_no` | Integer, NOT NULL | 표시 순서(1, 2, 3까지) |
+| `user_id` | Long, NOT NULL | 사용자 FK        |
+| `submitted` | Boolean (default false) | 제출 완료 여부      |
+
+#### `strategic_activity` — 전략적 활동 지표
+
+| 컬럼 | 타입 | 설명                  |
+|------|------|---------------------|
+| `activity_id` | Long (PK, AI) | 활동 고유 ID            |
+| `activity_metric` | VARCHAR(255) | 전략적 활동 지표           |
+| `inter_criteria` | VARCHAR(255) | 내재화 기준              |
+| `order_no` | Integer, NOT NULL | 표시 순서(1, 2, 3까지)    |
+| `goal_id` | Long, NOT NULL | 목표 FK (flow_canvas) |
+
+#### `tactical` — 전술적 지표
+
+| 컬럼 | 타입 | 설명                  |
+|------|------|---------------------|
+| `metric_id` | Long (PK, AI) | 지표 고유 ID            |
+| `tactical_metric` | VARCHAR(255) | 전술적 활동 지표           |
+| `tactical_goal` | VARCHAR(255) | 전술 목표               |
+| `order_no` | Integer, NOT NULL | 표시 순서(1, 2, 3까지)    |
+| `goal_id` | Long, NOT NULL | 목표 FK (flow_canvas) |
+
+---
 
 ### ⚡ D/E단계 - Quick Win & Build Win
 
-| 테이블 | 설명 | 주요 컬럼 |
-|--------|------|-----------|
-| `win_canvas` | Win 캔버스 | `canvas_id` (PK), `canvas_type` (QUICK/BUILD), `strategic_goal`, `task_name`, `task_description`, `crisis_signal`, `pain_touch_point`, `user_id`, `submitted` |
-| `task_activity` | 실행 활동 | `activity_id` (PK), `process_step`, `activity_content`, `duration`, `order_no`, `canvas_id` |
-| `task_input` | 투입 자원 | `input_id` (PK), `resource_name`, `quantity`, `order_no`, `canvas_id` |
-| `task_outcome` | 기대 성과 | `outcomeNo` (PK), `outcome_type` (Enum), `outcome_content`, `order_no`, `canvas_id` |
-| `teamwork` | 팀워크 | `teamwork_id` (PK), `activity_teamwork`, `work_type`, `canvas_id` |
+#### `win_canvas` — Win 캔버스 (canvas_type으로 QUICK/BUILD 구분)
+
+| 컬럼 | 타입 | 설명               |
+|------|------|------------------|
+| `canvas_id` | Long (PK, AI) | 캔버스 고유 ID        |
+| `canvas_type` | ENUM('QUICK','BUILD') | 캔버스 유형           |
+| `strategic_goal` | VARCHAR(128) | 전략 목표            |
+| `task_name` | VARCHAR(255) | 실행 과제명 (=과제명)    |
+| `task_description` | VARCHAR(255) | 주요 내용            |
+| `crisis_signal` | VARCHAR(255) | 위기의 신호           |
+| `pain_touch_point` | VARCHAR(255) | Pain/Touch Point |
+| `user_id` | Long, NOT NULL | 사용자 FK           |
+| `submitted` | Boolean (default false) | 제출 완료 여부         |
+
+#### `task_activity` — 실행 활동 (win_canvas 하위)
+
+| 컬럼 | 타입 | 설명               |
+|------|------|------------------|
+| `activity_id` | Long (PK, AI) | 활동 고유 ID         |
+| `process_step` | VARCHAR(255) | 추진 절차(또는 전환 단계)  |
+| `activity_content` | VARCHAR(255) | 주요 내용(또는 전환 활동)  |
+| `duration` | VARCHAR(255) | 소요 기간            |
+| `order_no` | Integer, NOT NULL | 표시 순서(1, 2, 3까지) |
+| `canvas_id` | Long, NOT NULL | 캔버스 FK           |
+
+#### `task_input` — 투입 자원 (win_canvas 하위)
+
+| 컬럼 | 타입 | 설명    |
+|------|------|-------|
+| `input_id` | Long (PK, AI) | 투입 고유 ID |
+| `resource_name` | VARCHAR(255) | 필요 자원 |
+| `quantity` | Integer | 수량    |
+| `order_no` | Integer, NOT NULL | 표시 순서(1, 2, 3까지) |
+| `canvas_id` | Long, NOT NULL | 캔버스 FK |
+
+#### `task_outcome` — 기대 성과 (win_canvas 하위)
+
+| 컬럼 | 타입 | 설명 |
+|------|------|------|
+| `outcome_no` | Long (PK, AI) | 성과 고유 ID |
+| `outcome_type` | ENUM('QUALITATIVE','QUANTITATIVE') | 성과 유형 |
+| `outcome_content` | VARCHAR(255) | 성과 내용 |
+| `order_no` | Integer, NOT NULL | 표시 순서(1, 2, 3까지) |
+| `canvas_id` | Long, NOT NULL | 캔버스 FK |
+
+#### `teamwork` — 팀워크 활동 (win_canvas 하위)
+
+| 컬럼 | 타입 | 설명        |
+|------|------|-----------|
+| `teamwork_id` | Long (PK, AI) | 팀워크 고유 ID |
+| `activity_teamwork` | VARCHAR(255) | 활동 팀워크    |
+| `work_type` | VARCHAR(255) | 산출 팀워크    |
+| `canvas_id` | Long, NOT NULL | 캔버스 FK    |
+
+---
 
 ### 🧪 F단계 - Impact Review (펀딩 시뮬레이션)
 
-| 테이블 | 설명 | 주요 컬럼 |
-|--------|------|-----------|
-| `f_letter_of_intent` | 투자의향서 (Build Win) | `intent_index` (PK), `stdntNo`, `investment_target`, `investment_price`, `score1`~`score10`, `opinion`, `team_id`, `game_id`, `canvas_id`, `submitted` |
-| `f_letter_of_intent2` | 투자의향서 (Quick Win) | 위와 동일 구조 |
+#### `f_letter_of_intent` — 투자의향서 (canvas_type으로 BUILD/QUICK 구분)
 
-### 📦 기타
+| 컬럼 | 타입 | 설명                                 |
+|------|------|------------------------------------|
+| `intent_index` | Integer (PK, AI) | 의향서 고유 ID                          |
+| `user_id` | Long, NOT NULL | 투자자 FK (작성한 학생)                    |
+| `course_cd` | VARCHAR(32), NOT NULL | 과정 코드 (기본값 "QUICK")                |
+| `category_cd` | VARCHAR(32), NOT NULL | 카테고리 코드 (기본값 "ID")                 |
+| `investment_target` | VARCHAR(32) | 투자 대상 팀 ID (문자열)                   |
+| `investment_price` | VARCHAR(100) | 투자 금액 (문자열, 가상 화폐)                 |
+| `score1` ~ `score9` | Integer | 평가 점수 (문제인식, 해결방안, 확장성, 효과 등 9항목)  |
+| `score10` | Integer | 예비 점수 (미사용)                        |
+| `opinion` | TEXT | 투자 의견                              |
+| `del_yn` | VARCHAR(8) | 삭제 여부 ("Y"/"N", soft delete) (미사용) |
+| `reg_id` | VARCHAR(32) | 등록자 ID                             |
+| `reg_dt` | DATETIME | 등록 일시                              |
+| `mdfcn_id` | VARCHAR(32) | 수정자 ID (미사용)                       |
+| `mdfcn_dt` | DATETIME | 수정 일시 (미사용)                        |
+| `submitted` | Boolean, NOT NULL (default false) | 제출 완료 여부                           |
+| `team_id` | Integer | 투자자 소속 팀 FK                        |
+| `game_id` | Integer | 수업 FK                              |
+| `canvas_id` | Long | 대상 win_canvas FK                   |
+| `canvas_type` | ENUM('BUILD','QUICK'), NOT NULL | 캔버스 유형                             |
 
-| 테이블 | 설명 | 주요 컬럼 |
-|--------|------|-----------|
-| `tbapproval` | 승인 | `approval_id` (PK), `status`, `dd_year`, `dd_term`, `level`, `role`, `game_id`, `team_id` |
-| `tbstateapproval` | 상태 승인 | `state_approval_id` (PK), 위와 동일 구조 |
-| `bc_missiongame` | 미션 게임 | `bc_mission_game_id` (PK), 부서별 미션 (ceo/cmo/coo/cho/cfo), `game_id` |
+---
+
+### 📦 기타 (레거시)
+
+#### `tbapproval` — 승인
+
+| 컬럼 | 타입 | 설명 |
+|------|------|----|
+| `approval_id` | Integer (PK, AI) | 승인 ID |
+| `status` | Integer | 승인 상태. 0 = 미승인/대기, 1 = 승인 완료|
+| `dd_year` | Integer | 시뮬레이션 연차 |
+| `dd_term` | Integer | 시뮬레이션 분기 (1~3) |
+| `level` | Integer | 미션/의사결정 단계 (0~6) |
+| `role` | Integer | 역할. 1=CEO, 2=CMO, 3=COO, 4=CHO, 5=CFO, 6=CAO |
+| `game_id` | Integer | 수업 FK |
+| `team_id` | Integer | 팀 FK |
+
+#### `tbstateapproval` — 상태 승인
+
+| 컬럼 | 타입 | 설명 |
+|------|------|------|
+| `state_approval_id` | Integer (PK, AI) | 상태 승인 ID |
+| 나머지 | — | tbapproval과 동일 구조 |
+
+#### `bc_missiongame` — 미션 게임 (부서별 미션)
+
+| 컬럼 | 타입 | 설명         |
+|------|------|------------|
+| `bc_mission_game_id` | Integer (PK, AI) | 미션 게임 ID   |
+| `ceo_mission` | VARCHAR(50) | CEO 미션 할당값 |
+| `cmo_mission` | VARCHAR(50) | CMO 미션 할당값 |
+| `coo_mission` | VARCHAR(50) | COO 미션 할당값 |
+| `cho_mission` | VARCHAR(50) | CHO 미션 할당값 |
+| `cfo_mission` | VARCHAR(50) | CFO 미션 할당값 |
+| `d_year` | Integer | 시뮬레이션 연차   |
+| `d_term` | Integer | 시뮬레이션 분기   |
+| `game_id` | Integer | 수업 FK      |
 
 ---
 

@@ -1,6 +1,7 @@
 package qtedu.Impact_design.domain.implementation.teach;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,8 @@ import qtedu.Impact_design.domain.repository.teach.GameTeamRepository;
 import qtedu.Impact_design.domain.repository.teach.TbGameRepository;
 import qtedu.Impact_design.domain.repository.user.UserinfoRepository;
 
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 public class TeachTeamAppender {
@@ -24,6 +27,7 @@ public class TeachTeamAppender {
     private static final String ALPHABET = "abcdefghijklmnopqrstuvwxyz";
     private static final int MAX_TEAMS_PER_GAME = 6;
     private static final int MAX_MEMBERS_PER_TEAM = 10;
+    private static final int MAX_LOGIN_ID_RETRY = 5;
 
     private final TbGameRepository tbGameRepository;
     private final TbTeamRepository tbTeamRepository;
@@ -90,7 +94,8 @@ public class TeachTeamAppender {
 
     @Transactional
     public String addTeamMember(Integer teamId, Integer gameId) {
-        TbTeamModel team = tbTeamRepository.findByTeamId(teamId)
+        // 비관적 락으로 동시 멤버 추가 방지
+        TbTeamModel team = tbTeamRepository.findByTeamIdForUpdate(teamId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.TEAM_NOT_FOUND));
 
         TbGameModel game = tbGameRepository.findById(gameId)
@@ -101,15 +106,9 @@ public class TeachTeamAppender {
             throw new ConflictException(ErrorCode.MAX_MEMBER_EXCEEDED);
         }
 
-        // 1. loginId 생성: [letter][gameId][number] (중복 회피)
+        // 1. loginId 생성 + userinfo 저장 (중복 시 retry)
         String loginId = generateLoginId(team.getSequence(), gameId);
-
-        // 2. 비밀번호 = 아이디 (BCrypt 인코딩)
-        String encodedPassword = passwordEncoder.encode(loginId);
-
-        // 3. userinfo 저장
-        UserinfoModel userinfo = UserinfoModel.createStudent(loginId, encodedPassword, game.getCode());
-        UserinfoModel savedUser = userinfoRepository.save(userinfo);
+        UserinfoModel savedUser = saveUserWithRetry(loginId, game.getCode(), team.getSequence(), gameId);
 
         // 4. teamuser 저장
         TeamUserModel teamUser = TeamUserModel.createStudent(savedUser.getUserId(), teamId);
@@ -119,17 +118,28 @@ public class TeachTeamAppender {
         tbTeamRepository.incrementNumUser(teamId);
 
         // 6. 팀에 writer가 없으면 자동으로 writer 지정
-        boolean hasWriter = teamUserRepository.findByTeamId(teamId).stream()
+        List<Long> teamMemberIds = teamUserRepository.findByTeamId(teamId).stream()
                 .map(TeamUserModel::getUserId)
-                .anyMatch(uid -> userinfoRepository.findByUserId(uid)
-                        .map(UserinfoModel::isWriter)
-                        .orElse(false));
+                .toList();
 
-        if (!hasWriter) {
+        if (userinfoRepository.findWriterByUserIds(teamMemberIds).isEmpty()) {
             userinfoRepository.setWriter(savedUser.getUserId());
         }
 
-        return loginId;
+        return savedUser.getLoginId();
+    }
+
+    private UserinfoModel saveUserWithRetry(String loginId, String code, Integer teamSequence, Integer gameId) {
+        for (int attempt = 0; attempt < MAX_LOGIN_ID_RETRY; attempt++) {
+            try {
+                String encodedPassword = passwordEncoder.encode(loginId);
+                UserinfoModel userinfo = UserinfoModel.createStudent(loginId, encodedPassword, code);
+                return userinfoRepository.save(userinfo);
+            } catch (DataIntegrityViolationException e) {
+                loginId = generateLoginId(teamSequence, gameId);
+            }
+        }
+        throw new ConflictException(ErrorCode.LOGIN_ID_DUPLICATE);
     }
 
     private String generateLoginId(Integer teamSequence, Integer gameId) {

@@ -1,6 +1,8 @@
 package qtedu.Impact_design.storage.jparepository.teach;
 
+import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,6 +18,10 @@ public interface TbTeamJpaRepository extends JpaRepository<TbTeam, Integer> {
     @Query("SELECT t FROM TbTeam t WHERE t.code = :code AND t.teamId != :teamId AND (t.status IS NULL OR t.status != -1)")
     List<TbTeam> findByCodeExcludingDeletedTeam(@Param("code") String code, @Param("teamId") Integer teamId);
     Optional<TbTeam> findByTeamId(Integer teamId);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT t FROM TbTeam t WHERE t.teamId = :teamId")
+    Optional<TbTeam> findByTeamIdForUpdate(@Param("teamId") Integer teamId);
     List<TbTeam> findByTeamIdIn(List<Integer> teamIds);
 
     @Query(value = """
@@ -40,4 +46,8 @@ public interface TbTeamJpaRepository extends JpaRepository<TbTeam, Integer> {
     @Modifying
     @Query("UPDATE TbTeam t SET t.numUser = CASE WHEN COALESCE(t.numUser, 0) > 0 THEN t.numUser - 1 ELSE 0 END WHERE t.teamId = :teamId")
     void decrementNumUser(@Param("teamId") Integer teamId);
+
+    @Modifying
+    @Query("UPDATE TbTeam t SET t.numUser = CASE WHEN COALESCE(t.numUser, 0) >= :count THEN t.numUser - :count ELSE 0 END WHERE t.teamId = :teamId")
+    void decrementNumUserBy(@Param("teamId") Integer teamId, @Param("count") int count);
 }
