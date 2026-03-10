@@ -10,6 +10,8 @@ public interface TeamUserRepository {
     List<TeamUserModel> findByTeamId(Integer teamId);
     List<TeamUserModel> findByTeamIdIn(List<Integer> teamIds);
     Optional<TeamUserModel> findByUserId(Long userId);
+    List<TeamUserModel> findByUserIdIn(List<Long> userIds);
+    void deleteByUserIdIn(List<Long> userIds);
     Optional<String> findTeamNameByUserId(Long userId);
     void deleteByUserId(Long userId);
     void updateTeamId(Long userId, Integer teamId);

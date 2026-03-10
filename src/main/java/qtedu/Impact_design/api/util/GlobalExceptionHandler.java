@@ -91,7 +91,7 @@ public class GlobalExceptionHandler {
     // Spring Security가 인증 정보 부족할 때 던짐 (예: 토큰 없음, 로그인 안 함)
     @ExceptionHandler(InsufficientAuthenticationException.class)
     protected ResponseEntity<HttpResponse<ErrorResponse>> handleInsufficientAuthenticationException(HttpServletRequest req){
-        System.out.println(">> GEH InsufficientAuthenticationException uri=" + req.getRequestURI());
+        log.debug("InsufficientAuthenticationException uri={}", req.getRequestURI());
         return handleException(new InsufficientAuthenticationException("Unauthorized"), ErrorCode.NOT_AUTHORIZED, HttpStatus.UNAUTHORIZED);
     }
 

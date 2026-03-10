@@ -17,7 +17,7 @@ public class Userinfo {
     @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "login_id", nullable = false, length = 128)
+    @Column(name = "login_id", nullable = false, unique = true, length = 128)
     private String loginId;
 
     @Column(name = "password", nullable = false, length = 128)

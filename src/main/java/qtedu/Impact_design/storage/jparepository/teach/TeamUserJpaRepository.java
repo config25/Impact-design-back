@@ -15,6 +15,11 @@ public interface TeamUserJpaRepository extends JpaRepository<TeamUser, Integer> 
     List<TeamUser> findByTeamId(Integer teamId);
     List<TeamUser> findByTeamIdIn(List<Integer> teamIds);
     Optional<TeamUser> findByUserId(Long userId);
+    List<TeamUser> findByUserIdIn(List<Long> userIds);
+
+    @Modifying
+    @Query("DELETE FROM TeamUser tu WHERE tu.userId IN :userIds")
+    void deleteByUserIdIn(@Param("userIds") List<Long> userIds);
 
     // 팀별 사용자 수 카운트
     int countByTeamId(Integer teamId);

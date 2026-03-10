@@ -53,6 +53,7 @@ public class AuthService {
         authValidator.checkLoginIdDuplicate(loginId);
     }
 
+    @Transactional
     public void signup(String loginId, String password, String code, Integer teamId) {
         authValidator.validateSignupInput(loginId, password, code);
         authAppender.signup(loginId, password, code, teamId);

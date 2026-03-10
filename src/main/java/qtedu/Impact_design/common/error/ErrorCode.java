@@ -41,6 +41,7 @@ public enum ErrorCode {
     USER_NOT_ACCESS("USER_2", "사용자가 활성화되지 않았습니다."),
     USER_ALREADY_CREATED("USER_3", "이미 가입된 사용자입니다."),
     USER_NOT_CREATED("USER_4", "가입되지 않은 사용자입니다."),
+    LOGIN_ID_DUPLICATE("USER_5", "로그인 ID 생성에 실패했습니다."),
 
     // Team
     CODE_NOT_FOUND("TEAM_1", "코드가 존재하지 않습니다."),

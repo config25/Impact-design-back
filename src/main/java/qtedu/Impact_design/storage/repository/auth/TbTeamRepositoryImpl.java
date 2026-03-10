@@ -37,6 +37,11 @@ public class TbTeamRepositoryImpl implements TbTeamRepository {
     }
 
     @Override
+    public Optional<TbTeamModel> findByTeamIdForUpdate(Integer teamId) {
+        return tbTeamJpaRepository.findByTeamIdForUpdate(teamId).map(this::toModel);
+    }
+
+    @Override
     public List<TbTeamModel> findByTeamIdIn(List<Integer> teamIds) {
         return tbTeamJpaRepository.findByTeamIdIn(teamIds).stream()
                 .map(this::toModel)
@@ -79,6 +84,11 @@ public class TbTeamRepositoryImpl implements TbTeamRepository {
     @Override
     public void decrementNumUser(Integer teamId) {
         tbTeamJpaRepository.decrementNumUser(teamId);
+    }
+
+    @Override
+    public void decrementNumUserBy(Integer teamId, int count) {
+        tbTeamJpaRepository.decrementNumUserBy(teamId, count);
     }
 
     private TbTeamModel toModel(TbTeam entity) {

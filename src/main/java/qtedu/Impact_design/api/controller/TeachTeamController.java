@@ -3,7 +3,9 @@ package qtedu.Impact_design.api.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import qtedu.Impact_design.api.dto.request.teach.DeleteTeamMembersRequest;
 import qtedu.Impact_design.api.dto.request.teach.SaveStepRequest;
+import qtedu.Impact_design.api.dto.request.teach.SetTeamWriterRequest;
 import qtedu.Impact_design.api.dto.request.teach.TeamMemberUpdateRequest;
 import qtedu.Impact_design.api.dto.request.teach.TeamUpdateRequest;
 import qtedu.Impact_design.api.dto.response.teach.DeletedTeamResponse;
@@ -14,7 +16,6 @@ import qtedu.Impact_design.common.response.SuccessOnlyResponse;
 import qtedu.Impact_design.domain.service.TeachTeamService;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/teach")
@@ -142,9 +143,9 @@ public class TeachTeamController {
      */
     @DeleteMapping("/team-members")
     public ResponseEntity<HttpResponse<SuccessOnlyResponse>> deleteTeamMembers(
-            @RequestBody Map<String, List<Long>> request
+            @RequestBody DeleteTeamMembersRequest request
     ) {
-        teachTeamService.deleteTeamMembers(request.get("userIds"));
+        teachTeamService.deleteTeamMembers(request.getUserIds());
         return ResponseHelper.successOnly();
     }
 
@@ -154,9 +155,9 @@ public class TeachTeamController {
     @PostMapping("/team/{teamId}/writer")
     public ResponseEntity<HttpResponse<SuccessOnlyResponse>> setTeamWriter(
             @PathVariable Integer teamId,
-            @RequestBody Map<String, Long> request
+            @RequestBody SetTeamWriterRequest request
     ) {
-        teachTeamService.setTeamWriter(teamId, request.get("userId"));
+        teachTeamService.setTeamWriter(teamId, request.getUserId());
         return ResponseHelper.successOnly();
     }
 }
