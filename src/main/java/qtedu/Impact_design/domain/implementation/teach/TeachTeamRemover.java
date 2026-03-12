@@ -1,6 +1,7 @@
 package qtedu.Impact_design.domain.implementation.teach;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import qtedu.Impact_design.common.error.ErrorCode;
@@ -18,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class TeachTeamRemover {
@@ -46,6 +48,8 @@ public class TeachTeamRemover {
 
         tbTeamRepository.save(updated);
         tbGameRepository.decrementNumTeam(gameId);
+
+        log.info("팀 삭제 - teamId: {}, gameId: {}", teamId, gameId);
     }
 
     @Transactional
@@ -84,5 +88,7 @@ public class TeachTeamRemover {
 
         // 4. 배치 삭제
         teamUserRepository.deleteByUserIdIn(userIds);
+
+        log.info("팀 멤버 삭제 - userIds: {}", userIds);
     }
 }

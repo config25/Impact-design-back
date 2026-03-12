@@ -22,7 +22,7 @@ public interface UserinfoJpaRepository extends JpaRepository<Userinfo, Long> {
     Optional<Userinfo> findFirstByUserIdInAndWriter(List<Long> userIds, String writer);
 
     @Query(value = """
-        SELECT u.user_id AS userId, u.id AS loginId, u.user_name AS userName,
+        SELECT u.user_id AS userId, u.login_id AS loginId, u.user_name AS userName,
                t.team_id AS teamId, t.name AS teamName
         FROM userinfo u
         LEFT JOIN teamuser tu ON u.user_id = tu.user_id
@@ -32,7 +32,7 @@ public interface UserinfoJpaRepository extends JpaRepository<Userinfo, Long> {
         """, nativeQuery = true)
     List<StudentWithTeamProjection> findStudentsWithTeamByCode(@Param("code") String code);
 
-    @Query(value = "SELECT u.id FROM userinfo u WHERE u.id LIKE :pattern ORDER BY u.id DESC LIMIT 1", nativeQuery = true)
+    @Query(value = "SELECT u.login_id FROM userinfo u WHERE u.login_id LIKE :pattern ORDER BY u.login_id DESC LIMIT 1", nativeQuery = true)
     Optional<String> findLastLoginIdByPattern(@Param("pattern") String pattern);
 
     @Modifying

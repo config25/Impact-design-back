@@ -1,6 +1,7 @@
 package qtedu.Impact_design.domain.implementation.media;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import qtedu.Impact_design.common.error.BadRequestException;
 import qtedu.Impact_design.common.error.ErrorCode;
@@ -16,6 +17,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class FileHandler {
@@ -33,6 +35,7 @@ public class FileHandler {
             asyncJobExecutor.executeAsyncJobs(mediaWithFiles, pair ->
                     fileAppender.appendFile(pair.getKey(), pair.getValue()));
         } catch (Exception e) {
+            log.error("파일 업로드 실패 - userId: {}, fileCount: {}", userId.getId(), files.size(), e);
             throw new BadRequestException(ErrorCode.FILE_UPLOAD_FAILED);
         }
         return mediaWithFiles.stream().map(Map.Entry::getValue).collect(Collectors.toList());
@@ -44,6 +47,7 @@ public class FileHandler {
         try {
             asyncJobExecutor.executeAsyncJob(media, item -> fileAppender.appendFile(file, media));
         } catch (Exception e) {
+            log.error("파일 업로드 실패 - userId: {}, fileName: {}", userId.getId(), file.getName(), e);
             throw new BadRequestException(ErrorCode.FILE_UPLOAD_FAILED);
         }
         return media;
@@ -54,6 +58,7 @@ public class FileHandler {
             try {
                 asyncJobExecutor.executeAsyncJob(media, fileRemover::removeFile);
             } catch (Exception e) {
+                log.error("파일 삭제 실패 - path: {}", media.getPath(), e);
                 throw new BadRequestException(ErrorCode.FILE_DELETE_FAILED);
             }
         }
@@ -63,6 +68,7 @@ public class FileHandler {
         try {
             asyncJobExecutor.executeAsyncJobs(medias, fileRemover::removeFile);
         } catch (Exception e) {
+            log.error("파일 일괄삭제 실패 - count: {}", medias.size(), e);
             throw new BadRequestException(ErrorCode.FILE_DELETE_FAILED);
         }
     }

@@ -1,6 +1,7 @@
 package qtedu.Impact_design.domain.implementation.teach;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -20,6 +21,7 @@ import qtedu.Impact_design.domain.repository.user.UserinfoRepository;
 
 import java.util.List;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class TeachTeamAppender {
@@ -61,6 +63,7 @@ public class TeachTeamAppender {
         gameTeamRepository.save(gameId, savedTeam.getTeamId());
         tbGameRepository.incrementNumTeam(gameId);
 
+        log.info("팀 생성 - gameId: {}, teamId: {}, teamName: {}", gameId, savedTeam.getTeamId(), teamName);
         return savedTeam.getTeamId();
     }
 
@@ -126,6 +129,7 @@ public class TeachTeamAppender {
             userinfoRepository.setWriter(savedUser.getUserId());
         }
 
+        log.info("팀 멤버 추가 - teamId: {}, userId: {}, loginId: {}", teamId, savedUser.getUserId(), savedUser.getLoginId());
         return savedUser.getLoginId();
     }
 
@@ -136,6 +140,7 @@ public class TeachTeamAppender {
                 UserinfoModel userinfo = UserinfoModel.createStudent(loginId, encodedPassword, code);
                 return userinfoRepository.save(userinfo);
             } catch (DataIntegrityViolationException e) {
+                log.warn("loginId 중복 발생, 재시도 - loginId: {}, attempt: {}", loginId, attempt + 1);
                 loginId = generateLoginId(teamSequence, gameId);
             }
         }

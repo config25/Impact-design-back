@@ -1,5 +1,6 @@
 package qtedu.Impact_design.domain.implementation.report;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 public class ReportFacade {
 
@@ -72,6 +74,7 @@ public class ReportFacade {
 
     @Transactional(readOnly = true)
     public List<ReportResponse> getReportsByGameId(Integer gameId) {
+        log.info("벌크 리포트 생성 시작 - gameId: {}", gameId);
         List<Integer> teamIds = gameReader.findTeamIdsByGameId(gameId);
 
         // 1. 전체 팀 데이터를 한번에 배치 로드
@@ -121,8 +124,11 @@ public class ReportFacade {
                 }, ioExecutor))
                 .toList();
 
-        return futures.stream()
+        List<ReportResponse> results = futures.stream()
                 .map(CompletableFuture::join)
                 .toList();
+
+        log.info("벌크 리포트 생성 완료 - gameId: {}, teamCount: {}", gameId, results.size());
+        return results;
     }
 }

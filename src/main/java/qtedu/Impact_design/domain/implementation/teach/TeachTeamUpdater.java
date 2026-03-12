@@ -1,6 +1,7 @@
 package qtedu.Impact_design.domain.implementation.teach;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import qtedu.Impact_design.common.error.ConflictException;
@@ -18,6 +19,7 @@ import qtedu.Impact_design.domain.repository.user.UserinfoRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class TeachTeamUpdater {
@@ -100,6 +102,8 @@ public class TeachTeamUpdater {
         teamUserRepository.updateTeamId(userId, teamId);
         String teamIdStr = String.valueOf(teamId);
         fLetterOfIntentRepository.updateInvestmentTargetByCanvasOwner(userId, teamIdStr);
+
+        log.info("팀 멤버 이동 - userId: {}, toTeamId: {}", userId, teamId);
     }
 
     @Transactional
@@ -114,6 +118,8 @@ public class TeachTeamUpdater {
 
         userinfoRepository.clearWriterByUserIds(teamUserIds);
         userinfoRepository.setWriter(userId);
+
+        log.info("writer 변경 - teamId: {}, userId: {}", teamId, userId);
     }
 
     @Transactional

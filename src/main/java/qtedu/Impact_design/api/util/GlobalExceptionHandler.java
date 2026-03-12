@@ -12,6 +12,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 import qtedu.Impact_design.common.error.AuthorizationException;
 import qtedu.Impact_design.common.error.ConflictException;
 import qtedu.Impact_design.common.error.ErrorCode;
@@ -99,6 +100,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BadRequestException.class)
     protected ResponseEntity<HttpResponse<ErrorResponse>> handleBadRequestException(BadRequestException e) {
         return handleException(e, e.getErrorCode(), HttpStatus.BAD_REQUEST);
+    }
+
+    // 존재하지 않는 정적 리소스 요청 (봇/스캐너 등)
+    @ExceptionHandler(NoResourceFoundException.class)
+    protected ResponseEntity<HttpResponse<ErrorResponse>> handleNoResourceFoundException(NoResourceFoundException e, HttpServletRequest request) {
+        log.warn("존재하지 않는 리소스 요청: {} {} (remoteAddr={})", request.getMethod(), request.getRequestURI(), request.getRemoteAddr());
+        return ResponseHelper.error(HttpStatus.NOT_FOUND, ErrorResponse.from(ErrorCode.PATH_WRONG));
     }
 
     // 위에서 잡히지 않은 모든 예외를 최종적으로 처리

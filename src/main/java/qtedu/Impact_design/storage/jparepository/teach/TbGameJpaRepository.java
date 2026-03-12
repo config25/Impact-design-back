@@ -104,6 +104,7 @@ public interface TbGameJpaRepository extends JpaRepository<TbGame, Integer> {
                 G.num_team AS numTeam,
                 G.total_dd AS totalDd,
                 G.image_url AS imageUrl,
+                G.status AS status,
                 M.mission_id AS missionId,
                 M.sequence AS sequence,
                 M.subject AS subject,
@@ -133,11 +134,10 @@ public interface TbGameJpaRepository extends JpaRepository<TbGame, Integer> {
                     AND M1.dd_year = M2.max_dd_year
                     AND M1.dd_term = M2.max_dd_term
             ) M ON G.game_id = M.game_id
-            WHERE G.status = :status
-              AND G.is_doing = 1
+            WHERE G.is_doing = 1
             ORDER BY G.game_id DESC
             """, nativeQuery = true)
-    List<ClassInfoProjection> findAllClassListByStatus(@Param("status") Integer status);
+    List<ClassInfoProjection> findAllActiveClassList();
 
     @Modifying
     @Query("UPDATE TbGame g SET g.numTeam = COALESCE(g.numTeam, 0) + 1 WHERE g.gameId = :gameId")

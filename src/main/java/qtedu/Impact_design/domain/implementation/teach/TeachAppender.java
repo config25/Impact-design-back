@@ -1,6 +1,7 @@
 package qtedu.Impact_design.domain.implementation.teach;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +28,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Random;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class TeachAppender {
@@ -79,6 +81,7 @@ public class TeachAppender {
             tbGameRepository.updateImageUrl(gameId, imageUrl);
         }
 
+        log.info("클래스 생성 - gameId: {}, className: {}, numTeam: {}, userId: {}", gameId, request.getName(), request.getNumTeam(), userId);
         return gameId;
     }
 

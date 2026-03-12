@@ -135,7 +135,7 @@ class TeachTeamAppenderTest {
         @Test
         @DisplayName("팀원을 추가하고 loginId를 반환한다")
         void addsMemberSuccessfully() {
-            given(tbTeamRepository.findByTeamId(10))
+            given(tbTeamRepository.findByTeamIdForUpdate(10))
                     .willReturn(Optional.of(TbTeamModel.builder().teamId(10).sequence(1).code("ABC").build()));
             given(tbGameRepository.findById(1)).willReturn(Optional.of(sampleGame()));
             given(teamUserRepository.countByTeamId(10)).willReturn(3);
@@ -146,8 +146,7 @@ class TeachTeamAppenderTest {
                     UserinfoModel.builder().userId(100L).loginId("a13").build());
             given(teamUserRepository.findByTeamId(10)).willReturn(List.of(
                     TeamUserModel.builder().userId(100L).build()));
-            given(userinfoRepository.findByUserId(100L)).willReturn(
-                    Optional.of(UserinfoModel.builder().userId(100L).writer("0").build()));
+            given(userinfoRepository.findWriterByUserIds(List.of(100L))).willReturn(Optional.empty());
 
             String loginId = teachTeamAppender.addTeamMember(10, 1);
 
@@ -159,7 +158,7 @@ class TeachTeamAppenderTest {
         @Test
         @DisplayName("팀원 수가 최대(10)를 초과하면 ConflictException")
         void maxMembersExceeded() {
-            given(tbTeamRepository.findByTeamId(10))
+            given(tbTeamRepository.findByTeamIdForUpdate(10))
                     .willReturn(Optional.of(TbTeamModel.builder().teamId(10).sequence(1).build()));
             given(tbGameRepository.findById(1)).willReturn(Optional.of(sampleGame()));
             given(teamUserRepository.countByTeamId(10)).willReturn(11);
@@ -171,7 +170,7 @@ class TeachTeamAppenderTest {
         @Test
         @DisplayName("기존 loginId가 없으면 번호 1부터 시작한다")
         void firstMemberGetsNumber1() {
-            given(tbTeamRepository.findByTeamId(10))
+            given(tbTeamRepository.findByTeamIdForUpdate(10))
                     .willReturn(Optional.of(TbTeamModel.builder().teamId(10).sequence(2).code("ABC").build()));
             given(tbGameRepository.findById(1)).willReturn(Optional.of(sampleGame()));
             given(teamUserRepository.countByTeamId(10)).willReturn(0);
@@ -182,8 +181,7 @@ class TeachTeamAppenderTest {
                     UserinfoModel.builder().userId(200L).loginId("b11").build());
             given(teamUserRepository.findByTeamId(10)).willReturn(List.of(
                     TeamUserModel.builder().userId(200L).build()));
-            given(userinfoRepository.findByUserId(200L)).willReturn(
-                    Optional.of(UserinfoModel.builder().userId(200L).writer("0").build()));
+            given(userinfoRepository.findWriterByUserIds(List.of(200L))).willReturn(Optional.empty());
 
             String loginId = teachTeamAppender.addTeamMember(10, 1);
 
@@ -193,7 +191,7 @@ class TeachTeamAppenderTest {
         @Test
         @DisplayName("loginId 중복 시 다음 번호를 사용한다")
         void handlesDuplicateLoginId() {
-            given(tbTeamRepository.findByTeamId(10))
+            given(tbTeamRepository.findByTeamIdForUpdate(10))
                     .willReturn(Optional.of(TbTeamModel.builder().teamId(10).sequence(1).code("ABC").build()));
             given(tbGameRepository.findById(1)).willReturn(Optional.of(sampleGame()));
             given(teamUserRepository.countByTeamId(10)).willReturn(2);
@@ -205,8 +203,7 @@ class TeachTeamAppenderTest {
                     UserinfoModel.builder().userId(300L).loginId("a15").build());
             given(teamUserRepository.findByTeamId(10)).willReturn(List.of(
                     TeamUserModel.builder().userId(300L).build()));
-            given(userinfoRepository.findByUserId(300L)).willReturn(
-                    Optional.of(UserinfoModel.builder().userId(300L).writer("0").build()));
+            given(userinfoRepository.findWriterByUserIds(List.of(300L))).willReturn(Optional.empty());
 
             String loginId = teachTeamAppender.addTeamMember(10, 1);
 
@@ -216,7 +213,7 @@ class TeachTeamAppenderTest {
         @Test
         @DisplayName("이미 writer가 있으면 setWriter를 호출하지 않는다")
         void doesNotSetWriterWhenAlreadyExists() {
-            given(tbTeamRepository.findByTeamId(10))
+            given(tbTeamRepository.findByTeamIdForUpdate(10))
                     .willReturn(Optional.of(TbTeamModel.builder().teamId(10).sequence(1).code("ABC").build()));
             given(tbGameRepository.findById(1)).willReturn(Optional.of(sampleGame()));
             given(teamUserRepository.countByTeamId(10)).willReturn(1);
@@ -229,7 +226,7 @@ class TeachTeamAppenderTest {
             given(teamUserRepository.findByTeamId(10)).willReturn(List.of(
                     TeamUserModel.builder().userId(50L).build(),
                     TeamUserModel.builder().userId(400L).build()));
-            given(userinfoRepository.findByUserId(50L)).willReturn(
+            given(userinfoRepository.findWriterByUserIds(List.of(50L, 400L))).willReturn(
                     Optional.of(UserinfoModel.builder().userId(50L).writer("1").build()));
 
             teachTeamAppender.addTeamMember(10, 1);

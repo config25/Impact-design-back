@@ -15,7 +15,9 @@ import qtedu.Impact_design.domain.repository.teach.GameRepository;
 import qtedu.Impact_design.domain.repository.user.UserinfoRepository;
 import qtedu.Impact_design.domain.model.team.ClassInfoProjection;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
@@ -31,23 +33,31 @@ public class AdminTeachReader {
 
     public List<ClassInfoResponse> getAllClassList(Long userId) {
         validateAdmin(userId);
-        return toResponseList(gameRepository.findAllClassListByStatus(10));
+        Map<Integer, List<ClassInfoResponse>> grouped = groupByStatus();
+        return grouped.getOrDefault(10, Collections.emptyList());
     }
 
     public TeachListResponse getAllTeachList(Long userId) {
         validateAdmin(userId);
-
-        List<ClassInfoResponse> inProgress = toResponseList(gameRepository.findAllClassListByStatus(10));
-        List<ClassInfoResponse> setting = toResponseList(gameRepository.findAllClassListByStatus(1));
-        List<ClassInfoResponse> completed = toResponseList(gameRepository.findAllClassListByStatus(100));
-        List<ClassInfoResponse> etc = toResponseList(gameRepository.findAllClassListByStatus(0));
+        Map<Integer, List<ClassInfoResponse>> grouped = groupByStatus();
 
         return TeachListResponse.builder()
-                .inProgress(inProgress)
-                .setting(setting)
-                .completed(completed)
-                .etc(etc)
+                .inProgress(grouped.getOrDefault(10, Collections.emptyList()))
+                .setting(grouped.getOrDefault(1, Collections.emptyList()))
+                .completed(grouped.getOrDefault(100, Collections.emptyList()))
+                .etc(grouped.getOrDefault(0, Collections.emptyList()))
                 .build();
+    }
+
+    private Map<Integer, List<ClassInfoResponse>> groupByStatus() {
+        return gameRepository.findAllActiveClassList().stream()
+                .collect(Collectors.groupingBy(
+                        ClassInfoProjection::getStatus,
+                        Collectors.mapping(
+                                c -> ClassInfoResponse.from(c, null, resolveImageUrl(c.getImageUrl())),
+                                Collectors.toList()
+                        )
+                ));
     }
 
     private void validateAdmin(Long userId) {
