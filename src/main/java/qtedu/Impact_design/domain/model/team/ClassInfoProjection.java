@@ -16,4 +16,5 @@ public interface ClassInfoProjection {
     Integer getDdYear();
     Integer getDdTerm();
     String getImageUrl();
+    Integer getStatus();
 }

@@ -1,6 +1,7 @@
 package qtedu.Impact_design.domain.implementation.auth;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +13,7 @@ import qtedu.Impact_design.domain.repository.auth.LoggedInRepository;
 import qtedu.Impact_design.domain.repository.auth.TeamUserRepository;
 import qtedu.Impact_design.domain.repository.user.UserinfoRepository;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class AuthAppender {
@@ -29,6 +31,8 @@ public class AuthAppender {
 
         TeamUserModel teamUser = TeamUserModel.createStudent(savedUserinfo.getUserId(), teamId);
         teamUserRepository.save(teamUser);
+
+        log.info("회원가입 완료 - userId: {}, teamId: {}", savedUserinfo.getUserId(), teamId);
     }
 
     @Transactional

@@ -49,7 +49,15 @@
       "Bash(git checkout:*)",
       "Bash(./gradlew asciidoctor:*)",
       "Bash(cat:*)",
-      "Bash(mv:*)"
+      "Bash(mv:*)",
+      "Bash(find /c/Users/김영호/Desktop/impact_design/id_backend/Impact_design/src/test/java -type f -name \"*Test.java\" | xargs basename -a | sort)",
+      "Bash(find /c/Users/김영호/Desktop/impact_design/id_backend/Impact_design/src/main/java/qtedu/Impact_design/domain/service -type f -name \"*.java\" | xargs basename -a | sort)",
+      "Bash(find /c/Users/김영호/Desktop/impact_design/id_backend/Impact_design/src/main/java/qtedu/Impact_design/api/controller -type f -name \"*.java\" | xargs basename -a | sort)",
+      "Bash(find /c/Users/김영호/Desktop/impact_design/id_backend/Impact_design/src/main/java/qtedu/Impact_design/storage/repository -type f -name \"*Impl.java\" | xargs basename -a | sort)",
+      "Bash(find /c/Users/김영호/Desktop/impact_design/id_backend/Impact_design/src/test/java -path \"*storage/repository*\" -name \"*Test.java\" | xargs basename -a | sort)",
+      "Bash(find /c/Users/김영호/Desktop/impact_design/id_backend/Impact_design/src/main/java/qtedu/Impact_design/domain/implementation -type f -name \"*.java\" | xargs basename -a | sort)",
+      "Bash(find /c/Users/김영호/Desktop/impact_design/id_backend/Impact_design/src/test/java -path \"*domain/implementation*\" -name \"*Test.java\" | xargs basename -a | sort)",
+      "Bash(find /c/Users/김영호/Desktop/impact_design/id_backend/Impact_design/src/test/java -path \"*docs*\" -name \"*.java\" | xargs basename -a | sort)"
     ]
   }
 }
