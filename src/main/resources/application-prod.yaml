@@ -16,5 +16,17 @@ jwt:
 openai:
   api-key: ${OPENAI_API_KEY}
 
+logging:
+  file:
+    name: /root/logs/impact-design.log
+  logback:
+    rollingpolicy:
+      max-file-size: 50MB
+      max-history: 30
+      total-size-cap: 1GB
+  level:
+    root: WARN
+    qtedu.Impact_design: INFO
+
 cors:
   allowed-origins: http://iptdesign.mycafe24.com
