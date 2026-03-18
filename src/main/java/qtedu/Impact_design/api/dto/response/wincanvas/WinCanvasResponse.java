@@ -61,7 +61,7 @@ public class WinCanvasResponse {
                     .orderNo(model.getOrderNo())
                     .build();
         }
-    }
+    }//
 
     @Getter
     @Builder
