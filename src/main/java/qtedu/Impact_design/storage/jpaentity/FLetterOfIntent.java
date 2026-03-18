@@ -7,7 +7,10 @@ import qtedu.Impact_design.domain.model.en.CanvasType;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "f_letter_of_intent")
+@Table(name = "f_letter_of_intent", indexes = {
+        @Index(name = "idx_floi_user_delyn_canvas", columnList = "user_id, del_yn, canvas_type"),
+        @Index(name = "idx_floi_target_delyn_canvas", columnList = "investment_target, del_yn, canvas_type")
+})
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor

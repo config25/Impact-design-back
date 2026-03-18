@@ -47,17 +47,42 @@ public class TeachReader {
     public List<ClassInfoResponse> getTeachIndex(Long userId) {
         List<ClassInfoProjection> classList = gameRepository.findClassList(userId, 10);
 
+        // 배치로 missionData 조회하여 N+1 제거
+        List<Integer> missionIds = classList.stream()
+                .map(ClassInfoProjection::getMissionId)
+                .filter(id -> id != null)
+                .distinct()
+                .collect(Collectors.toList());
+
+        Map<Integer, Integer> minStatusCeoMap = new HashMap<>();
+        if (!missionIds.isEmpty()) {
+            List<TbMissionDataModel> allMissionData = missionDataRepository.findByMissionIdIn(missionIds);
+            allMissionData.forEach(data -> {
+                if (data.getStatusCeo() != null) {
+                    minStatusCeoMap.merge(data.getMissionId(), data.getStatusCeo(), Math::min);
+                }
+            });
+        }
+
         return classList.stream().map(c -> {
-            Integer statusCeo = calculateMinStatusCeo(c.getMissionId());
+            Integer statusCeo = c.getMissionId() != null
+                    ? minStatusCeoMap.getOrDefault(c.getMissionId(), 20)
+                    : 20;
             return ClassInfoResponse.from(c, statusCeo, resolveImageUrl(c.getImageUrl()));
         }).collect(Collectors.toList());
     }
 
     public TeachListResponse getTeachList(Long userId) {
-        List<ClassInfoResponse> inProgress = toResponseList(gameRepository.findClassList(userId, 10));
-        List<ClassInfoResponse> setting = toResponseList(gameRepository.findClassList(userId, 1));
-        List<ClassInfoResponse> completed = toResponseList(gameRepository.findClassList(userId, 100));
-        List<ClassInfoResponse> etc = toResponseList(gameRepository.findClassList(userId, 0));
+        List<ClassInfoProjection> allClasses = gameRepository.findClassListByUserId(userId);
+
+        Map<Integer, List<ClassInfoProjection>> byStatus = allClasses.stream()
+                .filter(c -> c.getStatus() != null)
+                .collect(Collectors.groupingBy(ClassInfoProjection::getStatus));
+
+        List<ClassInfoResponse> inProgress = toResponseList(byStatus.getOrDefault(10, Collections.emptyList()));
+        List<ClassInfoResponse> setting = toResponseList(byStatus.getOrDefault(1, Collections.emptyList()));
+        List<ClassInfoResponse> completed = toResponseList(byStatus.getOrDefault(100, Collections.emptyList()));
+        List<ClassInfoResponse> etc = toResponseList(byStatus.getOrDefault(0, Collections.emptyList()));
 
         return TeachListResponse.builder()
                 .inProgress(inProgress)
@@ -278,19 +303,6 @@ public class TeachReader {
         return Arrays.asList(step.split(","));
     }
 
-    private Integer calculateMinStatusCeo(Integer missionId) {
-        if (missionId == null) {
-            return 20;
-        }
-        List<TbMissionDataModel> dataList = missionDataRepository.findByMissionId(missionId);
-        int minStatus = 20;
-        for (TbMissionDataModel data : dataList) {
-            if (data.getStatusCeo() != null && data.getStatusCeo() < minStatus) {
-                minStatus = data.getStatusCeo();
-            }
-        }
-        return minStatus;
-    }
 
     private List<ClassInfoResponse> toResponseList(List<ClassInfoProjection> projections) {
         return projections.stream()

@@ -10,4 +10,6 @@ import java.util.List;
 public interface TbMissionDataJpaRepository extends JpaRepository<TbMissionData, Integer> {
 
     List<TbMissionData> findByMissionId(Integer missionId);
+
+    List<TbMissionData> findByMissionIdIn(List<Integer> missionIds);
 }

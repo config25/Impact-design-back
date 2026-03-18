@@ -24,6 +24,13 @@ public class MissionDataRepositoryImpl implements MissionDataRepository {
     }
 
     @Override
+    public List<TbMissionDataModel> findByMissionIdIn(List<Integer> missionIds) {
+        return tbMissionDataJpaRepository.findByMissionIdIn(missionIds).stream()
+                .map(this::toModel)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public void saveAll(Integer missionId, List<Integer> teamIds) {
         List<TbMissionData> entities = teamIds.stream()
                 .map(teamId -> TbMissionData.builder()

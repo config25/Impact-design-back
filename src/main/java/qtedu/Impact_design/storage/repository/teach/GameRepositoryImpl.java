@@ -20,6 +20,11 @@ public class GameRepositoryImpl implements GameRepository {
     }
 
     @Override
+    public List<ClassInfoProjection> findClassListByUserId(Long userId) {
+        return tbGameJpaRepository.findClassListByUserId(userId);
+    }
+
+    @Override
     public List<ClassInfoProjection> findAllActiveClassList() {
         return tbGameJpaRepository.findAllActiveClassList();
     }

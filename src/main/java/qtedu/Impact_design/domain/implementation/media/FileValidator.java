@@ -19,7 +19,6 @@ public class FileValidator {
     }
 
     public void validateFileNameCorrect(FileData file) {
-        System.out.println("파일 이름: " + file.getName());
         if (file.getName() == null || file.getName().isEmpty()) {
             throw new ConflictException(ErrorCode.FILE_NAME_INCORRECT);
         }
