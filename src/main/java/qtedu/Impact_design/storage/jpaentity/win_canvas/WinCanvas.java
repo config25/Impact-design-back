@@ -5,7 +5,9 @@ import lombok.*;
 import qtedu.Impact_design.domain.model.en.CanvasType;
 
 @Entity
-@Table(name = "win_canvas")
+@Table(name = "win_canvas", indexes = {
+        @Index(name = "idx_wincanvas_user_canvas", columnList = "user_id, canvas_type")
+})
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor

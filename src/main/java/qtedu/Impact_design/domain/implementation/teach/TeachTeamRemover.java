@@ -65,15 +65,20 @@ public class TeachTeamRemover {
                         .anyMatch(u -> u.getUserId().equals(tu.getUserId()) && "1".equals(u.getWriter())))
                 .collect(Collectors.toMap(TeamUserModel::getTeamId, TeamUserModel::getUserId, (a, b) -> a));
 
-        for (Map.Entry<Integer, Long> entry : teamWriterMap.entrySet()) {
-            Integer teamId = entry.getKey();
-            List<Long> remainingMemberIds = teamUserRepository.findByTeamId(teamId).stream()
-                    .map(TeamUserModel::getUserId)
-                    .filter(id -> !deleteSet.contains(id))
-                    .toList();
+        if (!teamWriterMap.isEmpty()) {
+            List<TeamUserModel> allTeamMembers = teamUserRepository.findByTeamIdIn(List.copyOf(teamWriterMap.keySet()));
 
-            if (!remainingMemberIds.isEmpty()) {
-                userinfoRepository.setWriter(remainingMemberIds.get(0));
+            for (Map.Entry<Integer, Long> entry : teamWriterMap.entrySet()) {
+                Integer teamId = entry.getKey();
+                List<Long> remainingMemberIds = allTeamMembers.stream()
+                        .filter(tu -> tu.getTeamId().equals(teamId))
+                        .map(TeamUserModel::getUserId)
+                        .filter(id -> !deleteSet.contains(id))
+                        .toList();
+
+                if (!remainingMemberIds.isEmpty()) {
+                    userinfoRepository.setWriter(remainingMemberIds.get(0));
+                }
             }
         }
 

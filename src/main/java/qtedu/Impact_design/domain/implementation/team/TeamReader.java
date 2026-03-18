@@ -7,11 +7,14 @@ import qtedu.Impact_design.common.error.NotFoundException;
 import qtedu.Impact_design.domain.model.team.TeamUserModel;
 import qtedu.Impact_design.domain.repository.auth.TeamUserRepository;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class TeamReader {
 
     private final TeamUserRepository teamUserRepository;
