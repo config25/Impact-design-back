@@ -100,19 +100,19 @@ class TeamSubmitStatusCheckerTest {
         }
 
         @Test
-        @DisplayName("submitF - BUILD만 제출해도 '제출'")
+        @DisplayName("submitF - BUILD만 제출하면 '미제출'")
         void submitF_onlyBuild() {
             given(fLetterOfIntentRepository.existsSubmittedByUserId(1L, CanvasType.BUILD)).willReturn(true);
             given(fLetterOfIntentRepository.existsSubmittedByUserId(1L, CanvasType.QUICK)).willReturn(false);
-            assertThat(checker.checkSubmitF(1L)).isEqualTo("제출");
+            assertThat(checker.checkSubmitF(1L)).isEqualTo("미제출");
         }
 
         @Test
-        @DisplayName("submitF - QUICK만 제출해도 '제출'")
+        @DisplayName("submitF - QUICK만 제출하면 '미제출'")
         void submitF_onlyQuick() {
             given(fLetterOfIntentRepository.existsSubmittedByUserId(1L, CanvasType.BUILD)).willReturn(false);
             given(fLetterOfIntentRepository.existsSubmittedByUserId(1L, CanvasType.QUICK)).willReturn(true);
-            assertThat(checker.checkSubmitF(1L)).isEqualTo("제출");
+            assertThat(checker.checkSubmitF(1L)).isEqualTo("미제출");
         }
 
         @Test

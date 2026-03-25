@@ -16,9 +16,12 @@ import qtedu.Impact_design.domain.repository.auth.TeamUserRepository;
 import qtedu.Impact_design.domain.repository.teach.TbGameRepository;
 import qtedu.Impact_design.domain.repository.user.UserinfoRepository;
 
+import org.mockito.ArgumentCaptor;
+
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -51,7 +54,9 @@ class TeachTeamRemoverTest {
 
             teachTeamRemover.deleteTeam(teamId, gameId);
 
-            then(tbTeamRepository).should().save(any(TbTeamModel.class));
+            ArgumentCaptor<TbTeamModel> captor = ArgumentCaptor.forClass(TbTeamModel.class);
+            then(tbTeamRepository).should().save(captor.capture());
+            assertThat(captor.getValue().getStatus()).isEqualTo(-1);
             then(tbGameRepository).should().decrementNumTeam(gameId);
         }
 

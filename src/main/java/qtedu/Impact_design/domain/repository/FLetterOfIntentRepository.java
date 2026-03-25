@@ -18,6 +18,8 @@ public interface FLetterOfIntentRepository {
 
     boolean existsSubmittedByUserId(Long userId, CanvasType canvasType);
 
+    boolean existsSubmittedByUserIdAndTarget(Long userId, Integer targetTeamId, CanvasType canvasType);
+
     void submitAllByUserId(Long userId, CanvasType canvasType);
 
     List<FLetterOfIntentModel> findByTargetTeamId(Integer teamId, CanvasType canvasType);

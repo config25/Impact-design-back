@@ -45,7 +45,7 @@ public class FundingAppender {
 
         CanvasType type = toCanvasType(canvasType);
 
-        if (fLetterOfIntentRepository.existsSubmittedByUserId(userId, type)) {
+        if (fLetterOfIntentRepository.existsSubmittedByUserIdAndTarget(userId, request.getInvestmentTarget(), type)) {
             throw new ConflictException(ErrorCode.ALREADY_SUBMITTED);
         }
 
