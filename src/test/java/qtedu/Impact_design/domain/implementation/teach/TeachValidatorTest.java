@@ -138,22 +138,22 @@ class TeachValidatorTest {
         void invalidFormat() {
             assertThatThrownBy(() -> teachValidator.validateEnddate("2026/04/01"))
                     .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessageContaining("yyyy-MM-dd");
+                    .hasMessageContaining("yyyy-MM-dd HH:mm");
         }
 
         @Test
         @DisplayName("과거 날짜이면 예외가 발생한다")
         void pastDate() {
-            assertThatThrownBy(() -> teachValidator.validateEnddate("2020-01-01"))
+            assertThatThrownBy(() -> teachValidator.validateEnddate("2020-01-01 00:00"))
                     .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessageContaining("현재 날짜 이후");
+                    .hasMessageContaining("현재 시간 이후");
         }
 
         @Test
         @DisplayName("미래 날짜이면 예외가 발생하지 않는다")
         void futureDate() {
             assertThatNoException()
-                    .isThrownBy(() -> teachValidator.validateEnddate("2099-12-31"));
+                    .isThrownBy(() -> teachValidator.validateEnddate("2099-12-31 23:59"));
         }
     }
 }

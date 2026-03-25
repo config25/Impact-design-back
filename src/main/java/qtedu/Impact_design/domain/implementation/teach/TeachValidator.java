@@ -2,7 +2,8 @@ package qtedu.Impact_design.domain.implementation.teach;
 
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 @Component
@@ -38,17 +39,19 @@ public class TeachValidator {
         }
     }
 
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
     public void validateEnddate(String enddate) {
         if (enddate == null || enddate.isBlank()) {
             throw new IllegalArgumentException("종료일은 필수입니다.");
         }
         try {
-            LocalDate parsed = LocalDate.parse(enddate);
-            if (parsed.isBefore(LocalDate.now())) {
-                throw new IllegalArgumentException("종료일은 현재 날짜 이후여야 합니다.");
+            LocalDateTime parsed = LocalDateTime.parse(enddate, FORMATTER);
+            if (parsed.isBefore(LocalDateTime.now())) {
+                throw new IllegalArgumentException("종료일은 현재 시간 이후여야 합니다.");
             }
         } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("종료일 형식이 올바르지 않습니다. (yyyy-MM-dd)");
+            throw new IllegalArgumentException("종료일 형식이 올바르지 않습니다. (yyyy-MM-dd HH:mm)");
         }
     }
 }
