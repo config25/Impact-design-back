@@ -44,7 +44,7 @@ public class TeachTeamAppender {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.GAME_NOT_FOUND));
 
         int currentTeamCount = gameTeamRepository.countByGameId(gameId);
-        if (currentTeamCount > MAX_TEAMS_PER_GAME) {
+        if (currentTeamCount >= MAX_TEAMS_PER_GAME) {
             throw new ConflictException(ErrorCode.MAX_TEAM_EXCEEDED);
         }
 
@@ -73,7 +73,7 @@ public class TeachTeamAppender {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.GAME_NOT_FOUND));
 
         int currentTeamCount = gameTeamRepository.countByGameId(gameId);
-        if (currentTeamCount > MAX_TEAMS_PER_GAME) {
+        if (currentTeamCount >= MAX_TEAMS_PER_GAME) {
             throw new ConflictException(ErrorCode.MAX_TEAM_EXCEEDED);
         }
 
@@ -105,7 +105,7 @@ public class TeachTeamAppender {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.GAME_NOT_FOUND));
 
         int currentMemberCount = teamUserRepository.countByTeamId(teamId);
-        if (currentMemberCount > MAX_MEMBERS_PER_TEAM) {
+        if (currentMemberCount >= MAX_MEMBERS_PER_TEAM) {
             throw new ConflictException(ErrorCode.MAX_MEMBER_EXCEEDED);
         }
 
