@@ -23,6 +23,7 @@ public interface FLetterOfIntentJpaRepository extends JpaRepository<FLetterOfInt
     List<FLetterOfIntent> findByInvestmentTargetInAndDelYnAndCanvasType(List<String> investmentTargets, String delYn, CanvasType canvasType);
 
     boolean existsByUserIdAndSubmittedAndDelYnAndCanvasType(Long userId, Boolean submitted, String delYn, CanvasType canvasType);
+    boolean existsByUserIdAndInvestmentTargetAndSubmittedAndDelYnAndCanvasType(Long userId, String investmentTarget, Boolean submitted, String delYn, CanvasType canvasType);
     List<FLetterOfIntent> findByUserIdInAndSubmittedAndDelYnAndCanvasType(List<Long> userIds, Boolean submitted, String delYn, CanvasType canvasType);
 
     @Modifying

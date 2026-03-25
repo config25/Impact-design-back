@@ -95,6 +95,12 @@ public class FLetterOfIntentRepositoryImpl implements FLetterOfIntentRepository 
     }
 
     @Override
+    public boolean existsSubmittedByUserIdAndTarget(Long userId, Integer targetTeamId, CanvasType canvasType) {
+        return fLetterOfIntentJpaRepository.existsByUserIdAndInvestmentTargetAndSubmittedAndDelYnAndCanvasType(
+                userId, String.valueOf(targetTeamId), true, "N", canvasType);
+    }
+
+    @Override
     public void submitAllByUserId(Long userId, CanvasType canvasType) {
         List<FLetterOfIntent> entities = fLetterOfIntentJpaRepository.findByUserIdAndDelYnAndCanvasType(userId, "N", canvasType);
         entities.forEach(FLetterOfIntent::submit);

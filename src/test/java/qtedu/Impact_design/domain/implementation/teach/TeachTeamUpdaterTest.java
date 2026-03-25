@@ -19,9 +19,12 @@ import qtedu.Impact_design.domain.repository.auth.TeamUserRepository;
 import qtedu.Impact_design.domain.repository.teach.TbGameRepository;
 import qtedu.Impact_design.domain.repository.user.UserinfoRepository;
 
+import org.mockito.ArgumentCaptor;
+
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -104,7 +107,9 @@ class TeachTeamUpdaterTest {
 
             teachTeamUpdater.restoreTeam(teamId, gameId);
 
-            then(tbTeamRepository).should().save(any(TbTeamModel.class));
+            ArgumentCaptor<TbTeamModel> captor = ArgumentCaptor.forClass(TbTeamModel.class);
+            then(tbTeamRepository).should().save(captor.capture());
+            assertThat(captor.getValue().getStatus()).isNotEqualTo(-1);
             then(tbGameRepository).should().incrementNumTeam(gameId);
         }
 
@@ -178,7 +183,11 @@ class TeachTeamUpdaterTest {
 
             teachTeamUpdater.updateTeamInfo(teamId, "베타팀", null, null, null);
 
-            then(tbTeamRepository).should().save(any(TbTeamModel.class));
+            ArgumentCaptor<TbTeamModel> captor = ArgumentCaptor.forClass(TbTeamModel.class);
+            then(tbTeamRepository).should().save(captor.capture());
+            assertThat(captor.getValue().getName()).isEqualTo("베타팀");
+            assertThat(captor.getValue().getSequence()).isEqualTo(1);   // null이므로 기존 값 유지
+            assertThat(captor.getValue().getIsDoing()).isEqualTo(1);    // null이므로 기존 값 유지
         }
 
         @Test
@@ -204,7 +213,9 @@ class TeachTeamUpdaterTest {
 
             teachTeamUpdater.saveStep(gameId, "A-1,B-1");
 
-            then(tbGameRepository).should().save(any(TbGameModel.class));
+            ArgumentCaptor<TbGameModel> captor = ArgumentCaptor.forClass(TbGameModel.class);
+            then(tbGameRepository).should().save(captor.capture());
+            assertThat(captor.getValue().getStep()).isEqualTo("A-1,B-1");
         }
 
         @Test

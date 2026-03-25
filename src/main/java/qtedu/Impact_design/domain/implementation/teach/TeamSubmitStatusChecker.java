@@ -77,7 +77,7 @@ public class TeamSubmitStatusChecker {
     public String checkSubmitF(Long writerUserId) {
         boolean intentBuild = fLetterOfIntentRepository.existsSubmittedByUserId(writerUserId, CanvasType.BUILD);
         boolean intentQuick = fLetterOfIntentRepository.existsSubmittedByUserId(writerUserId, CanvasType.QUICK);
-        return (intentBuild || intentQuick) ? "제출" : "미제출";
+        return (intentBuild && intentQuick) ? "제출" : "미제출";
     }
 
     public Map<Integer, TeamSubmitResult> checkAllSubmitStatuses(
@@ -166,7 +166,7 @@ public class TeamSubmitStatusChecker {
                     flowSubmitted.contains(writerUserId) ? "제출" : "미제출",
                     quickWinSubmitted.contains(writerUserId) ? "제출" : "미제출",
                     buildWinSubmitted.contains(writerUserId) ? "제출" : "미제출",
-                    (intentBuildSubmitted.contains(writerUserId) || intentQuickSubmitted.contains(writerUserId))
+                    (intentBuildSubmitted.contains(writerUserId) && intentQuickSubmitted.contains(writerUserId))
                             ? "제출" : "미제출"
             ));
         }
