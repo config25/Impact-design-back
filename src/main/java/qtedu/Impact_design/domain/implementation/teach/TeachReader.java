@@ -124,6 +124,7 @@ public class TeachReader {
                 .teams(teams)
                 .gameLogo(gameLogo)
                 .imageUrl(resolveImageUrl(game.getImageUrl()))
+                .target(game.getTarget())
                 .build();
     }
 

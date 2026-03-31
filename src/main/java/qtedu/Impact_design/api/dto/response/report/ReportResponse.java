@@ -61,6 +61,7 @@ public class ReportResponse {
     @Builder
     public static class FrequencyAnalysis {
         private List<String> allData;
+        private Integer totalCount;
         private List<FrequencyItem> top4; // top4개
         private List<String> keywords; // 4개
         private List<String> aiSummary; // AI 요약
@@ -88,6 +89,7 @@ public class ReportResponse {
     @Builder
     public static class GoalAnalysis {
         private List<GoalItem> goals;
+        private Integer totalCount;
         private List<String> keywords;
     }
 

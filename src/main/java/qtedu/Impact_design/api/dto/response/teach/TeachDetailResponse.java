@@ -20,6 +20,7 @@ public class TeachDetailResponse {
     private String code;
     private String step;
     private List<String> stepArr;
+    private String target;
 
     // Mission 정보 (최신 1건)
     private MissionInfo mission;

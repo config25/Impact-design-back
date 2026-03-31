@@ -63,6 +63,97 @@ Controller → Facade/Service → Implementation → Domain Repository → Repos
 
 ---
 
+## 🧱 SOLID 원칙 적용
+
+### S — 단일 책임 원칙 (SRP)
+
+`domain/implementation/` 패키지에서 **Reader/Appender/Updater/Remover/Validator**로 역할을 분리합니다.
+
+| 클래스 | 책임 |
+|--------|------|
+| `AuthReader` | 인증 데이터 **조회**만 담당 |
+| `AuthAppender` | 회원가입, 로그인 토큰 **생성**만 담당 |
+| `TeachUpdater` | 강의실 상태 **수정**만 담당 |
+| `TeachTeamRemover` | 팀/팀원 **삭제**만 담당 |
+| `FileValidator` | 파일명 **검증**만 담당 |
+
+하나의 도메인이라도 읽기/쓰기/삭제/검증을 각각 별도 클래스로 분리하여, 변경 이유가 하나뿐인 클래스를 유지합니다.
+
+### O — 개방-폐쇄 원칙 (OCP)
+
+인터페이스 기반으로 기존 코드 수정 없이 새 구현체를 추가할 수 있습니다.
+
+```java
+// domain/repository/ai/AiClient.java
+public interface AiClient {
+    AiResponse chat(AiRequest request);
+    String getProvider();
+}
+```
+
+새 AI 제공자(Claude, Gemini 등)를 추가할 때 `AiClient` 구현체만 추가하면 되고, `AiClientProvider`나 `AiSender`는 수정할 필요가 없습니다. `ExternalFileClient`도 동일한 방식으로 스토리지 교체를 지원합니다.
+
+### L — 리스코프 치환 원칙 (LSP)
+
+모든 `RepositoryImpl`이 도메인 `Repository` 인터페이스의 계약을 정확히 준수합니다.
+
+```java
+// domain/repository/auth/LoggedInRepository.java (인터페이스)
+public interface LoggedInRepository {
+    Optional<LoggedInModel> findByUserId(Long userId);
+    LoggedInModel save(LoggedInModel loggedInModel);
+    void deleteByUserId(Long userId);
+}
+
+// storage/repository/auth/LoggedInRepositoryImpl.java (구현체)
+@Repository
+public class LoggedInRepositoryImpl implements LoggedInRepository { ... }
+```
+
+`AuthAppender`가 `LoggedInRepository` 타입으로 주입받으므로, 구현체를 다른 것으로 치환해도 동작이 깨지지 않습니다.
+
+### I — 인터페이스 분리 원칙 (ISP)
+
+Repository 인터페이스가 도메인별로 작고 집중적으로 분리되어 있습니다.
+
+| 인터페이스 | 메서드 수 | 관심사 |
+|-----------|----------|--------|
+| `LoggedInRepository` | 3개 | 세션 관리 |
+| `TeamUserRepository` | 5개 | 팀 멤버십 |
+| `TbTeamRepository` | 5개 | 팀 데이터 |
+| `UserinfoRepository` | 5개 | 사용자 정보 |
+| `FlowCanvasRepository` | 5개 | 성과경로 캔버스 |
+
+하나의 거대한 인터페이스 대신 각 도메인에 필요한 메서드만 정의하여, 클라이언트가 사용하지 않는 메서드에 의존하지 않습니다.
+
+### D — 의존성 역전 원칙 (DIP)
+
+이 프로젝트의 핵심 아키텍처 원칙입니다. domain 레이어는 추상화(인터페이스)에만 의존하고, storage 레이어가 이를 구현합니다.
+
+```
+[domain 레이어]                          [storage 레이어]
+AuthAppender                            LoggedInRepositoryImpl
+  └─ LoggedInRepository (인터페이스) ◄──── └─ implements
+```
+
+```java
+// domain 레이어 — 추상화에만 의존
+@Component
+public class AuthAppender {
+    private final LoggedInRepository loggedInRepository;  // 인터페이스
+}
+
+// storage 레이어 — 구현체가 추상화를 구현
+@Repository
+public class LoggedInRepositoryImpl implements LoggedInRepository {
+    private final LoggedInJpaRepository loggedInJpaRepository;  // JPA 상세
+}
+```
+
+domain 레이어는 `storage/jpaentity`를 절대 import하지 않으므로, JPA → MyBatis 또는 SQL → NoSQL로 변경해도 domain 코드 수정이 필요 없습니다.
+
+---
+
 ## 📁 Package Structure
 
 ```

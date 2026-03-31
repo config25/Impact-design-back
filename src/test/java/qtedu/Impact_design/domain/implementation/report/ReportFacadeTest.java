@@ -1,10 +1,10 @@
 package qtedu.Impact_design.domain.implementation.report;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import qtedu.Impact_design.api.dto.response.report.ReportResponse;
@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.Executors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -32,8 +33,17 @@ class ReportFacadeTest {
     @Mock private GameReader gameReader;
     @Mock private TeachTeamReader teachTeamReader;
 
-    @InjectMocks
     private ReportFacade reportFacade;
+
+    @BeforeEach
+    void setUp() {
+        reportFacade = new ReportFacade(
+                reportDataAggregator, reportAnalyzer, winCanvasScoreCalculator,
+                gameReader, teachTeamReader,
+                null, null, null, null, null,
+                Executors.newFixedThreadPool(2)
+        );
+    }
 
     private ReportRawData emptyRawData() {
         return ReportRawData.builder()

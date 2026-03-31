@@ -8,10 +8,14 @@ import qtedu.Impact_design.domain.model.IdentityCanvasModel;
 import qtedu.Impact_design.domain.model.flow_canvas.FlowCanvasModel;
 import qtedu.Impact_design.domain.model.flow_canvas.StrategicActivityModel;
 import qtedu.Impact_design.domain.model.flow_canvas.TacticalModel;
+import qtedu.Impact_design.domain.model.team.TbGameModel;
 import qtedu.Impact_design.domain.model.team.TeamUserModel;
 import qtedu.Impact_design.domain.model.win_canvas.WinCanvasModel;
 import qtedu.Impact_design.domain.repository.FLetterOfIntentRepository;
 import qtedu.Impact_design.domain.repository.auth.TeamUserRepository;
+import qtedu.Impact_design.domain.repository.teach.GameTeamRepository;
+import qtedu.Impact_design.domain.repository.teach.TbGameRepository;
+import qtedu.Impact_design.domain.repository.user.UserinfoRepository;
 import qtedu.Impact_design.domain.implementation.flowcanvas.FlowCanvasReader;
 import qtedu.Impact_design.domain.implementation.identitycanvas.IdentityCanvasReader;
 import qtedu.Impact_design.domain.implementation.impactcheck.ImpactCheckReader;
@@ -33,6 +37,9 @@ public class ReportDataAggregator {
     private final WinCanvasReader winCanvasReader;
     private final FLetterOfIntentRepository fLetterOfIntentRepository;
     private final TeamUserRepository teamUserRepository;
+    private final TbGameRepository tbGameRepository;
+    private final GameTeamRepository gameTeamRepository;
+    private final UserinfoRepository userinfoRepository;
 
     public ReportRawData load(Integer teamId) {
         List<Long> userIds = teamReader.readTeamMemberUserIdsByTeamId(teamId);
@@ -42,8 +49,11 @@ public class ReportDataAggregator {
                 .map(FlowCanvasModel::getGoalId)
                 .collect(Collectors.toList());
 
-        List<WinCanvasModel> quickCanvases = winCanvasReader.readCanvasesByUserIds(userIds, CanvasType.QUICK);
-        List<WinCanvasModel> buildCanvases = winCanvasReader.readCanvasesByUserIds(userIds, CanvasType.BUILD);
+        // WinCanvas & Intent: 같은 게임의 각 팀 대표작성자(writer=1) 기준으로 조회
+        List<Integer> allTeamIds = findAllTeamIdsForGame(teamId);
+        List<Long> writerUserIds = findWriterUserIds(allTeamIds);
+        List<WinCanvasModel> quickCanvases = winCanvasReader.readCanvasesByUserIds(writerUserIds, CanvasType.QUICK);
+        List<WinCanvasModel> buildCanvases = winCanvasReader.readCanvasesByUserIds(writerUserIds, CanvasType.BUILD);
 
         return ReportRawData.builder()
                 .impactChecks(impactCheckReader.readByUserIds(userIds))
@@ -53,9 +63,40 @@ public class ReportDataAggregator {
                 .strategicActivities(flowCanvasReader.readStrategicActivitiesByGoalIds(goalIds))
                 .quickCanvases(quickCanvases)
                 .buildCanvases(buildCanvases)
-                .quickIntents(fLetterOfIntentRepository.findByTargetTeamId(teamId, CanvasType.QUICK))
-                .buildIntents(fLetterOfIntentRepository.findByTargetTeamId(teamId, CanvasType.BUILD))
+                .quickIntents(fLetterOfIntentRepository.findByTargetTeamIds(allTeamIds, CanvasType.QUICK))
+                .buildIntents(fLetterOfIntentRepository.findByTargetTeamIds(allTeamIds, CanvasType.BUILD))
                 .build();
+    }
+
+    private List<Integer> findAllTeamIdsForGame(Integer teamId) {
+        Integer gameId = tbGameRepository.findByTeamId(teamId)
+                .map(TbGameModel::getGameId)
+                .orElse(null);
+        if (gameId == null) return Collections.emptyList();
+        return gameTeamRepository.findTeamIdsByGameId(gameId);
+    }
+
+    private List<Long> findWriterUserIds(List<Integer> allTeamIds) {
+        if (allTeamIds.isEmpty()) return Collections.emptyList();
+
+        List<TeamUserModel> allTeamUsers = teamUserRepository.findByTeamIdIn(allTeamIds);
+        Map<Integer, List<Long>> teamUserMap = allTeamUsers.stream()
+                .collect(Collectors.groupingBy(
+                        TeamUserModel::getTeamId,
+                        Collectors.mapping(TeamUserModel::getUserId, Collectors.toList())
+                ));
+
+        List<Long> writerUserIds = new ArrayList<>();
+        for (Integer tid : allTeamIds) {
+            List<Long> memberIds = teamUserMap.getOrDefault(tid, Collections.emptyList());
+            if (memberIds.isEmpty()) continue;
+
+            Long writerId = userinfoRepository.findWriterByUserIds(memberIds)
+                    .map(u -> u.getUserId())
+                    .orElse(memberIds.get(0));
+            writerUserIds.add(writerId);
+        }
+        return writerUserIds;
     }
 
     public Map<Integer, ReportRawData> loadBulk(List<Integer> teamIds) {
