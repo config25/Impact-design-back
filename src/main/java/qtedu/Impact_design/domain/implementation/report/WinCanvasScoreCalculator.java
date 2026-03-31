@@ -37,30 +37,39 @@ public class WinCanvasScoreCalculator {
     }
 
     private List<WinCanvasWithScore> buildScores(List<WinCanvasModel> canvases, List<FLetterOfIntentModel> intents) {
-        List<ScoreDetail> evaluations = intents.stream()
-                .map(intent -> {
-                    int total = sumScores(intent.getScore1(), intent.getScore2(), intent.getScore3(),
-                            intent.getScore4(), intent.getScore5(), intent.getScore6(),
-                            intent.getScore7(), intent.getScore8(), intent.getScore9());
-                    return ScoreDetail.builder()
-                            .intentIndex(intent.getIntentIndex()).userId(intent.getUserId())
-                            .score1(intent.getScore1()).score2(intent.getScore2())
-                            .score3(intent.getScore3()).score4(intent.getScore4())
-                            .score5(intent.getScore5()).score6(intent.getScore6())
-                            .score7(intent.getScore7()).score8(intent.getScore8())
-                            .score9(intent.getScore9()).totalScore(total)
-                            .build();
-                })
-                .collect(Collectors.toList());
-
-        int teamTotalScore = evaluations.stream().mapToInt(ScoreDetail::getTotalScore).sum();
+        Map<Long, List<FLetterOfIntentModel>> intentsByCanvas = intents.stream()
+                .filter(i -> i.getCanvasId() != null)
+                .collect(Collectors.groupingBy(FLetterOfIntentModel::getCanvasId));
 
         return canvases.stream()
-                .map(canvas -> WinCanvasWithScore.builder()
-                        .canvasId(canvas.getCanvasId()).userId(canvas.getUserId())
-                        .taskName(canvas.getTaskName()).taskDescription(canvas.getTaskDescription())
-                        .totalScore(teamTotalScore).evaluations(evaluations)
-                        .build())
+                .map(canvas -> {
+                    List<ScoreDetail> evaluations = intentsByCanvas
+                            .getOrDefault(canvas.getCanvasId(), Collections.emptyList())
+                            .stream()
+                            .map(intent -> {
+                                int total = sumScores(intent.getScore1(), intent.getScore2(), intent.getScore3(),
+                                        intent.getScore4(), intent.getScore5(), intent.getScore6(),
+                                        intent.getScore7(), intent.getScore8(), intent.getScore9());
+                                return ScoreDetail.builder()
+                                        .intentIndex(intent.getIntentIndex()).userId(intent.getUserId())
+                                        .score1(intent.getScore1()).score2(intent.getScore2())
+                                        .score3(intent.getScore3()).score4(intent.getScore4())
+                                        .score5(intent.getScore5()).score6(intent.getScore6())
+                                        .score7(intent.getScore7()).score8(intent.getScore8())
+                                        .score9(intent.getScore9()).totalScore(total)
+                                        .build();
+                            })
+                            .collect(Collectors.toList());
+
+                    int canvasTotalScore = evaluations.stream().mapToInt(ScoreDetail::getTotalScore).sum();
+
+                    return WinCanvasWithScore.builder()
+                            .canvasId(canvas.getCanvasId()).userId(canvas.getUserId())
+                            .taskName(canvas.getTaskName()).taskDescription(canvas.getTaskDescription())
+                            .totalScore(canvasTotalScore).evaluations(evaluations)
+                            .build();
+                })
+                .sorted(Comparator.comparingInt(WinCanvasWithScore::getTotalScore).reversed())
                 .collect(Collectors.toList());
     }
 

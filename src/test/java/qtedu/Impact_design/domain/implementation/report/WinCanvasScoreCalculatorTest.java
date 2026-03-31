@@ -79,7 +79,7 @@ class WinCanvasScoreCalculatorTest {
                     .build();
 
             FLetterOfIntentModel intent = FLetterOfIntentModel.builder()
-                    .intentIndex(1).userId(100L)
+                    .intentIndex(1).userId(100L).canvasId(10L)
                     .score1(1).score2(2).score3(3).score4(4).score5(5)
                     .score6(1).score7(2).score8(3).score9(4)
                     .build();
@@ -110,13 +110,13 @@ class WinCanvasScoreCalculatorTest {
                     .build();
 
             FLetterOfIntentModel intent1 = FLetterOfIntentModel.builder()
-                    .intentIndex(1).userId(100L)
+                    .intentIndex(1).userId(100L).canvasId(10L)
                     .score1(1).score2(1).score3(1).score4(1).score5(1)
                     .score6(1).score7(1).score8(1).score9(1)
                     .build();
 
             FLetterOfIntentModel intent2 = FLetterOfIntentModel.builder()
-                    .intentIndex(2).userId(200L)
+                    .intentIndex(2).userId(200L).canvasId(10L)
                     .score1(2).score2(2).score3(2).score4(2).score5(2)
                     .score6(2).score7(2).score8(2).score9(2)
                     .build();
@@ -144,7 +144,7 @@ class WinCanvasScoreCalculatorTest {
                     .build();
 
             FLetterOfIntentModel intent = FLetterOfIntentModel.builder()
-                    .intentIndex(1).userId(100L)
+                    .intentIndex(1).userId(100L).canvasId(10L)
                     .score1(5).score2(null).score3(null).score4(null).score5(null)
                     .score6(null).score7(null).score8(null).score9(null)
                     .build();
@@ -176,7 +176,7 @@ class WinCanvasScoreCalculatorTest {
                     .build();
 
             FLetterOfIntentModel intent = FLetterOfIntentModel.builder()
-                    .intentIndex(1).userId(100L)
+                    .intentIndex(1).userId(100L).canvasId(20L)
                     .score1(3).score2(3).score3(3).score4(3).score5(3)
                     .score6(3).score7(3).score8(3).score9(3)
                     .build();

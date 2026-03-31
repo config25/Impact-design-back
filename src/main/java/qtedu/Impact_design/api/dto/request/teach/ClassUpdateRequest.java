@@ -6,4 +6,5 @@ import lombok.Getter;
 public class ClassUpdateRequest {
     private String name;
     private String enddate;
+    private String target;
 }

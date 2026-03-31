@@ -103,6 +103,7 @@ public class ReportAnalyzer {
         if (flowCanvases == null || flowCanvases.isEmpty()) {
             return GoalAnalysis.builder()
                     .goals(Collections.emptyList())
+                    .totalCount(0)
                     .keywords(Collections.emptyList())
                     .build();
         }
@@ -118,6 +119,7 @@ public class ReportAnalyzer {
 
         return GoalAnalysis.builder()
                 .goals(goals)
+                .totalCount(goals.size())
                 .keywords(keywords)
                 .build();
     }
@@ -127,11 +129,13 @@ public class ReportAnalyzer {
             return Collections.emptyList();
         }
 
+        Set<String> seen = new HashSet<>();
         return tacticals.stream()
                 .map(t -> TacticalItem.builder()
                         .metric(t.getTacticalMetric())
                         .goal(t.getTacticalGoal())
                         .build())
+                .filter(t -> seen.add(t.getMetric() + "|" + t.getGoal()))
                 .collect(Collectors.toList());
     }
 
@@ -140,11 +144,13 @@ public class ReportAnalyzer {
             return Collections.emptyList();
         }
 
+        Set<String> seen = new HashSet<>();
         return activities.stream()
                 .map(a -> StrategicActivityItem.builder()
                         .activityMetric(a.getActivityMetric())
                         .interCriteria(a.getInterCriteria())
                         .build())
+                .filter(a -> seen.add(a.getActivityMetric() + "|" + a.getInterCriteria()))
                 .collect(Collectors.toList());
     }
 

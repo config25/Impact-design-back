@@ -1690,20 +1690,20 @@ include::{snippets}/report/get/http-response.adoc[]
 
 include::{snippets}/report/get/response-fields.adoc[]
 
-=== 2. 게임별 벌크 리포트 조회
+=== 2. 게임별 팀 캔버스 조회
 
 ==== 요청(Request)
 
-include::{snippets}/report/get-bulk/http-request.adoc[]
+include::{snippets}/report/get-team-canvases/http-request.adoc[]
 
 ==== 경로 변수 설명(Path Parameters)
 
-include::{snippets}/report/get-bulk/path-parameters.adoc[]
+include::{snippets}/report/get-team-canvases/path-parameters.adoc[]
 
 ==== 응답(Response)
 
-include::{snippets}/report/get-bulk/http-response.adoc[]
+include::{snippets}/report/get-team-canvases/http-response.adoc[]
 
 ==== 응답 필드 설명(Response Fields)
 
-include::{snippets}/report/get-bulk/response-fields.adoc[]
+include::{snippets}/report/get-team-canvases/response-fields.adoc[]

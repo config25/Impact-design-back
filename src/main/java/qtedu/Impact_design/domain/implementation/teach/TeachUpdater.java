@@ -140,7 +140,7 @@ public class TeachUpdater {
                 .regDate(game.getRegDate())
                 .popupId(game.getPopupId())
                 .imageUrl(game.getImageUrl())
-                .target(game.getTarget())
+                .target(request.getTarget() != null ? request.getTarget() : game.getTarget())
                 .projectDate(game.getProjectDate())
                 .build();
 

@@ -4,15 +4,23 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import qtedu.Impact_design.api.dto.response.identitycanvas.IdentityCanvasResponse;
 import qtedu.Impact_design.api.dto.response.report.ReportResponse;
+import qtedu.Impact_design.api.dto.response.report.TeamCanvasResponse;
+import qtedu.Impact_design.domain.implementation.flowcanvas.FlowCanvasReader;
 import qtedu.Impact_design.domain.implementation.game.GameReader;
+import qtedu.Impact_design.domain.implementation.identitycanvas.IdentityCanvasReader;
 import qtedu.Impact_design.domain.implementation.teach.TeachTeamReader;
+import qtedu.Impact_design.domain.implementation.wincanvas.WinCanvasReader;
+import qtedu.Impact_design.domain.model.IdentityCanvasModel;
+import qtedu.Impact_design.domain.model.en.CanvasType;
 import qtedu.Impact_design.domain.model.team.TbGameModel;
 import qtedu.Impact_design.domain.model.team.TbTeamModel;
+import qtedu.Impact_design.domain.model.team.TeamUserModel;
+import qtedu.Impact_design.domain.repository.auth.TeamUserRepository;
+import qtedu.Impact_design.domain.repository.user.UserinfoRepository;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
@@ -27,6 +35,11 @@ public class ReportFacade {
     private final WinCanvasScoreCalculator winCanvasScoreCalculator;
     private final GameReader gameReader;
     private final TeachTeamReader teachTeamReader;
+    private final IdentityCanvasReader identityCanvasReader;
+    private final FlowCanvasReader flowCanvasReader;
+    private final WinCanvasReader winCanvasReader;
+    private final TeamUserRepository teamUserRepository;
+    private final UserinfoRepository userinfoRepository;
     private final ExecutorService ioExecutor;
 
     public ReportFacade(
@@ -35,6 +48,11 @@ public class ReportFacade {
             WinCanvasScoreCalculator winCanvasScoreCalculator,
             GameReader gameReader,
             TeachTeamReader teachTeamReader,
+            IdentityCanvasReader identityCanvasReader,
+            FlowCanvasReader flowCanvasReader,
+            WinCanvasReader winCanvasReader,
+            TeamUserRepository teamUserRepository,
+            UserinfoRepository userinfoRepository,
             @Qualifier("ioExecutor") ExecutorService ioExecutor
     ) {
         this.reportDataAggregator = reportDataAggregator;
@@ -42,16 +60,34 @@ public class ReportFacade {
         this.winCanvasScoreCalculator = winCanvasScoreCalculator;
         this.gameReader = gameReader;
         this.teachTeamReader = teachTeamReader;
+        this.identityCanvasReader = identityCanvasReader;
+        this.flowCanvasReader = flowCanvasReader;
+        this.winCanvasReader = winCanvasReader;
+        this.teamUserRepository = teamUserRepository;
+        this.userinfoRepository = userinfoRepository;
         this.ioExecutor = ioExecutor;
     }
 
     @Transactional(readOnly = true)
     public ReportResponse getReport(Integer teamId) {
         ReportRawData raw = reportDataAggregator.load(teamId);
-        ReportAiResult aiResult = reportAnalyzer.analyze(raw);
-        ReportScoreResult scoreResult = winCanvasScoreCalculator.calculate(raw);
-        Optional<TbGameModel> gameOpt = gameReader.findByTeamId(teamId);
-        Optional<TbTeamModel> teamOpt = teachTeamReader.findByTeamId(teamId);
+
+        // AI 분석, 점수 계산, 메타데이터 조회를 병렬 실행
+        CompletableFuture<ReportAiResult> aiResultFuture =
+                CompletableFuture.supplyAsync(() -> reportAnalyzer.analyze(raw), ioExecutor);
+        CompletableFuture<ReportScoreResult> scoreResultFuture =
+                CompletableFuture.supplyAsync(() -> winCanvasScoreCalculator.calculate(raw), ioExecutor);
+        CompletableFuture<Optional<TbGameModel>> gameFuture =
+                CompletableFuture.supplyAsync(() -> gameReader.findByTeamId(teamId), ioExecutor);
+        CompletableFuture<Optional<TbTeamModel>> teamFuture =
+                CompletableFuture.supplyAsync(() -> teachTeamReader.findByTeamId(teamId), ioExecutor);
+
+        CompletableFuture.allOf(aiResultFuture, scoreResultFuture, gameFuture, teamFuture).join();
+
+        ReportAiResult aiResult = aiResultFuture.join();
+        ReportScoreResult scoreResult = scoreResultFuture.join();
+        Optional<TbGameModel> gameOpt = gameFuture.join();
+        Optional<TbTeamModel> teamOpt = teamFuture.join();
 
         return ReportResponse.builder()
                 .teamId(teamId)
@@ -73,62 +109,62 @@ public class ReportFacade {
     }
 
     @Transactional(readOnly = true)
-    public List<ReportResponse> getReportsByGameId(Integer gameId) {
-        log.info("벌크 리포트 생성 시작 - gameId: {}", gameId);
+    public List<TeamCanvasResponse> getTeamCanvases(Integer gameId) {
         List<Integer> teamIds = gameReader.findTeamIdsByGameId(gameId);
-
-        // 1. 전체 팀 데이터를 한번에 배치 로드
-        Map<Integer, ReportRawData> rawDataMap = reportDataAggregator.loadBulk(teamIds);
-
-        // 2. 게임/팀 정보를 한번에 조회
-        Optional<TbGameModel> gameOpt = gameReader.findById(gameId);
         Map<Integer, TbTeamModel> teamMap = teachTeamReader.findByTeamIds(teamIds).stream()
                 .collect(Collectors.toMap(TbTeamModel::getTeamId, Function.identity()));
+        String imageUrl = gameReader.findById(gameId)
+                .map(g -> gameReader.resolveImageUrl(g.getImageUrl()))
+                .orElse(null);
 
-        final String finalImageUrl = gameOpt.map(g -> gameReader.resolveImageUrl(g.getImageUrl())).orElse(null);
-        final String finalClassName = gameOpt.map(TbGameModel::getName).orElse(null);
-        final String finalTarget = gameOpt.map(TbGameModel::getTarget).orElse(null);
-        final String finalProjectDate = gameOpt.map(TbGameModel::getProjectDate).orElse(null);
+        // 각 팀의 대표작성자 찾기
+        Map<Integer, Long> writerByTeam = findWriterByTeam(teamIds);
 
-        // 3. AI 분석 + 점수 계산만 팀별 병렬 실행
-        List<CompletableFuture<ReportResponse>> futures = teamIds.stream()
+        // 팀별 캔버스 조회를 병렬 실행
+        List<CompletableFuture<TeamCanvasResponse>> futures = teamIds.stream()
+                .filter(writerByTeam::containsKey)
                 .map(teamId -> CompletableFuture.supplyAsync(() -> {
-                    ReportRawData raw = rawDataMap.get(teamId);
-                    if (raw == null) {
-                        raw = ReportRawData.builder()
-                                .impactChecks(List.of()).identityCanvases(List.of())
-                                .flowCanvases(List.of()).tacticals(List.of())
-                                .strategicActivities(List.of()).quickCanvases(List.of())
-                                .buildCanvases(List.of()).quickIntents(List.of())
-                                .buildIntents(List.of()).build();
-                    }
-                    ReportAiResult aiResult = reportAnalyzer.analyze(raw);
-                    ReportScoreResult scoreResult = winCanvasScoreCalculator.calculate(raw);
-                    return ReportResponse.builder()
+                    Long writerId = writerByTeam.get(teamId);
+
+                    List<IdentityCanvasModel> identities = identityCanvasReader.readByUserIds(List.of(writerId));
+
+                    return TeamCanvasResponse.builder()
                             .teamId(teamId)
                             .teamName(Optional.ofNullable(teamMap.get(teamId)).map(TbTeamModel::getName).orElse(null))
-                            .className(finalClassName)
-                            .target(finalTarget)
-                            .projectDate(finalProjectDate)
-                            .imageUrl(finalImageUrl)
-                            .impactCheckScores(scoreResult.getImpactCheckScores())
-                            .externalThreats(aiResult.getExternalThreats())
-                            .internalLimitations(aiResult.getInternalLimitations())
-                            .visionMissionValue(aiResult.getVisionMissionValue())
-                            .flowCanvasGoals(aiResult.getFlowCanvasGoals())
-                            .tacticals(aiResult.getTacticals())
-                            .strategicActivities(aiResult.getStrategicActivities())
-                            .quickWinCanvasList(scoreResult.getQuickWinCanvasList())
-                            .buildWinCanvasList(scoreResult.getBuildWinCanvasList())
+                            .writerUserId(writerId)
+                            .imageUrl(imageUrl)
+                            .identityCanvas(identities.isEmpty() ? null : IdentityCanvasResponse.from(identities.get(0)))
+                            .flowCanvas(flowCanvasReader.read(writerId))
+                            .quickWinCanvas(winCanvasReader.read(writerId, CanvasType.QUICK))
+                            .buildWinCanvas(winCanvasReader.read(writerId, CanvasType.BUILD))
                             .build();
                 }, ioExecutor))
-                .toList();
+                .collect(Collectors.toList());
 
-        List<ReportResponse> results = futures.stream()
+        return futures.stream()
                 .map(CompletableFuture::join)
-                .toList();
-
-        log.info("벌크 리포트 생성 완료 - gameId: {}, teamCount: {}", gameId, results.size());
-        return results;
+                .collect(Collectors.toList());
     }
+
+    private Map<Integer, Long> findWriterByTeam(List<Integer> teamIds) {
+        List<TeamUserModel> allTeamUsers = teamUserRepository.findByTeamIdIn(teamIds);
+        Map<Integer, List<Long>> teamUserMap = allTeamUsers.stream()
+                .collect(Collectors.groupingBy(
+                        TeamUserModel::getTeamId,
+                        Collectors.mapping(TeamUserModel::getUserId, Collectors.toList())
+                ));
+
+        Map<Integer, Long> writerByTeam = new LinkedHashMap<>();
+        for (Integer teamId : teamIds) {
+            List<Long> memberIds = teamUserMap.getOrDefault(teamId, Collections.emptyList());
+            if (memberIds.isEmpty()) continue;
+
+            Long writerId = userinfoRepository.findWriterByUserIds(memberIds)
+                    .map(u -> u.getUserId())
+                    .orElse(memberIds.get(0));
+            writerByTeam.put(teamId, writerId);
+        }
+        return writerByTeam;
+    }
+
 }

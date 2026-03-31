@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import qtedu.Impact_design.api.dto.response.report.ReportResponse;
+import qtedu.Impact_design.api.dto.response.report.TeamCanvasResponse;
 import qtedu.Impact_design.api.util.ResponseHelper;
 import qtedu.Impact_design.api.util.security.CurrentUser;
 import qtedu.Impact_design.common.response.HttpResponse;
@@ -31,12 +32,12 @@ public class ReportController {
         return ResponseHelper.success(response);
     }
 
-    @GetMapping("/report/bulk/{gameId}")
-    public ResponseEntity<HttpResponse<List<ReportResponse>>> getReportsByGameId(
+    @GetMapping("/report/canvas/{gameId}")
+    public ResponseEntity<HttpResponse<List<TeamCanvasResponse>>> getTeamCanvases(
             @CurrentUser UserId userId,
             @PathVariable Integer gameId
     ) {
-        List<ReportResponse> responses = reportFacade.getReportsByGameId(gameId);
+        List<TeamCanvasResponse> responses = reportFacade.getTeamCanvases(gameId);
         return ResponseHelper.success(responses);
     }
 }

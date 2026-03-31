@@ -120,6 +120,7 @@ class TeachControllerTest extends RestDocsTestSupport {
                 .teams(List.of(team))
                 .gameLogo(gameLogo)
                 .imageUrl("http://iptdesign.mycafe24.com/uploads/class/1/image.png")
+                .target("대학생")
                 .build();
     }
 
@@ -284,7 +285,8 @@ class TeachControllerTest extends RestDocsTestSupport {
                                 fieldWithPath("data.gameLogo.extDir").description("확장 디렉토리"),
                                 fieldWithPath("data.gameLogo.orgFilename").description("원본 파일명"),
                                 fieldWithPath("data.gameLogo.newFilename").description("새 파일명"),
-                                fieldWithPath("data.imageUrl").description("이미지 URL").optional()
+                                fieldWithPath("data.imageUrl").description("이미지 URL").optional(),
+                                fieldWithPath("data.target").description("강의 대상").optional()
                         )
                 ));
     }
@@ -568,7 +570,8 @@ class TeachControllerTest extends RestDocsTestSupport {
 
         String requestJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(java.util.Map.of(
                 "name", "수정된 강의실",
-                "enddate", "2026-07-15 18:00"
+                "enddate", "2026-07-15 18:00",
+                "target", "대학생"
         ));
 
         mockMvc.perform(put("/api/teach/class/{gameId}", 1)
@@ -578,7 +581,8 @@ class TeachControllerTest extends RestDocsTestSupport {
                 .andDo(document("teach/update-class",
                         requestFields(
                                 fieldWithPath("name").description("강의실 이름").optional(),
-                                fieldWithPath("enddate").description("미션 종료일시 (yyyy-MM-dd HH:mm)").optional()
+                                fieldWithPath("enddate").description("미션 종료일시 (yyyy-MM-dd HH:mm)").optional(),
+                                fieldWithPath("target").description("강의 대상").optional()
                         ),
                         responseFields(
                                 fieldWithPath("status").description("상태 코드"),

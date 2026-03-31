@@ -21,12 +21,18 @@ import qtedu.Impact_design.domain.model.flow_canvas.StrategicActivityModel;
 import qtedu.Impact_design.domain.model.flow_canvas.TacticalModel;
 import qtedu.Impact_design.domain.model.team.TeamUserModel;
 import qtedu.Impact_design.domain.model.win_canvas.WinCanvasModel;
+import qtedu.Impact_design.domain.model.team.TbGameModel;
+import qtedu.Impact_design.domain.model.user.UserinfoModel;
 import qtedu.Impact_design.domain.repository.FLetterOfIntentRepository;
 import qtedu.Impact_design.domain.repository.auth.TeamUserRepository;
+import qtedu.Impact_design.domain.repository.teach.GameTeamRepository;
+import qtedu.Impact_design.domain.repository.teach.TbGameRepository;
+import qtedu.Impact_design.domain.repository.user.UserinfoRepository;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -41,6 +47,9 @@ class ReportDataAggregatorTest {
     @Mock private WinCanvasReader winCanvasReader;
     @Mock private FLetterOfIntentRepository fLetterOfIntentRepository;
     @Mock private TeamUserRepository teamUserRepository;
+    @Mock private TbGameRepository tbGameRepository;
+    @Mock private GameTeamRepository gameTeamRepository;
+    @Mock private UserinfoRepository userinfoRepository;
 
     @InjectMocks
     private ReportDataAggregator reportDataAggregator;
@@ -53,8 +62,23 @@ class ReportDataAggregatorTest {
         @DisplayName("팀원들의 모든 캔버스 데이터를 조합하여 반환한다")
         void loadsAllDataForTeam() {
             Integer teamId = 1;
+            Integer gameId = 10;
             List<Long> userIds = List.of(5L, 6L);
             given(teamReader.readTeamMemberUserIdsByTeamId(teamId)).willReturn(userIds);
+
+            // 대표작성자 조회를 위한 mock
+            given(tbGameRepository.findByTeamId(teamId)).willReturn(Optional.of(TbGameModel.builder().gameId(gameId).build()));
+            given(gameTeamRepository.findTeamIdsByGameId(gameId)).willReturn(List.of(1, 2));
+            given(teamUserRepository.findByTeamIdIn(List.of(1, 2))).willReturn(List.of(
+                    TeamUserModel.builder().teamId(1).userId(5L).build(),
+                    TeamUserModel.builder().teamId(1).userId(6L).build(),
+                    TeamUserModel.builder().teamId(2).userId(7L).build()
+            ));
+            given(userinfoRepository.findWriterByUserIds(List.of(5L, 6L)))
+                    .willReturn(Optional.of(UserinfoModel.builder().userId(5L).build()));
+            given(userinfoRepository.findWriterByUserIds(List.of(7L)))
+                    .willReturn(Optional.of(UserinfoModel.builder().userId(7L).build()));
+            List<Long> writerUserIds = List.of(5L, 7L);
 
             ImpactCheckModel ic = ImpactCheckModel.builder().userId(5L).q1Score(4).build();
             given(impactCheckReader.readByUserIds(userIds)).willReturn(List.of(ic));
@@ -73,11 +97,12 @@ class ReportDataAggregatorTest {
 
             WinCanvasModel quick = WinCanvasModel.builder().canvasId(1L).userId(5L).taskName("퀵윈").build();
             WinCanvasModel build = WinCanvasModel.builder().canvasId(2L).userId(5L).taskName("빌드윈").build();
-            given(winCanvasReader.readCanvasesByUserIds(userIds, CanvasType.QUICK)).willReturn(List.of(quick));
-            given(winCanvasReader.readCanvasesByUserIds(userIds, CanvasType.BUILD)).willReturn(List.of(build));
+            given(winCanvasReader.readCanvasesByUserIds(writerUserIds, CanvasType.QUICK)).willReturn(List.of(quick));
+            given(winCanvasReader.readCanvasesByUserIds(writerUserIds, CanvasType.BUILD)).willReturn(List.of(build));
 
-            given(fLetterOfIntentRepository.findByTargetTeamId(teamId, CanvasType.QUICK)).willReturn(Collections.emptyList());
-            given(fLetterOfIntentRepository.findByTargetTeamId(teamId, CanvasType.BUILD)).willReturn(Collections.emptyList());
+            List<Integer> allTeamIds = List.of(1, 2);
+            given(fLetterOfIntentRepository.findByTargetTeamIds(allTeamIds, CanvasType.QUICK)).willReturn(Collections.emptyList());
+            given(fLetterOfIntentRepository.findByTargetTeamIds(allTeamIds, CanvasType.BUILD)).willReturn(Collections.emptyList());
 
             ReportRawData result = reportDataAggregator.load(teamId);
 
@@ -95,6 +120,7 @@ class ReportDataAggregatorTest {
         void returnsEmptyDataWhenNoMembers() {
             Integer teamId = 99;
             given(teamReader.readTeamMemberUserIdsByTeamId(teamId)).willReturn(Collections.emptyList());
+            given(tbGameRepository.findByTeamId(teamId)).willReturn(Optional.empty());
             given(impactCheckReader.readByUserIds(Collections.emptyList())).willReturn(Collections.emptyList());
             given(identityCanvasReader.readByUserIds(Collections.emptyList())).willReturn(Collections.emptyList());
             given(flowCanvasReader.readByUserIds(Collections.emptyList())).willReturn(Collections.emptyList());
@@ -102,8 +128,8 @@ class ReportDataAggregatorTest {
             given(flowCanvasReader.readStrategicActivitiesByGoalIds(Collections.emptyList())).willReturn(Collections.emptyList());
             given(winCanvasReader.readCanvasesByUserIds(Collections.emptyList(), CanvasType.QUICK)).willReturn(Collections.emptyList());
             given(winCanvasReader.readCanvasesByUserIds(Collections.emptyList(), CanvasType.BUILD)).willReturn(Collections.emptyList());
-            given(fLetterOfIntentRepository.findByTargetTeamId(teamId, CanvasType.QUICK)).willReturn(Collections.emptyList());
-            given(fLetterOfIntentRepository.findByTargetTeamId(teamId, CanvasType.BUILD)).willReturn(Collections.emptyList());
+            given(fLetterOfIntentRepository.findByTargetTeamIds(Collections.emptyList(), CanvasType.QUICK)).willReturn(Collections.emptyList());
+            given(fLetterOfIntentRepository.findByTargetTeamIds(Collections.emptyList(), CanvasType.BUILD)).willReturn(Collections.emptyList());
 
             ReportRawData result = reportDataAggregator.load(teamId);
 
