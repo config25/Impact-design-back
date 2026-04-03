@@ -257,6 +257,30 @@ class FundingControllerTest extends RestDocsTestSupport {
                 ));
     }
 
+    @Test
+    @DisplayName("투자 의향서 저장 - 필수값 누락")
+    void saveInvestment_invalidInput() throws Exception {
+        authenticateAs(1L);
+        given(fundingService.saveInvestment(anyString(), anyLong(), any()))
+                .willThrow(new IllegalArgumentException("투자 대상은 필수입니다."));
+
+        String requestJson = objectMapper.writeValueAsString(Map.of(
+                "investmentPrice", "50000000"
+        ));
+
+        mockMvc.perform(post("/api/funding/{canvasType}/investment", "build")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andExpect(status().isBadRequest())
+                .andDo(document("funding/investment-save-invalid-input",
+                        responseFields(
+                                fieldWithPath("status").description("400"),
+                                fieldWithPath("data.errorCode").description("COMMON_2"),
+                                fieldWithPath("data.message").description("요청 변수가 잘못되었습니다.")
+                        )
+                ));
+    }
+
     // ===== 4. 내 투자 포트폴리오 조회 =====
 
     @Test

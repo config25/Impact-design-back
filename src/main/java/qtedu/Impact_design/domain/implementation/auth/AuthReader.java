@@ -1,6 +1,7 @@
 package qtedu.Impact_design.domain.implementation.auth;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import qtedu.Impact_design.api.dto.response.auth.TeamInfoResponse;
 import qtedu.Impact_design.common.error.ErrorCode;
@@ -13,6 +14,7 @@ import qtedu.Impact_design.domain.repository.user.UserinfoRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class AuthReader {
@@ -22,7 +24,10 @@ public class AuthReader {
 
     public UserinfoModel findUserByLoginId(String loginId) {
         return userinfoRepository.findByLoginId(loginId)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> {
+                    log.warn("로그인 실패 - 존재하지 않는 loginId: {}", loginId);
+                    return new NotFoundException(ErrorCode.USER_NOT_FOUND);
+                });
     }
 
     public List<TeamInfoResponse> checkCode(String code) {

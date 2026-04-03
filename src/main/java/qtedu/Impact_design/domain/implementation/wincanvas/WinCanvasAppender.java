@@ -1,6 +1,7 @@
 package qtedu.Impact_design.domain.implementation.wincanvas;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import qtedu.Impact_design.api.dto.request.wincanvas.WinCanvasSaveRequest;
@@ -11,6 +12,7 @@ import qtedu.Impact_design.domain.model.en.CanvasType;
 import qtedu.Impact_design.domain.model.win_canvas.WinCanvasModel;
 import qtedu.Impact_design.domain.repository.win_canvas.WinCanvasRepository;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class WinCanvasAppender {
@@ -56,6 +58,7 @@ public class WinCanvasAppender {
         }
         append(userId, request, canvasType);
         winCanvasRepository.submitByUserIdAndCanvasType(userId, canvasType);
+        log.info("Win Canvas 제출 - userId: {}, canvasType: {}", userId, canvasType);
         return winCanvasReader.read(userId, canvasType);
     }
 }

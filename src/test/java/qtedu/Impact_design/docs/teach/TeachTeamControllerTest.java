@@ -151,6 +151,23 @@ class TeachTeamControllerTest extends RestDocsTestSupport {
                 ));
     }
 
+    @Test
+    @DisplayName("팀 추가 - 로그인 ID 생성 실패")
+    void addTeam_loginIdDuplicate() throws Exception {
+        given(teachTeamService.addTeam(anyInt()))
+                .willThrow(new ConflictException(ErrorCode.LOGIN_ID_DUPLICATE));
+
+        mockMvc.perform(post("/api/teach/team?gameId={gameId}", "1"))
+                .andExpect(status().isConflict())
+                .andDo(document("teach-team/add-team-login-id-duplicate",
+                        responseFields(
+                                fieldWithPath("status").description("409"),
+                                fieldWithPath("data.errorCode").description("USER_5"),
+                                fieldWithPath("data.message").description("로그인 ID 생성에 실패했습니다.")
+                        )
+                ));
+    }
+
     // ===== 3. 평가팀 추가 =====
 
     @Test
@@ -185,6 +202,23 @@ class TeachTeamControllerTest extends RestDocsTestSupport {
                                 fieldWithPath("status").description("409"),
                                 fieldWithPath("data.errorCode").description("TEAM_4"),
                                 fieldWithPath("data.message").description("팀은 최대 6개까지 생성할 수 있습니다.")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("평가팀 추가 - 게임 없음")
+    void addEvaluationTeam_gameNotFound() throws Exception {
+        given(teachTeamService.addEvaluationTeam(anyInt()))
+                .willThrow(new NotFoundException(ErrorCode.GAME_NOT_FOUND));
+
+        mockMvc.perform(post("/api/teach/evaluation-team?gameId={gameId}", "999"))
+                .andExpect(status().isNotFound())
+                .andDo(document("teach-team/add-evaluation-team-game-not-found",
+                        responseFields(
+                                fieldWithPath("status").description("404"),
+                                fieldWithPath("data.errorCode").description("GAME_1"),
+                                fieldWithPath("data.message").description("게임을 찾을 수 없습니다.")
                         )
                 ));
     }
@@ -226,6 +260,23 @@ class TeachTeamControllerTest extends RestDocsTestSupport {
                                 fieldWithPath("status").description("404"),
                                 fieldWithPath("data.errorCode").description("TEAM_1"),
                                 fieldWithPath("data.message").description("팀을 찾을 수 없습니다.")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("팀원 추가 - 로그인 ID 생성 실패")
+    void addTeamMember_loginIdDuplicate() throws Exception {
+        given(teachTeamService.addTeamMember(anyInt(), anyInt()))
+                .willThrow(new ConflictException(ErrorCode.LOGIN_ID_DUPLICATE));
+
+        mockMvc.perform(post("/api/teach/team/{teamId}/members?gameId={gameId}", 1, "1"))
+                .andExpect(status().isConflict())
+                .andDo(document("teach-team/add-team-member-login-id-duplicate",
+                        responseFields(
+                                fieldWithPath("status").description("409"),
+                                fieldWithPath("data.errorCode").description("USER_5"),
+                                fieldWithPath("data.message").description("로그인 ID 생성에 실패했습니다.")
                         )
                 ));
     }

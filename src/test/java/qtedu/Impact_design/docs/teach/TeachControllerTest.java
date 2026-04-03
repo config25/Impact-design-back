@@ -560,6 +560,34 @@ class TeachControllerTest extends RestDocsTestSupport {
                 ));
     }
 
+    @Test
+    @DisplayName("클래스 생성 - 과거 날짜")
+    void createClass_dateInPast() throws Exception {
+        authenticateAs(1L);
+        given(teachService.createClass(anyLong(), any(), any()))
+                .willThrow(new BadRequestException(ErrorCode.DATE_IN_PAST));
+
+        String requestJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(java.util.Map.of(
+                "name", "새 강의실",
+                "numTeam", 4,
+                "projectDate", "2020-01-01"
+        ));
+
+        MockMultipartFile requestPart = new MockMultipartFile(
+                "request", "request", "application/json", requestJson.getBytes(StandardCharsets.UTF_8));
+
+        mockMvc.perform(multipart("/api/teach/class")
+                        .file(requestPart))
+                .andExpect(status().isBadRequest())
+                .andDo(document("teach/create-class-date-in-past",
+                        responseFields(
+                                fieldWithPath("status").description("400"),
+                                fieldWithPath("data.errorCode").description("DATE_2"),
+                                fieldWithPath("data.message").description("제출기한은 현재 시간 이후여야 합니다.")
+                        )
+                ));
+    }
+
     // ===== 7. 클래스 수정 =====
 
     @Test
@@ -687,6 +715,29 @@ class TeachControllerTest extends RestDocsTestSupport {
                 ));
     }
 
+    @Test
+    @DisplayName("강의실 시작 - 과거 날짜")
+    void startClass_dateInPast() throws Exception {
+        willThrow(new BadRequestException(ErrorCode.DATE_IN_PAST))
+                .given(teachService).startClass(anyInt(), any());
+
+        String requestJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(java.util.Map.of(
+                "enddate", "2020-01-01 09:00"
+        ));
+
+        mockMvc.perform(post("/api/teach/class/{gameId}/start", 1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andExpect(status().isBadRequest())
+                .andDo(document("teach/start-class-date-in-past",
+                        responseFields(
+                                fieldWithPath("status").description("400"),
+                                fieldWithPath("data.errorCode").description("DATE_2"),
+                                fieldWithPath("data.message").description("제출기한은 현재 시간 이후여야 합니다.")
+                        )
+                ));
+    }
+
     // ===== 9. 강의실 종료 =====
 
     @Test
@@ -768,6 +819,52 @@ class TeachControllerTest extends RestDocsTestSupport {
                                 fieldWithPath("status").description("404"),
                                 fieldWithPath("data.errorCode").description("GAME_1"),
                                 fieldWithPath("data.message").description("게임을 찾을 수 없습니다.")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("강의실 복원 - 유효하지 않은 날짜")
+    void restoreClass_invalidDate() throws Exception {
+        willThrow(new BadRequestException(ErrorCode.INVALID_DATE))
+                .given(teachService).restoreClass(anyInt(), any());
+
+        String requestJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(java.util.Map.of(
+                "enddate", "invalid"
+        ));
+
+        mockMvc.perform(post("/api/teach/class/{gameId}/restore", 1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andExpect(status().isBadRequest())
+                .andDo(document("teach/restore-class-invalid-date",
+                        responseFields(
+                                fieldWithPath("status").description("400"),
+                                fieldWithPath("data.errorCode").description("DATE_1"),
+                                fieldWithPath("data.message").description("유효하지 않은 날짜입니다.")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("강의실 복원 - 과거 날짜")
+    void restoreClass_dateInPast() throws Exception {
+        willThrow(new BadRequestException(ErrorCode.DATE_IN_PAST))
+                .given(teachService).restoreClass(anyInt(), any());
+
+        String requestJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(java.util.Map.of(
+                "enddate", "2020-01-01 09:00"
+        ));
+
+        mockMvc.perform(post("/api/teach/class/{gameId}/restore", 1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andExpect(status().isBadRequest())
+                .andDo(document("teach/restore-class-date-in-past",
+                        responseFields(
+                                fieldWithPath("status").description("400"),
+                                fieldWithPath("data.errorCode").description("DATE_2"),
+                                fieldWithPath("data.message").description("제출기한은 현재 시간 이후여야 합니다.")
                         )
                 ));
     }

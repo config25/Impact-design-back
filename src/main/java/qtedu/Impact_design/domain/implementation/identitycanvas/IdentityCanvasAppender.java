@@ -1,6 +1,7 @@
 package qtedu.Impact_design.domain.implementation.identitycanvas;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import qtedu.Impact_design.api.dto.request.identitycanvas.IdentityCanvasRequest;
@@ -12,6 +13,7 @@ import qtedu.Impact_design.domain.repository.IdentityCanvasRepository;
 
 import java.util.Optional;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class IdentityCanvasAppender {
@@ -56,6 +58,7 @@ public class IdentityCanvasAppender {
         }
         IdentityCanvasResponse response = append(userId, request);
         identityCanvasRepository.submitByUserId(userId);
+        log.info("Identity Canvas 제출 - userId: {}", userId);
         return response;
     }
 }

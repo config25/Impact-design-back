@@ -1,6 +1,7 @@
 package qtedu.Impact_design.domain.implementation.funding;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import qtedu.Impact_design.api.dto.request.funding.FundingInvestmentRequest;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class FundingAppender {
@@ -93,6 +95,7 @@ public class FundingAppender {
                 .build();
 
         fLetterOfIntentRepository.save(model);
+        log.info("투자 의향서 저장 - userId: {}, target: {}, price: {}, canvasType: {}", userId, request.getInvestmentTarget(), request.getInvestmentPrice(), canvasType);
 
         return fundingReader.getInvestment(canvasType, userId, request.getInvestmentTarget());
     }
@@ -126,6 +129,7 @@ public class FundingAppender {
                 request.getScore7(), request.getScore8(), request.getScore9()
         );
         saveInvestment(canvasType, userId, request);
+        log.info("투자 의향서 제출 - userId: {}, target: {}, canvasType: {}", userId, request.getInvestmentTarget(), canvasType);
         return FundingSubmitResponse.builder().submitted(true).build();
     }
 

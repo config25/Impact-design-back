@@ -1,6 +1,7 @@
 package qtedu.Impact_design.domain.implementation.flowcanvas;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import qtedu.Impact_design.api.dto.request.flowcanvas.FlowCanvasSaveRequest;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class FlowCanvasAppender {
@@ -111,6 +113,7 @@ public class FlowCanvasAppender {
         }
         FlowCanvasResponse response = append(userId, request);
         flowCanvasRepository.submitAllByUserId(userId);
+        log.info("Flow Canvas 제출 - userId: {}", userId);
         return response;
     }
 }

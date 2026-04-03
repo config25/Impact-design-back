@@ -1,0 +1,1 @@
+{"version":3,"file":"static/css/445.1d80a072.chunk.css","mappings":"AACA,oBACI,mBACJ","sources":["screens/QuickWinScreen.css"],"sourcesContent":["/* Quick Win Canvas — 테마 색상 */\n.quickwin-container {\n    --win-color: #25AEA7;\n}\n"],"names":[],"ignoreList":[],"sourceRoot":""}
