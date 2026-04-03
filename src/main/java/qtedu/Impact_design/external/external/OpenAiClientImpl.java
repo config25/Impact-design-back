@@ -35,10 +35,13 @@ public class OpenAiClientImpl implements AiClient {
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
 
         try {
+            log.info("OpenAI 요청 - model: {}, promptLength: {}", request.getModel().getModelId(), request.getUserPrompt().length());
             ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.POST, entity, Map.class);
-            return parseResponse(response.getBody(), request);
+            AiResponse aiResponse = parseResponse(response.getBody(), request);
+            log.info("OpenAI 응답 - model: {}, promptTokens: {}, completionTokens: {}", request.getModel().getModelId(), aiResponse.getPromptTokens(), aiResponse.getCompletionTokens());
+            return aiResponse;
         } catch (Exception e) {
-            log.error("OpenAI API 호출 실패: {}", e.getMessage());
+            log.error("OpenAI API 호출 실패 - model: {}, error: {}", request.getModel().getModelId(), e.getMessage());
             throw new RuntimeException("AI 서비스 호출에 실패했습니다.", e);
         }
     }

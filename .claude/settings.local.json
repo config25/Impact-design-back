@@ -59,7 +59,8 @@
       "Bash(find /c/Users/김영호/Desktop/impact_design/id_backend/Impact_design/src/test/java -path \"*domain/implementation*\" -name \"*Test.java\" | xargs basename -a | sort)",
       "Bash(find /c/Users/김영호/Desktop/impact_design/id_backend/Impact_design/src/test/java -path \"*docs*\" -name \"*.java\" | xargs basename -a | sort)",
       "Bash(echo:*)",
-      "Read(//c/Users/김영호/AppData/Local/Temp/claude/C--Users-----Desktop-impact-design-id-backend-Impact-design/2b684fbf-42cd-4d2d-87ab-fd34b55ad108/tasks/**)"
+      "Read(//c/Users/김영호/AppData/Local/Temp/claude/C--Users-----Desktop-impact-design-id-backend-Impact-design/2b684fbf-42cd-4d2d-87ab-fd34b55ad108/tasks/**)",
+      "Bash(./gradlew compileTestJava)"
     ]
   }
 }

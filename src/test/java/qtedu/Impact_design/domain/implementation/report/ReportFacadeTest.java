@@ -30,6 +30,7 @@ class ReportFacadeTest {
     @Mock private ReportDataAggregator reportDataAggregator;
     @Mock private ReportAnalyzer reportAnalyzer;
     @Mock private WinCanvasScoreCalculator winCanvasScoreCalculator;
+    @Mock private TeamCanvasAggregator teamCanvasAggregator;
     @Mock private GameReader gameReader;
     @Mock private TeachTeamReader teachTeamReader;
 
@@ -39,8 +40,7 @@ class ReportFacadeTest {
     void setUp() {
         reportFacade = new ReportFacade(
                 reportDataAggregator, reportAnalyzer, winCanvasScoreCalculator,
-                gameReader, teachTeamReader,
-                null, null, null, null, null,
+                teamCanvasAggregator, gameReader, teachTeamReader,
                 Executors.newFixedThreadPool(2)
         );
     }

@@ -1,6 +1,7 @@
 package qtedu.Impact_design.domain.implementation.teach;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +32,7 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class TeachUpdater {
@@ -78,6 +80,7 @@ public class TeachUpdater {
                 .build();
 
         tbGameRepository.save(updatedGame);
+        log.info("클래스 수정 - gameId: {}", gameId);
 
         if (image != null && !image.isEmpty()) {
             // 기존 이미지 삭제
@@ -200,12 +203,14 @@ public class TeachUpdater {
 
         // status: 1 → 10
         updateGameStatus(game, 10, 0, null);
+        log.info("강의실 시작 - gameId: {}, enddate: {}", gameId, enddate);
     }
 
     @Transactional
     public void endClass(Integer gameId) {
         TbGameModel game = findGame(gameId);
         updateGameStatus(game, 100, 0, LocalDateTime.now());
+        log.info("강의실 종료 - gameId: {}", gameId);
     }
 
     @Transactional
@@ -240,6 +245,7 @@ public class TeachUpdater {
             }
         }
 
+        log.info("강의실 복원 - gameId: {}, enddate: {}", gameId, enddate);
         // 복원 시 ended_at을 null로 초기화
         TbGameModel updated = TbGameModel.builder()
                 .gameId(game.getGameId())
@@ -320,6 +326,7 @@ public class TeachUpdater {
 
         // 5. 게임 상태 업데이트 (status=10, eStatus=0)
         updateGameStatus(game, 10, 0, null);
+        log.info("다음 단계 시작 - gameId: {}, sequence: {}, ddYear: {}, ddTerm: {}", gameId, nextSequence, nextYear, nextTerm);
     }
 
     private String saveClassImage(Integer gameId, MultipartFile image) {

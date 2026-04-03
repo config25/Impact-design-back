@@ -1,0 +1,1 @@
+{"version":3,"file":"static/css/633.98ad7ecc.chunk.css","mappings":"AACA,oBACI,mBACJ","sources":["screens/BuildWinScreen.css"],"sourcesContent":["/* Build Win Canvas — 테마 색상 */\n.buildwin-container {\n    --win-color: #5E4FB1;\n}\n"],"names":[],"ignoreList":[],"sourceRoot":""}

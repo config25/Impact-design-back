@@ -722,6 +722,40 @@ java -jar build/libs/Impact_design-0.0.1-SNAPSHOT.jar --spring.profiles.active=l
       └─ MariaDB (:3306)
 ```
 
+### 🖥 서버 스펙
+
+| 항목 | 상세 |
+|------|------|
+| 호스팅 | cafe24 (iptdesign.mycafe24.com) |
+| OS | Rocky Linux |
+| RAM | 1GB (944MB 가용) |
+| Swap | 495MB |
+
+### ⚙ JVM 설정
+
+`/etc/systemd/system/impact.service`에서 JVM 힙 메모리를 제한합니다.
+
+```
+ExecStart=/usr/bin/java -Xms256m -Xmx384m -jar /root/Impact_design-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod --server.port=8080
+```
+
+| 옵션 | 값 | 설명 |
+|------|----|------|
+| `-Xms` | 256m | 초기 힙 크기 |
+| `-Xmx` | 384m | 최대 힙 크기 (OOM 방지) |
+
+#### 메모리 사용 현황 (2026-03 기준)
+
+| 프로세스 | 사용량 | 비고 |
+|----------|--------|------|
+| OS | ~150MB | |
+| JVM (Spring Boot) | ~200-384MB | `-Xmx`로 상한 고정 |
+| MariaDB | ~22MB | |
+| **합계** | **~400-556MB / 944MB** | 여유 있음 |
+
+> 서버 메모리 확인: `free -h`
+> 프로세스별 확인: `ps aux --sort=-%mem | head -5`
+
 ### 🔑 환경변수
 
 운영 서버에서 `/root/.env`에 아래 환경변수를 설정해야 합니다.

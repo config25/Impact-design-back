@@ -1,6 +1,7 @@
 package qtedu.Impact_design.domain.implementation.impactcheck;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import qtedu.Impact_design.api.dto.request.impactcheck.ImpactCheckRequest;
@@ -12,6 +13,7 @@ import qtedu.Impact_design.domain.repository.ImpactCheckRepository;
 
 import java.util.Optional;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class ImpactCheckAppender {
@@ -60,6 +62,7 @@ public class ImpactCheckAppender {
         }
         ImpactCheckResponse response = append(userId, request);
         impactCheckRepository.submitByUserId(userId);
+        log.info("Impact Check 제출 - userId: {}", userId);
         return response;
     }
 }
