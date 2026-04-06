@@ -1,8 +1,19 @@
+server:
+  tomcat:
+    threads:
+      max: 30
+      min-spare: 5
+
 spring:
   datasource:
     url: jdbc:mariadb://localhost:3306/impact_design?useUnicode=true&characterEncoding=utf8mb4
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 2
+      max-lifetime: 580000
+      connection-timeout: 5000
 
   jpa:
     show-sql: false
