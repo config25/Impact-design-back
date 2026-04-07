@@ -13,7 +13,10 @@ import qtedu.Impact_design.domain.model.team.TbTeamModel;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -28,6 +31,8 @@ public class ReportFacade {
     private final GameReader gameReader;
     private final TeachTeamReader teachTeamReader;
     private final ExecutorService ioExecutor;
+
+    private static final long REPORT_TIMEOUT_SECONDS = 60L;
 
     public ReportFacade(
             ReportDataAggregator reportDataAggregator,
@@ -62,7 +67,22 @@ public class ReportFacade {
         CompletableFuture<Optional<TbTeamModel>> teamFuture =
                 CompletableFuture.supplyAsync(() -> teachTeamReader.findByTeamId(teamId), ioExecutor);
 
-        CompletableFuture.allOf(aiResultFuture, scoreResultFuture, gameFuture, teamFuture).join();
+        CompletableFuture<Void> all = CompletableFuture.allOf(
+                aiResultFuture, scoreResultFuture, gameFuture, teamFuture);
+        try {
+            all.get(REPORT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+        } catch (TimeoutException e) {
+            cancelAll(aiResultFuture, scoreResultFuture, gameFuture, teamFuture);
+            log.error("리포트 생성 타임아웃 - teamId: {}, timeout: {}s", teamId, REPORT_TIMEOUT_SECONDS);
+            throw new RuntimeException("리포트 생성 타임아웃 (teamId=" + teamId + ")", e);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            cancelAll(aiResultFuture, scoreResultFuture, gameFuture, teamFuture);
+            throw new RuntimeException("리포트 생성 중단 (teamId=" + teamId + ")", e);
+        } catch (ExecutionException e) {
+            log.error("리포트 생성 병렬 작업 실패 - teamId: {}", teamId, e.getCause());
+            throw new RuntimeException("리포트 생성 실패 (teamId=" + teamId + ")", e.getCause());
+        }
 
         ReportAiResult aiResult = aiResultFuture.join();
         ReportScoreResult scoreResult = scoreResultFuture.join();
@@ -111,9 +131,32 @@ public class ReportFacade {
                 }, ioExecutor))
                 .collect(Collectors.toList());
 
+        CompletableFuture<Void> all = CompletableFuture.allOf(
+                futures.toArray(new CompletableFuture[0]));
+        try {
+            all.get(REPORT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+        } catch (TimeoutException e) {
+            futures.forEach(f -> f.cancel(true));
+            log.error("팀 캔버스 조회 타임아웃 - gameId: {}, timeout: {}s", gameId, REPORT_TIMEOUT_SECONDS);
+            throw new RuntimeException("팀 캔버스 조회 타임아웃 (gameId=" + gameId + ")", e);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            futures.forEach(f -> f.cancel(true));
+            throw new RuntimeException("팀 캔버스 조회 중단 (gameId=" + gameId + ")", e);
+        } catch (ExecutionException e) {
+            log.error("팀 캔버스 병렬 작업 실패 - gameId: {}", gameId, e.getCause());
+            throw new RuntimeException("팀 캔버스 조회 실패 (gameId=" + gameId + ")", e.getCause());
+        }
+
         return futures.stream()
                 .map(CompletableFuture::join)
                 .collect(Collectors.toList());
+    }
+
+    private void cancelAll(CompletableFuture<?>... futures) {
+        for (CompletableFuture<?> f : futures) {
+            f.cancel(true);
+        }
     }
 
 }
