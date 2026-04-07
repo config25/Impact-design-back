@@ -83,6 +83,11 @@ public class AiSender {
                     .build();
 
         } catch (Exception e) {
+            // 인터럽트는 호출자(상위 CompletableFuture)가 cancel 신호를 보낸 경우.
+            // 플래그를 복원해야 상위 코드에서 중단 의도를 인지할 수 있음.
+            if (e instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+            }
             log.warn("AI 통합 분석 실패: {}", e.getMessage());
             return buildEmptyResult(externalThreats, internalLimitations,
                     tacticalPairs.size(), strategicActivityPairs.size());
