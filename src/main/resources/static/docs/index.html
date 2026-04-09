@@ -1282,7 +1282,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_응답_필드_설명response_fields_110">응답 필드 설명(Response Fields)</a></li>
 </ul>
 </li>
-<li><a href="#_2_게임별_벌크_리포트_조회">2. 게임별 벌크 리포트 조회</a>
+<li><a href="#_2_게임별_팀_캔버스_조회">2. 게임별 팀 캔버스 조회</a>
 <ul class="sectlevel3">
 <li><a href="#_요청request_65">요청(Request)</a></li>
 <li><a href="#_경로_변수_설명path_parameters_13">경로 변수 설명(Path Parameters)</a></li>
@@ -1444,8 +1444,8 @@ Content-Length: 51
 Host: iptdesign.mycafe24.com
 
 {
-  "password" : "1234",
-  "loginId" : "a1001"
+  "loginId" : "a1001",
+  "password" : "1234"
 }</code></pre>
 </div>
 </div>
@@ -1727,8 +1727,8 @@ Content-Length: 55
 Host: iptdesign.mycafe24.com
 
 {
-  "password" : "1234",
-  "loginId" : "teacher01"
+  "loginId" : "teacher01",
+  "password" : "1234"
 }</code></pre>
 </div>
 </div>
@@ -2299,10 +2299,10 @@ Content-Length: 90
 Host: iptdesign.mycafe24.com
 
 {
-  "code" : "ABC123",
-  "teamId" : 1,
+  "loginId" : "a1001",
   "password" : "1234",
-  "loginId" : "a1001"
+  "teamId" : 1,
+  "code" : "ABC123"
 }</code></pre>
 </div>
 </div>
@@ -4836,22 +4836,22 @@ Host: iptdesign.mycafe24.com
 
 {
   "goals" : [ {
-    "tacticals" : [ {
-      "tacticalGoal" : "90% 이상",
+    "goalId" : 1,
+    "orderNo" : 1,
+    "goalTitle" : "사회적 가치 창출",
+    "strategicActivities" : [ {
+      "interCriteria" : "월 2회 이상",
+      "activityId" : 1,
       "orderNo" : 1,
-      "metricId" : 1,
-      "tacticalMetric" : "고객 만족도"
+      "activityMetric" : "서비스 개선 횟수"
     } ],
     "goalDescription" : "지역 사회 문제를 해결하는 솔루션 개발",
-    "strategicActivities" : [ {
-      "activityMetric" : "서비스 개선 횟수",
+    "tacticals" : [ {
+      "tacticalMetric" : "고객 만족도",
+      "metricId" : 1,
       "orderNo" : 1,
-      "activityId" : 1,
-      "interCriteria" : "월 2회 이상"
-    } ],
-    "goalTitle" : "사회적 가치 창출",
-    "orderNo" : 1,
-    "goalId" : 1
+      "tacticalGoal" : "90% 이상"
+    } ]
   } ]
 }</code></pre>
 </div>
@@ -5171,22 +5171,22 @@ Host: iptdesign.mycafe24.com
 
 {
   "goals" : [ {
-    "tacticals" : [ {
-      "tacticalGoal" : "90% 이상",
+    "goalId" : 1,
+    "orderNo" : 1,
+    "goalTitle" : "사회적 가치 창출",
+    "strategicActivities" : [ {
+      "interCriteria" : "월 2회 이상",
+      "activityId" : 1,
       "orderNo" : 1,
-      "metricId" : 1,
-      "tacticalMetric" : "고객 만족도"
+      "activityMetric" : "서비스 개선 횟수"
     } ],
     "goalDescription" : "지역 사회 문제를 해결하는 솔루션 개발",
-    "strategicActivities" : [ {
-      "activityMetric" : "서비스 개선 횟수",
+    "tacticals" : [ {
+      "tacticalMetric" : "고객 만족도",
+      "metricId" : 1,
       "orderNo" : 1,
-      "activityId" : 1,
-      "interCriteria" : "월 2회 이상"
-    } ],
-    "goalTitle" : "사회적 가치 창출",
-    "orderNo" : 1,
-    "goalId" : 1
+      "tacticalGoal" : "90% 이상"
+    } ]
   } ]
 }</code></pre>
 </div>
@@ -5666,28 +5666,28 @@ Host: iptdesign.mycafe24.com
   "crisisSignal" : "환경 오염 심화",
   "painTouchPoint" : "주민 불편 사항",
   "taskInputs" : [ {
-    "inputId" : 1,
-    "orderNo" : 1,
+    "quantity" : 100,
     "resourceName" : "홍보물",
-    "quantity" : 100
+    "orderNo" : 1,
+    "inputId" : 1
   } ],
   "taskActivities" : [ {
     "orderNo" : 1,
-    "activityId" : 1,
-    "processStep" : "기획",
+    "duration" : "2주",
     "activityContent" : "캠페인 기획 회의",
-    "duration" : "2주"
+    "processStep" : "기획",
+    "activityId" : 1
   } ],
   "teamwork" : {
-    "workType" : "협업",
+    "activityTeamwork" : "팀 회의 진행",
     "teamworkId" : 1,
-    "activityTeamwork" : "팀 회의 진행"
+    "workType" : "협업"
   },
   "taskOutcomes" : [ {
-    "outcomeContent" : "참여 인원 50명",
-    "orderNo" : 1,
+    "outcomeType" : "QUANTITATIVE",
     "outcomeNo" : 1,
-    "outcomeType" : "QUANTITATIVE"
+    "orderNo" : 1,
+    "outcomeContent" : "참여 인원 50명"
   } ]
 }</code></pre>
 </div>
@@ -6134,28 +6134,28 @@ Host: iptdesign.mycafe24.com
   "crisisSignal" : "환경 오염 심화",
   "painTouchPoint" : "주민 불편 사항",
   "taskInputs" : [ {
-    "inputId" : 1,
-    "orderNo" : 1,
+    "quantity" : 100,
     "resourceName" : "홍보물",
-    "quantity" : 100
+    "orderNo" : 1,
+    "inputId" : 1
   } ],
   "taskActivities" : [ {
     "orderNo" : 1,
-    "activityId" : 1,
-    "processStep" : "기획",
+    "duration" : "2주",
     "activityContent" : "캠페인 기획 회의",
-    "duration" : "2주"
+    "processStep" : "기획",
+    "activityId" : 1
   } ],
   "teamwork" : {
-    "workType" : "협업",
+    "activityTeamwork" : "팀 회의 진행",
     "teamworkId" : 1,
-    "activityTeamwork" : "팀 회의 진행"
+    "workType" : "협업"
   },
   "taskOutcomes" : [ {
-    "outcomeContent" : "참여 인원 50명",
-    "orderNo" : 1,
+    "outcomeType" : "QUANTITATIVE",
     "outcomeNo" : 1,
-    "outcomeType" : "QUANTITATIVE"
+    "orderNo" : 1,
+    "outcomeContent" : "참여 인원 50명"
   } ]
 }</code></pre>
 </div>
@@ -6707,28 +6707,28 @@ Host: iptdesign.mycafe24.com
   "crisisSignal" : "시장 진입 지연",
   "painTouchPoint" : "사용자 피드백 부족",
   "taskInputs" : [ {
-    "inputId" : 1,
-    "orderNo" : 1,
+    "quantity" : 3,
     "resourceName" : "개발 인력",
-    "quantity" : 3
+    "orderNo" : 1,
+    "inputId" : 1
   } ],
   "taskActivities" : [ {
     "orderNo" : 1,
-    "activityId" : 1,
-    "processStep" : "설계",
+    "duration" : "3주",
     "activityContent" : "서비스 아키텍처 설계",
-    "duration" : "3주"
+    "processStep" : "설계",
+    "activityId" : 1
   } ],
   "teamwork" : {
-    "workType" : "협업",
+    "activityTeamwork" : "주간 스프린트 회의",
     "teamworkId" : 1,
-    "activityTeamwork" : "주간 스프린트 회의"
+    "workType" : "협업"
   },
   "taskOutcomes" : [ {
-    "outcomeContent" : "프로토타입 완성률 100%",
-    "orderNo" : 1,
+    "outcomeType" : "QUANTITATIVE",
     "outcomeNo" : 1,
-    "outcomeType" : "QUANTITATIVE"
+    "orderNo" : 1,
+    "outcomeContent" : "프로토타입 완성률 100%"
   } ]
 }</code></pre>
 </div>
@@ -7175,28 +7175,28 @@ Host: iptdesign.mycafe24.com
   "crisisSignal" : "시장 진입 지연",
   "painTouchPoint" : "사용자 피드백 부족",
   "taskInputs" : [ {
-    "inputId" : 1,
-    "orderNo" : 1,
+    "quantity" : 3,
     "resourceName" : "개발 인력",
-    "quantity" : 3
+    "orderNo" : 1,
+    "inputId" : 1
   } ],
   "taskActivities" : [ {
     "orderNo" : 1,
-    "activityId" : 1,
-    "processStep" : "설계",
+    "duration" : "3주",
     "activityContent" : "서비스 아키텍처 설계",
-    "duration" : "3주"
+    "processStep" : "설계",
+    "activityId" : 1
   } ],
   "teamwork" : {
-    "workType" : "협업",
+    "activityTeamwork" : "주간 스프린트 회의",
     "teamworkId" : 1,
-    "activityTeamwork" : "주간 스프린트 회의"
+    "workType" : "협업"
   },
   "taskOutcomes" : [ {
-    "outcomeContent" : "프로토타입 완성률 100%",
-    "orderNo" : 1,
+    "outcomeType" : "QUANTITATIVE",
     "outcomeNo" : 1,
-    "outcomeType" : "QUANTITATIVE"
+    "orderNo" : 1,
+    "outcomeContent" : "프로토타입 완성률 100%"
   } ]
 }</code></pre>
 </div>
@@ -9166,7 +9166,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 1121
+Content-Length: 1150
 
 {
   "status" : 200,
@@ -9197,6 +9197,7 @@ Content-Length: 1121
     "step" : "A-1,B-1,C-1,E-1",
     "stepArr" : [ "A-1", "B-1", "C-1", "E-1" ],
     "summary" : "수업 요약",
+    "target" : "대학생",
     "teams" : [ {
       "numUser" : 3,
       "sequence" : 1,
@@ -9421,6 +9422,11 @@ Content-Length: 1121
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.imageUrl</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">이미지 URL</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.target</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">강의 대상</p></td>
 </tr>
 </tbody>
 </table>
@@ -10177,14 +10183,14 @@ Content-Type: application/json
 
 {
   "worldType" : 1,
-  "target" : "대학생",
-  "classType" : "BASIC",
-  "numMember" : 10,
-  "summary" : "강의실 설명",
-  "numTeam" : 4,
-  "name" : "새 강의실",
+  "popupId" : 0,
   "projectDate" : "2026-06-30",
-  "popupId" : 0
+  "name" : "새 강의실",
+  "numTeam" : 4,
+  "summary" : "강의실 설명",
+  "numMember" : 10,
+  "classType" : "BASIC",
+  "target" : "대학생"
 }
 --6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
 Content-Disposition: form-data; name=image; filename=image.png
@@ -10309,11 +10315,12 @@ Content-Length: 127
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /api/teach/class/1 HTTP/1.1
 Content-Type: application/json
-Content-Length: 73
+Content-Length: 100
 Host: iptdesign.mycafe24.com
 
 {
   "name" : "수정된 강의실",
+  "target" : "대학생",
   "enddate" : "2026-07-15 18:00"
 }</code></pre>
 </div>
@@ -11167,8 +11174,8 @@ Content-Length: 55
 Host: iptdesign.mycafe24.com
 
 {
-  "step" : "A-1,B-1,C-1,D-1,E-1",
-  "gameId" : 1
+  "gameId" : 1,
+  "step" : "A-1,B-1,C-1,D-1,E-1"
 }</code></pre>
 </div>
 </div>
@@ -12666,10 +12673,10 @@ Content-Length: 90
 Host: iptdesign.mycafe24.com
 
 {
-  "isDoing" : 1,
-  "teamName" : "수정된 팀",
+  "aiPlay" : 0,
   "sequence" : 2,
-  "aiPlay" : 0
+  "teamName" : "수정된 팀",
+  "isDoing" : 1
 }</code></pre>
 </div>
 </div>
@@ -14734,7 +14741,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 3246
+Content-Length: 3321
 
 {
   "status" : 200,
@@ -14752,8 +14759,8 @@ Content-Length: 3246
         "score7" : 5,
         "score8" : 3,
         "score9" : 4,
-        "stdntNo" : 10,
-        "totalScore" : 35
+        "totalScore" : 35,
+        "userId" : 10
       } ],
       "taskDescription" : "과제 설명",
       "taskName" : "전략 과제",
@@ -14765,10 +14772,11 @@ Content-Length: 3246
       "aiSummary" : [ "인구 감소가 가장 큰 위협입니다." ],
       "allData" : [ "인구 감소", "기후 변화", "인구 감소" ],
       "keywords" : [ "인구", "기후" ],
-      "top4" : [ {
+      "top12" : [ {
         "content" : "인구 감소",
         "count" : 2
-      } ]
+      } ],
+      "totalCount" : 3
     },
     "flowCanvasGoals" : {
       "goals" : [ {
@@ -14776,7 +14784,8 @@ Content-Length: 3246
         "description" : "지역 사회 문제 해결",
         "title" : "사회적 가치 창출"
       } ],
-      "keywords" : [ "사회적 가치", "지역 사회" ]
+      "keywords" : [ "사회적 가치", "지역 사회" ],
+      "totalCount" : 1
     },
     "imageUrl" : "http://iptdesign.mycafe24.com/uploads/class/1/image.png",
     "impactCheckScores" : [ {
@@ -14798,10 +14807,11 @@ Content-Length: 3246
       "aiSummary" : [ "자금 부족이 주요 내부 한계입니다." ],
       "allData" : [ "자금 부족" ],
       "keywords" : [ "자금" ],
-      "top4" : [ {
+      "top12" : [ {
         "content" : "자금 부족",
         "count" : 1
-      } ]
+      } ],
+      "totalCount" : 1
     },
     "projectDate" : "2026-06-30",
     "quickWinCanvasList" : [ {
@@ -14817,8 +14827,8 @@ Content-Length: 3246
         "score7" : 5,
         "score8" : 3,
         "score9" : 4,
-        "stdntNo" : 10,
-        "totalScore" : 35
+        "totalScore" : 35,
+        "userId" : 10
       } ],
       "taskDescription" : "과제 설명",
       "taskName" : "전술 과제",
@@ -14990,17 +15000,22 @@ Content-Length: 3246
 <td class="tableblock halign-left valign-top"><p class="tableblock">전체 데이터</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.externalThreats.top4[]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">상위 4개</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.externalThreats.totalCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">전체 의견 개수</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.externalThreats.top4[].content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.externalThreats.top12[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">상위 12개</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.externalThreats.top12[].content</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">내용</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.externalThreats.top4[].count</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.externalThreats.top12[].count</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">빈도 수</p></td>
 </tr>
@@ -15025,17 +15040,22 @@ Content-Length: 3246
 <td class="tableblock halign-left valign-top"><p class="tableblock">전체 데이터</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.internalLimitations.top4[]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">상위 4개</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.internalLimitations.totalCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">전체 의견 개수</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.internalLimitations.top4[].content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.internalLimitations.top12[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">상위 12개</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.internalLimitations.top12[].content</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">내용</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.internalLimitations.top4[].count</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.internalLimitations.top12[].count</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">빈도 수</p></td>
 </tr>
@@ -15140,6 +15160,11 @@ Content-Length: 3246
 <td class="tableblock halign-left valign-top"><p class="tableblock">빈도 수</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.flowCanvasGoals.totalCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">전체 목표 개수</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.flowCanvasGoals.keywords[]</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">키워드 목록</p></td>
@@ -15215,7 +15240,7 @@ Content-Length: 3246
 <td class="tableblock halign-left valign-top"><p class="tableblock">투자 의향서 인덱스</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.quickWinCanvasList[].evaluations[].stdntNo</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.quickWinCanvasList[].evaluations[].userId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">학생 번호</p></td>
 </tr>
@@ -15310,7 +15335,7 @@ Content-Length: 3246
 <td class="tableblock halign-left valign-top"><p class="tableblock">투자 의향서 인덱스</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.buildWinCanvasList[].evaluations[].stdntNo</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.buildWinCanvasList[].evaluations[].userId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">학생 번호</p></td>
 </tr>
@@ -15369,12 +15394,12 @@ Content-Length: 3246
 </div>
 </div>
 <div class="sect2">
-<h3 id="_2_게임별_벌크_리포트_조회"><a class="anchor" href="#_2_게임별_벌크_리포트_조회"></a><a class="link" href="#_2_게임별_벌크_리포트_조회">2. 게임별 벌크 리포트 조회</a></h3>
+<h3 id="_2_게임별_팀_캔버스_조회"><a class="anchor" href="#_2_게임별_팀_캔버스_조회"></a><a class="link" href="#_2_게임별_팀_캔버스_조회">2. 게임별 팀 캔버스 조회</a></h3>
 <div class="sect3">
 <h4 id="_요청request_65"><a class="anchor" href="#_요청request_65"></a><a class="link" href="#_요청request_65">요청(Request)</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/teach/report/bulk/1 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/teach/report/canvas/1 HTTP/1.1
 Host: iptdesign.mycafe24.com</code></pre>
 </div>
 </div>
@@ -15382,7 +15407,7 @@ Host: iptdesign.mycafe24.com</code></pre>
 <div class="sect3">
 <h4 id="_경로_변수_설명path_parameters_13"><a class="anchor" href="#_경로_변수_설명path_parameters_13"></a><a class="link" href="#_경로_변수_설명path_parameters_13">경로 변수 설명(Path Parameters)</a></h4>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 13. /api/teach/report/bulk/{gameId}</caption>
+<caption class="title">Table 13. /api/teach/report/canvas/{gameId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -15410,126 +15435,142 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 3189
+Content-Length: 3935
 
 {
   "status" : 200,
-  "data" : [ {
-    "buildWinCanvasList" : [ {
-      "canvasId" : 2,
-      "evaluations" : [ {
-        "intentIndex" : 1,
-        "score1" : 4,
-        "score2" : 3,
-        "score3" : 5,
-        "score4" : 4,
-        "score5" : 3,
-        "score6" : 4,
-        "score7" : 5,
-        "score8" : 3,
-        "score9" : 4,
-        "stdntNo" : 10,
-        "totalScore" : 35
-      } ],
-      "taskDescription" : "과제 설명",
-      "taskName" : "전략 과제",
-      "totalScore" : 38,
-      "userId" : 10
+  "data" : {
+    "buildWinCanvases" : [ {
+      "canvas" : {
+        "canvasId" : 2,
+        "crisisSignal" : "위기 신호",
+        "painTouchPoint" : "고충점",
+        "strategicGoal" : "전략 목표",
+        "submitted" : true,
+        "taskActivities" : [ {
+          "activityContent" : "서비스 개선",
+          "activityId" : 2,
+          "duration" : "4주",
+          "orderNo" : 1,
+          "processStep" : "실행"
+        } ],
+        "taskDescription" : "과제 설명",
+        "taskInputs" : [ {
+          "inputId" : 2,
+          "orderNo" : 1,
+          "quantity" : 5,
+          "resourceName" : "예산"
+        } ],
+        "taskName" : "전략 과제",
+        "taskOutcomes" : [ {
+          "orderNo" : 1,
+          "outcomeContent" : "매출 10% 증가",
+          "outcomeNo" : 2,
+          "outcomeType" : null
+        } ],
+        "teamwork" : {
+          "activityTeamwork" : "팀워크 내용",
+          "teamworkId" : 2,
+          "workType" : "분담 작업"
+        },
+        "userId" : 10
+      },
+      "teamId" : 1,
+      "teamName" : "1팀",
+      "writerUserId" : 10
     } ],
-    "className" : "임팩트 디자인 수업",
-    "externalThreats" : {
-      "aiSummary" : [ "인구 감소가 가장 큰 위협입니다." ],
-      "allData" : [ "인구 감소" ],
-      "keywords" : [ "인구" ],
-      "top4" : [ {
-        "content" : "인구 감소",
-        "count" : 2
-      } ]
-    },
-    "flowCanvasGoals" : {
-      "goals" : [ {
-        "count" : 2,
-        "description" : "지역 사회 문제 해결",
-        "title" : "사회적 가치 창출"
-      } ],
-      "keywords" : [ "사회적 가치" ]
-    },
+    "flowCanvases" : [ {
+      "canvas" : {
+        "goals" : [ {
+          "goalDescription" : "지역 사회 문제 해결",
+          "goalId" : 1,
+          "goalTitle" : "사회적 가치 창출",
+          "orderNo" : 1,
+          "strategicActivities" : [ {
+            "activityId" : 1,
+            "activityMetric" : "서비스 개선",
+            "interCriteria" : "월 2회",
+            "orderNo" : 1
+          } ],
+          "tacticals" : [ {
+            "metricId" : 1,
+            "orderNo" : 1,
+            "tacticalGoal" : "90%",
+            "tacticalMetric" : "고객 만족도"
+          } ]
+        } ],
+        "newVision" : "새 비전",
+        "submitted" : true
+      },
+      "teamId" : 1,
+      "teamName" : "1팀",
+      "writerUserId" : 10
+    } ],
+    "identityCanvases" : [ {
+      "canvas" : {
+        "capability" : "역량",
+        "competitor" : "BYD",
+        "culture" : "문화",
+        "customer" : "MZ세대",
+        "etc" : "기타",
+        "identityId" : 1,
+        "macro" : "인구 감소",
+        "mission" : "기존 미션",
+        "newMission" : "새 미션",
+        "newValue" : "새 가치",
+        "newVision" : "새 비전",
+        "structure" : "구조",
+        "submitted" : true,
+        "tech" : "AI 마케팅",
+        "userId" : 10,
+        "value" : "기존 가치",
+        "vision" : "기존 비전"
+      },
+      "teamId" : 1,
+      "teamName" : "1팀",
+      "writerUserId" : 10
+    } ],
     "imageUrl" : "http://iptdesign.mycafe24.com/uploads/class/1/image.png",
-    "impactCheckScores" : [ {
-      "q10Score" : 4,
-      "q11Score" : 5,
-      "q12Score" : 3,
-      "q1Score" : 4,
-      "q2Score" : 3,
-      "q3Score" : 5,
-      "q4Score" : 2,
-      "q5Score" : 4,
-      "q6Score" : 3,
-      "q7Score" : 5,
-      "q8Score" : 4,
-      "q9Score" : 3,
-      "userId" : 10
-    } ],
-    "internalLimitations" : {
-      "aiSummary" : [ "자금 부족이 주요 내부 한계입니다." ],
-      "allData" : [ "자금 부족" ],
-      "keywords" : [ "자금" ],
-      "top4" : [ {
-        "content" : "자금 부족",
-        "count" : 1
-      } ]
-    },
-    "projectDate" : "2026-06-30",
-    "quickWinCanvasList" : [ {
-      "canvasId" : 1,
-      "evaluations" : [ {
-        "intentIndex" : 1,
-        "score1" : 4,
-        "score2" : 3,
-        "score3" : 5,
-        "score4" : 4,
-        "score5" : 3,
-        "score6" : 4,
-        "score7" : 5,
-        "score8" : 3,
-        "score9" : 4,
-        "stdntNo" : 10,
-        "totalScore" : 35
-      } ],
-      "taskDescription" : "과제 설명",
-      "taskName" : "전술 과제",
-      "totalScore" : 35,
-      "userId" : 10
-    } ],
-    "strategicActivities" : [ {
-      "activityMetric" : "서비스 개선 횟수",
-      "interCriteria" : "월 2회 이상"
-    } ],
-    "tacticals" : [ {
-      "goal" : "90% 이상",
-      "metric" : "고객 만족도"
-    } ],
-    "target" : "대학생",
-    "teamId" : 1,
-    "teamName" : "1팀",
-    "visionMissionValue" : {
-      "aiMission" : "사회적 가치를 창출하는 미션",
-      "aiValue" : "혁신과 협력의 가치",
-      "aiVision" : "지속 가능한 미래를 향한 비전",
-      "missionTop4" : [ {
-        "content" : "사회적 가치 창출",
-        "count" : 2
-      } ],
-      "valueTop4" : [ {
-        "content" : "혁신",
-        "count" : 2
-      } ],
-      "visionTop4" : [ {
-        "content" : "지속 가능한 미래",
-        "count" : 3
-      } ]
-    }
-  } ]
+    "quickWinCanvases" : [ {
+      "canvas" : {
+        "canvasId" : 1,
+        "crisisSignal" : "위기 신호",
+        "painTouchPoint" : "고충점",
+        "strategicGoal" : "전략 목표",
+        "submitted" : true,
+        "taskActivities" : [ {
+          "activityContent" : "시장 조사",
+          "activityId" : 1,
+          "duration" : "2주",
+          "orderNo" : 1,
+          "processStep" : "기획"
+        } ],
+        "taskDescription" : "과제 설명",
+        "taskInputs" : [ {
+          "inputId" : 1,
+          "orderNo" : 1,
+          "quantity" : 3,
+          "resourceName" : "인력"
+        } ],
+        "taskName" : "전술 과제",
+        "taskOutcomes" : [ {
+          "orderNo" : 1,
+          "outcomeContent" : "고객 만족도 향상",
+          "outcomeNo" : 1,
+          "outcomeType" : null
+        } ],
+        "teamwork" : {
+          "activityTeamwork" : "협업 내용",
+          "teamworkId" : 1,
+          "workType" : "공동 작업"
+        },
+        "userId" : 10
+      },
+      "teamId" : 1,
+      "teamName" : "1팀",
+      "writerUserId" : 10
+    } ]
+  }
 }</code></pre>
 </div>
 </div>
@@ -15556,489 +15597,559 @@ Content-Length: 3189
 <td class="tableblock halign-left valign-top"><p class="tableblock">상태 코드</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].teamId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">팀 ID</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].teamName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">팀 이름</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].className</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">강의실 이름</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].target</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">대상</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].projectDate</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">프로젝트 일자</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].imageUrl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.imageUrl</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">강의실 이미지 URL</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].impactCheckScores[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.identityCanvases[]</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">임팩트 체크 점수 목록</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">정체성 캔버스 목록</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].impactCheckScores[].userId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.identityCanvases[].teamId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">사용자 ID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀 ID</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].impactCheckScores[].q1Score</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.identityCanvases[].teamName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.identityCanvases[].writerUserId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">문항1 점수</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">대표작성자 ID</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].impactCheckScores[].q2Score</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">문항2 점수</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].impactCheckScores[].q3Score</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">문항3 점수</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].impactCheckScores[].q4Score</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">문항4 점수</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].impactCheckScores[].q5Score</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">문항5 점수</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].impactCheckScores[].q6Score</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">문항6 점수</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].impactCheckScores[].q7Score</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">문항7 점수</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].impactCheckScores[].q8Score</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">문항8 점수</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].impactCheckScores[].q9Score</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">문항9 점수</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].impactCheckScores[].q10Score</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">문항10 점수</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].impactCheckScores[].q11Score</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">문항11 점수</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].impactCheckScores[].q12Score</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">문항12 점수</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].externalThreats</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.identityCanvases[].canvas</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">외부 위협 빈도 분석</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">정체성 캔버스</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].externalThreats.allData[]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">전체 데이터</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].externalThreats.top4[]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">상위 4개</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].externalThreats.top4[].content</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">내용</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].externalThreats.top4[].count</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.identityCanvases[].canvas.identityId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">빈도 수</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">정체성 캔버스 ID</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].externalThreats.keywords[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.identityCanvases[].canvas.mission</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">미션</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.identityCanvases[].canvas.vision</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">비전</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.identityCanvases[].canvas.value</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가치</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.identityCanvases[].canvas.macro</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">거시 환경</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.identityCanvases[].canvas.tech</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">기술 환경</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.identityCanvases[].canvas.customer</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">고객</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.identityCanvases[].canvas.competitor</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">경쟁자</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.identityCanvases[].canvas.capability</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">역량</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.identityCanvases[].canvas.culture</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">문화</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.identityCanvases[].canvas.structure</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">구조</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.identityCanvases[].canvas.etc</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">기타</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.identityCanvases[].canvas.newMission</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">새 미션</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.identityCanvases[].canvas.newVision</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">새 비전</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.identityCanvases[].canvas.newValue</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">새 가치</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.identityCanvases[].canvas.userId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">작성자 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.identityCanvases[].canvas.submitted</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">제출 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.flowCanvases[]</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">키워드 목록</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">성과경로 캔버스 목록</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].externalThreats.aiSummary[]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">AI 요약</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.flowCanvases[].teamId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀 ID</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].internalLimitations</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.flowCanvases[].teamName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.flowCanvases[].writerUserId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">대표작성자 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.flowCanvases[].canvas</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">내부 한계 빈도 분석</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">성과경로 캔버스</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].internalLimitations.allData[]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">전체 데이터</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].internalLimitations.top4[]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">상위 4개</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].internalLimitations.top4[].content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.flowCanvases[].canvas.newVision</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">내용</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">새 비전</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].internalLimitations.top4[].count</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">빈도 수</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.flowCanvases[].canvas.submitted</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">제출 여부</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].internalLimitations.keywords[]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">키워드 목록</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].internalLimitations.aiSummary[]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">AI 요약</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].visionMissionValue</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">비전/미션/가치 분석</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].visionMissionValue.visionTop4[]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">비전 상위 4개</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].visionMissionValue.visionTop4[].content</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">내용</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].visionMissionValue.visionTop4[].count</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">빈도 수</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].visionMissionValue.missionTop4[]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">미션 상위 4개</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].visionMissionValue.missionTop4[].content</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">내용</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].visionMissionValue.missionTop4[].count</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">빈도 수</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].visionMissionValue.valueTop4[]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">가치 상위 4개</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].visionMissionValue.valueTop4[].content</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">내용</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].visionMissionValue.valueTop4[].count</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">빈도 수</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].visionMissionValue.aiVision</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">AI 비전 요약</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].visionMissionValue.aiMission</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">AI 미션 요약</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].visionMissionValue.aiValue</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">AI 가치 요약</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].flowCanvasGoals</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">성과경로 목표 분석</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].flowCanvasGoals.goals[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.flowCanvases[].canvas.goals[]</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">목표 목록</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].flowCanvasGoals.goals[].title</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.flowCanvases[].canvas.goals[].goalId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">목표 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.flowCanvases[].canvas.goals[].goalTitle</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">목표 제목</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].flowCanvasGoals.goals[].description</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.flowCanvases[].canvas.goals[].goalDescription</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">목표 설명</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].flowCanvasGoals.goals[].count</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.flowCanvases[].canvas.goals[].orderNo</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">빈도 수</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">순서</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].flowCanvasGoals.keywords[]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">키워드 목록</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].tacticals[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.flowCanvases[].canvas.goals[].tacticals[]</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">전술 지표 목록</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].tacticals[].metric</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.flowCanvases[].canvas.goals[].tacticals[].metricId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">지표 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.flowCanvases[].canvas.goals[].tacticals[].tacticalMetric</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">전술 지표</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].tacticals[].goal</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.flowCanvases[].canvas.goals[].tacticals[].tacticalGoal</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">전술 목표</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].strategicActivities[]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">전략 활동 목록</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.flowCanvases[].canvas.goals[].tacticals[].orderNo</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">순서</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].strategicActivities[].activityMetric</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.flowCanvases[].canvas.goals[].strategicActivities[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">전략적 행동 목록</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.flowCanvases[].canvas.goals[].strategicActivities[].activityId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">활동 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.flowCanvases[].canvas.goals[].strategicActivities[].activityMetric</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">활동 지표</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].strategicActivities[].interCriteria</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.flowCanvases[].canvas.goals[].strategicActivities[].interCriteria</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">중간 기준</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].quickWinCanvasList[]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">QuickWin 캔버스 목록</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.flowCanvases[].canvas.goals[].strategicActivities[].orderNo</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">순서</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].quickWinCanvasList[].canvasId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.quickWinCanvases[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">전술적 실행과제 캔버스 목록</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.quickWinCanvases[].teamId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.quickWinCanvases[].teamName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.quickWinCanvases[].writerUserId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">대표작성자 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.quickWinCanvases[].canvas</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">전술적 실행과제 캔버스</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.quickWinCanvases[].canvas.canvasId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">캔버스 ID</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].quickWinCanvasList[].userId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">작성자 ID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.quickWinCanvases[].canvas.strategicGoal</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">전략 목표</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].quickWinCanvasList[].taskName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.quickWinCanvases[].canvas.taskName</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">과제명</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].quickWinCanvasList[].taskDescription</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.quickWinCanvases[].canvas.taskDescription</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">과제 설명</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].quickWinCanvasList[].totalScore</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">총 점수</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.quickWinCanvases[].canvas.crisisSignal</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">위기 신호</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].quickWinCanvasList[].evaluations[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.quickWinCanvases[].canvas.painTouchPoint</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">고충점</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.quickWinCanvases[].canvas.userId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">작성자 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.quickWinCanvases[].canvas.submitted</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">제출 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.quickWinCanvases[].canvas.taskInputs[]</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">평가 목록</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">투입 목록</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].quickWinCanvasList[].evaluations[].intentIndex</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.quickWinCanvases[].canvas.taskInputs[].inputId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">투자 의향서 인덱스</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">투입 ID</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].quickWinCanvasList[].evaluations[].stdntNo</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.quickWinCanvases[].canvas.taskInputs[].resourceName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">필요자원</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.quickWinCanvases[].canvas.taskInputs[].quantity</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">학생 번호</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">수량</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].quickWinCanvasList[].evaluations[].score1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.quickWinCanvases[].canvas.taskInputs[].orderNo</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">점수1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">순서</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].quickWinCanvasList[].evaluations[].score2</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">점수2</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].quickWinCanvasList[].evaluations[].score3</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">점수3</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].quickWinCanvasList[].evaluations[].score4</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">점수4</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].quickWinCanvasList[].evaluations[].score5</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">점수5</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].quickWinCanvasList[].evaluations[].score6</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">점수6</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].quickWinCanvasList[].evaluations[].score7</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">점수7</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].quickWinCanvasList[].evaluations[].score8</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">점수8</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].quickWinCanvasList[].evaluations[].score9</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">점수9</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].quickWinCanvasList[].evaluations[].totalScore</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">총 점수</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].buildWinCanvasList[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.quickWinCanvases[].canvas.taskActivities[]</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">BuildWin 캔버스 목록</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">활동 목록</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].buildWinCanvasList[].canvasId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.quickWinCanvases[].canvas.taskActivities[].activityId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">활동 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.quickWinCanvases[].canvas.taskActivities[].processStep</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">추진절차</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.quickWinCanvases[].canvas.taskActivities[].activityContent</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">주요내용</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.quickWinCanvases[].canvas.taskActivities[].duration</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">소요기간</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.quickWinCanvases[].canvas.taskActivities[].orderNo</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">순서</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.quickWinCanvases[].canvas.teamwork</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀워크</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.quickWinCanvases[].canvas.teamwork.teamworkId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀워크 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.quickWinCanvases[].canvas.teamwork.activityTeamwork</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀워크 활동</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.quickWinCanvases[].canvas.teamwork.workType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">작업 유형</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.quickWinCanvases[].canvas.taskOutcomes[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">성과 목록</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.quickWinCanvases[].canvas.taskOutcomes[].outcomeNo</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">성과 번호</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.quickWinCanvases[].canvas.taskOutcomes[].outcomeType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Null</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">성과 유형(QUALITATIVE/QUANTITATIVE)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.quickWinCanvases[].canvas.taskOutcomes[].outcomeContent</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">성과 내용</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.quickWinCanvases[].canvas.taskOutcomes[].orderNo</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">순서</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.buildWinCanvases[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">전략적 실행과제 캔버스 목록</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.buildWinCanvases[].teamId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.buildWinCanvases[].teamName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.buildWinCanvases[].writerUserId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">대표작성자 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.buildWinCanvases[].canvas</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">전략적 실행과제 캔버스</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.buildWinCanvases[].canvas.canvasId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">캔버스 ID</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].buildWinCanvasList[].userId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">작성자 ID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.buildWinCanvases[].canvas.strategicGoal</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">전략 목표</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].buildWinCanvasList[].taskName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.buildWinCanvases[].canvas.taskName</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">과제명</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].buildWinCanvasList[].taskDescription</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.buildWinCanvases[].canvas.taskDescription</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">과제 설명</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].buildWinCanvasList[].totalScore</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">총 점수</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.buildWinCanvases[].canvas.crisisSignal</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">위기 신호</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].buildWinCanvasList[].evaluations[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.buildWinCanvases[].canvas.painTouchPoint</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">고충점</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.buildWinCanvases[].canvas.userId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">작성자 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.buildWinCanvases[].canvas.submitted</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">제출 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.buildWinCanvases[].canvas.taskInputs[]</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">평가 목록</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">투입 목록</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].buildWinCanvasList[].evaluations[].intentIndex</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.buildWinCanvases[].canvas.taskInputs[].inputId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">투자 의향서 인덱스</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">투입 ID</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].buildWinCanvasList[].evaluations[].stdntNo</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">학생 번호</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.buildWinCanvases[].canvas.taskInputs[].resourceName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">필요자원</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].buildWinCanvasList[].evaluations[].score1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.buildWinCanvases[].canvas.taskInputs[].quantity</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">점수1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">수량</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].buildWinCanvasList[].evaluations[].score2</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.buildWinCanvases[].canvas.taskInputs[].orderNo</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">점수2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">순서</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].buildWinCanvasList[].evaluations[].score3</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">점수3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.buildWinCanvases[].canvas.taskActivities[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">활동 목록</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].buildWinCanvasList[].evaluations[].score4</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.buildWinCanvases[].canvas.taskActivities[].activityId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">점수4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">활동 ID</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].buildWinCanvasList[].evaluations[].score5</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">점수5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.buildWinCanvases[].canvas.taskActivities[].processStep</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">추진절차</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].buildWinCanvasList[].evaluations[].score6</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">점수6</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.buildWinCanvases[].canvas.taskActivities[].activityContent</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">주요내용</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].buildWinCanvasList[].evaluations[].score7</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">점수7</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.buildWinCanvases[].canvas.taskActivities[].duration</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">소요기간</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].buildWinCanvasList[].evaluations[].score8</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.buildWinCanvases[].canvas.taskActivities[].orderNo</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">점수8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">순서</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].buildWinCanvasList[].evaluations[].score9</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">점수9</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.buildWinCanvases[].canvas.teamwork</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀워크</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[].buildWinCanvasList[].evaluations[].totalScore</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.buildWinCanvases[].canvas.teamwork.teamworkId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">총 점수</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀워크 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.buildWinCanvases[].canvas.teamwork.activityTeamwork</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀워크 활동</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.buildWinCanvases[].canvas.teamwork.workType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">작업 유형</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.buildWinCanvases[].canvas.taskOutcomes[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">성과 목록</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.buildWinCanvases[].canvas.taskOutcomes[].outcomeNo</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">성과 번호</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.buildWinCanvases[].canvas.taskOutcomes[].outcomeType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Null</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">성과 유형(QUALITATIVE/QUANTITATIVE)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.buildWinCanvases[].canvas.taskOutcomes[].outcomeContent</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">성과 내용</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.buildWinCanvases[].canvas.taskOutcomes[].orderNo</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">순서</p></td>
 </tr>
 </tbody>
 </table>
@@ -16050,7 +16161,7 @@ Content-Length: 3189
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2026-03-06 11:15:37 +0900
+Last updated 2026-03-30 14:06:21 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>

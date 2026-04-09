@@ -4,8 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import qtedu.Impact_design.api.dto.response.report.GameCanvasesResponse;
 import qtedu.Impact_design.api.dto.response.report.ReportResponse;
-import qtedu.Impact_design.api.dto.response.report.TeamCanvasResponse;
 import qtedu.Impact_design.domain.implementation.game.GameReader;
 import qtedu.Impact_design.domain.implementation.teach.TeachTeamReader;
 import qtedu.Impact_design.domain.model.team.TbGameModel;
@@ -110,7 +110,7 @@ public class ReportFacade {
     }
 
     @Transactional(readOnly = true)
-    public List<TeamCanvasResponse> getTeamCanvases(Integer gameId) {
+    public GameCanvasesResponse getTeamCanvases(Integer gameId) {
         log.info("전체 팀 캔버스 조회 시작 - gameId: {}", gameId);
         List<Integer> teamIds = gameReader.findTeamIdsByGameId(gameId);
         Map<Integer, TbTeamModel> teamMap = teachTeamReader.findByTeamIds(teamIds).stream()
@@ -121,13 +121,13 @@ public class ReportFacade {
 
         Map<Integer, Long> writerByTeam = teamCanvasAggregator.findWriterByTeam(teamIds);
 
-        List<CompletableFuture<TeamCanvasResponse>> futures = teamIds.stream()
+        List<CompletableFuture<TeamCanvasAggregator.TeamCanvasBundle>> futures = teamIds.stream()
                 .filter(writerByTeam::containsKey)
                 .map(teamId -> CompletableFuture.supplyAsync(() -> {
                     Long writerId = writerByTeam.get(teamId);
                     String teamName = Optional.ofNullable(teamMap.get(teamId))
                             .map(TbTeamModel::getName).orElse(null);
-                    return teamCanvasAggregator.buildForTeam(teamId, writerId, teamName, imageUrl);
+                    return teamCanvasAggregator.buildForTeam(teamId, writerId, teamName);
                 }, ioExecutor))
                 .collect(Collectors.toList());
 
@@ -148,9 +148,26 @@ public class ReportFacade {
             throw new RuntimeException("팀 캔버스 조회 실패 (gameId=" + gameId + ")", e.getCause());
         }
 
-        return futures.stream()
-                .map(CompletableFuture::join)
-                .collect(Collectors.toList());
+        List<GameCanvasesResponse.IdentityCanvasItem> identityCanvases = new ArrayList<>();
+        List<GameCanvasesResponse.FlowCanvasItem> flowCanvases = new ArrayList<>();
+        List<GameCanvasesResponse.WinCanvasItem> quickWinCanvases = new ArrayList<>();
+        List<GameCanvasesResponse.WinCanvasItem> buildWinCanvases = new ArrayList<>();
+        for (CompletableFuture<TeamCanvasAggregator.TeamCanvasBundle> f : futures) {
+            TeamCanvasAggregator.TeamCanvasBundle bundle = f.join();
+            if (bundle.getIdentity() != null) identityCanvases.add(bundle.getIdentity());
+            if (bundle.getFlow() != null) flowCanvases.add(bundle.getFlow());
+            if (bundle.getQuick() != null) quickWinCanvases.add(bundle.getQuick());
+            if (bundle.getBuild() != null) buildWinCanvases.add(bundle.getBuild());
+        }
+
+        log.info("전체 팀 캔버스 조회 완료 - gameId: {}", gameId);
+        return GameCanvasesResponse.builder()
+                .imageUrl(imageUrl)
+                .identityCanvases(identityCanvases)
+                .flowCanvases(flowCanvases)
+                .quickWinCanvases(quickWinCanvases)
+                .buildWinCanvases(buildWinCanvases)
+                .build();
     }
 
     private void cancelAll(CompletableFuture<?>... futures) {

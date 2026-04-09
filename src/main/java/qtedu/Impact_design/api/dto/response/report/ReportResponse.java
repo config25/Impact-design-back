@@ -62,7 +62,7 @@ public class ReportResponse {
     public static class FrequencyAnalysis {
         private List<String> allData;
         private Integer totalCount;
-        private List<FrequencyItem> top4; // top4개
+        private List<FrequencyItem> top12; // 상위 12개
         private List<String> keywords; // 4개
         private List<String> aiSummary; // AI 요약
     }
