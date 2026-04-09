@@ -8,8 +8,8 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import qtedu.Impact_design.api.config.SecurityConfig;
 import qtedu.Impact_design.api.controller.ReportController;
+import qtedu.Impact_design.api.dto.response.report.GameCanvasesResponse;
 import qtedu.Impact_design.api.dto.response.report.ReportResponse;
-import qtedu.Impact_design.api.dto.response.report.TeamCanvasResponse;
 import qtedu.Impact_design.api.dto.response.identitycanvas.IdentityCanvasResponse;
 import qtedu.Impact_design.api.dto.response.flowcanvas.FlowCanvasResponse;
 import qtedu.Impact_design.api.dto.response.wincanvas.WinCanvasResponse;
@@ -73,7 +73,7 @@ class ReportControllerTest extends RestDocsTestSupport {
                 .externalThreats(ReportResponse.FrequencyAnalysis.builder()
                         .allData(List.of("인구 감소", "기후 변화", "인구 감소"))
                         .totalCount(3)
-                        .top4(List.of(ReportResponse.FrequencyItem.builder()
+                        .top12(List.of(ReportResponse.FrequencyItem.builder()
                                 .content("인구 감소").count(2).build()))
                         .keywords(List.of("인구", "기후"))
                         .aiSummary(List.of("인구 감소가 가장 큰 위협입니다."))
@@ -81,7 +81,7 @@ class ReportControllerTest extends RestDocsTestSupport {
                 .internalLimitations(ReportResponse.FrequencyAnalysis.builder()
                         .allData(List.of("자금 부족"))
                         .totalCount(1)
-                        .top4(List.of(ReportResponse.FrequencyItem.builder()
+                        .top12(List.of(ReportResponse.FrequencyItem.builder()
                                 .content("자금 부족").count(1).build()))
                         .keywords(List.of("자금"))
                         .aiSummary(List.of("자금 부족이 주요 내부 한계입니다."))
@@ -161,9 +161,9 @@ class ReportControllerTest extends RestDocsTestSupport {
                                 fieldWithPath("data.externalThreats").description("외부 위협 빈도 분석"),
                                 fieldWithPath("data.externalThreats.allData[]").description("전체 데이터"),
                                 fieldWithPath("data.externalThreats.totalCount").description("전체 의견 개수"),
-                                fieldWithPath("data.externalThreats.top4[]").description("상위 4개"),
-                                fieldWithPath("data.externalThreats.top4[].content").description("내용"),
-                                fieldWithPath("data.externalThreats.top4[].count").description("빈도 수"),
+                                fieldWithPath("data.externalThreats.top12[]").description("상위 12개"),
+                                fieldWithPath("data.externalThreats.top12[].content").description("내용"),
+                                fieldWithPath("data.externalThreats.top12[].count").description("빈도 수"),
                                 fieldWithPath("data.externalThreats.keywords[]").description("키워드 목록"),
                                 fieldWithPath("data.externalThreats.aiSummary[]").description("AI 요약"),
 
@@ -171,9 +171,9 @@ class ReportControllerTest extends RestDocsTestSupport {
                                 fieldWithPath("data.internalLimitations").description("내부 한계 빈도 분석"),
                                 fieldWithPath("data.internalLimitations.allData[]").description("전체 데이터"),
                                 fieldWithPath("data.internalLimitations.totalCount").description("전체 의견 개수"),
-                                fieldWithPath("data.internalLimitations.top4[]").description("상위 4개"),
-                                fieldWithPath("data.internalLimitations.top4[].content").description("내용"),
-                                fieldWithPath("data.internalLimitations.top4[].count").description("빈도 수"),
+                                fieldWithPath("data.internalLimitations.top12[]").description("상위 12개"),
+                                fieldWithPath("data.internalLimitations.top12[].content").description("내용"),
+                                fieldWithPath("data.internalLimitations.top12[].count").description("빈도 수"),
                                 fieldWithPath("data.internalLimitations.keywords[]").description("키워드 목록"),
                                 fieldWithPath("data.internalLimitations.aiSummary[]").description("AI 요약"),
 
@@ -257,62 +257,71 @@ class ReportControllerTest extends RestDocsTestSupport {
     }
 
     @Test
-    @DisplayName("게임별 팀 캔버스 조회")
+    @DisplayName("게임별 캔버스 타입별 조회")
     void getTeamCanvases() throws Exception {
         authenticateAs(1L);
 
-        TeamCanvasResponse response = TeamCanvasResponse.builder()
-                .teamId(1)
-                .teamName("1팀")
-                .writerUserId(10L)
-                .imageUrl("http://iptdesign.mycafe24.com/uploads/class/1/image.png")
-                .identityCanvas(IdentityCanvasResponse.builder()
-                        .identityId(1L).userId(10L).submitted(true)
-                        .mission("기존 미션").vision("기존 비전").value("기존 가치")
-                        .macro("인구 감소").tech("AI 마케팅").customer("MZ세대").competitor("BYD")
-                        .capability("역량").culture("문화").structure("구조").etc("기타")
-                        .newMission("새 미션").newVision("새 비전").newValue("새 가치")
-                        .build())
-                .flowCanvas(FlowCanvasResponse.builder()
-                        .newVision("새 비전")
-                        .submitted(true)
-                        .goals(List.of(FlowCanvasResponse.GoalItem.builder()
-                                .goalId(1L).goalTitle("사회적 가치 창출").goalDescription("지역 사회 문제 해결").orderNo(1)
-                                .tacticals(List.of(FlowCanvasResponse.TacticalItem.builder()
-                                        .metricId(1L).tacticalMetric("고객 만족도").tacticalGoal("90%").orderNo(1).build()))
-                                .strategicActivities(List.of(FlowCanvasResponse.StrategicActivityItem.builder()
-                                        .activityId(1L).activityMetric("서비스 개선").interCriteria("월 2회").orderNo(1).build()))
-                                .build()))
-                        .build())
-                .quickWinCanvas(WinCanvasResponse.builder()
-                        .canvasId(1L).userId(10L).submitted(true)
-                        .strategicGoal("전략 목표").taskName("전술 과제")
-                        .taskDescription("과제 설명").crisisSignal("위기 신호").painTouchPoint("고충점")
-                        .taskInputs(List.of(WinCanvasResponse.TaskInputItem.builder()
-                                .inputId(1L).resourceName("인력").quantity(3).orderNo(1).build()))
-                        .taskActivities(List.of(WinCanvasResponse.TaskActivityItem.builder()
-                                .activityId(1L).processStep("기획").activityContent("시장 조사").duration("2주").orderNo(1).build()))
-                        .teamwork(WinCanvasResponse.TeamworkItem.builder()
-                                .teamworkId(1L).activityTeamwork("협업 내용").workType("공동 작업").build())
-                        .taskOutcomes(List.of(WinCanvasResponse.TaskOutcomeItem.builder()
-                                .outcomeNo(1L).outcomeType(null).outcomeContent("고객 만족도 향상").orderNo(1).build()))
-                        .build())
-                .buildWinCanvas(WinCanvasResponse.builder()
-                        .canvasId(2L).userId(10L).submitted(true)
-                        .strategicGoal("전략 목표").taskName("전략 과제")
-                        .taskDescription("과제 설명").crisisSignal("위기 신호").painTouchPoint("고충점")
-                        .taskInputs(List.of(WinCanvasResponse.TaskInputItem.builder()
-                                .inputId(2L).resourceName("예산").quantity(5).orderNo(1).build()))
-                        .taskActivities(List.of(WinCanvasResponse.TaskActivityItem.builder()
-                                .activityId(2L).processStep("실행").activityContent("서비스 개선").duration("4주").orderNo(1).build()))
-                        .teamwork(WinCanvasResponse.TeamworkItem.builder()
-                                .teamworkId(2L).activityTeamwork("팀워크 내용").workType("분담 작업").build())
-                        .taskOutcomes(List.of(WinCanvasResponse.TaskOutcomeItem.builder()
-                                .outcomeNo(2L).outcomeType(null).outcomeContent("매출 10% 증가").orderNo(1).build()))
-                        .build())
+        IdentityCanvasResponse identityCanvas = IdentityCanvasResponse.builder()
+                .identityId(1L).userId(10L).submitted(true)
+                .mission("기존 미션").vision("기존 비전").value("기존 가치")
+                .macro("인구 감소").tech("AI 마케팅").customer("MZ세대").competitor("BYD")
+                .capability("역량").culture("문화").structure("구조").etc("기타")
+                .newMission("새 미션").newVision("새 비전").newValue("새 가치")
                 .build();
 
-        given(reportFacade.getTeamCanvases(anyInt())).willReturn(List.of(response));
+        FlowCanvasResponse flowCanvas = FlowCanvasResponse.builder()
+                .newVision("새 비전")
+                .submitted(true)
+                .goals(List.of(FlowCanvasResponse.GoalItem.builder()
+                        .goalId(1L).goalTitle("사회적 가치 창출").goalDescription("지역 사회 문제 해결").orderNo(1)
+                        .tacticals(List.of(FlowCanvasResponse.TacticalItem.builder()
+                                .metricId(1L).tacticalMetric("고객 만족도").tacticalGoal("90%").orderNo(1).build()))
+                        .strategicActivities(List.of(FlowCanvasResponse.StrategicActivityItem.builder()
+                                .activityId(1L).activityMetric("서비스 개선").interCriteria("월 2회").orderNo(1).build()))
+                        .build()))
+                .build();
+
+        WinCanvasResponse quickWinCanvas = WinCanvasResponse.builder()
+                .canvasId(1L).userId(10L).submitted(true)
+                .strategicGoal("전략 목표").taskName("전술 과제")
+                .taskDescription("과제 설명").crisisSignal("위기 신호").painTouchPoint("고충점")
+                .taskInputs(List.of(WinCanvasResponse.TaskInputItem.builder()
+                        .inputId(1L).resourceName("인력").quantity(3).orderNo(1).build()))
+                .taskActivities(List.of(WinCanvasResponse.TaskActivityItem.builder()
+                        .activityId(1L).processStep("기획").activityContent("시장 조사").duration("2주").orderNo(1).build()))
+                .teamwork(WinCanvasResponse.TeamworkItem.builder()
+                        .teamworkId(1L).activityTeamwork("협업 내용").workType("공동 작업").build())
+                .taskOutcomes(List.of(WinCanvasResponse.TaskOutcomeItem.builder()
+                        .outcomeNo(1L).outcomeType(null).outcomeContent("고객 만족도 향상").orderNo(1).build()))
+                .build();
+
+        WinCanvasResponse buildWinCanvas = WinCanvasResponse.builder()
+                .canvasId(2L).userId(10L).submitted(true)
+                .strategicGoal("전략 목표").taskName("전략 과제")
+                .taskDescription("과제 설명").crisisSignal("위기 신호").painTouchPoint("고충점")
+                .taskInputs(List.of(WinCanvasResponse.TaskInputItem.builder()
+                        .inputId(2L).resourceName("예산").quantity(5).orderNo(1).build()))
+                .taskActivities(List.of(WinCanvasResponse.TaskActivityItem.builder()
+                        .activityId(2L).processStep("실행").activityContent("서비스 개선").duration("4주").orderNo(1).build()))
+                .teamwork(WinCanvasResponse.TeamworkItem.builder()
+                        .teamworkId(2L).activityTeamwork("팀워크 내용").workType("분담 작업").build())
+                .taskOutcomes(List.of(WinCanvasResponse.TaskOutcomeItem.builder()
+                        .outcomeNo(2L).outcomeType(null).outcomeContent("매출 10% 증가").orderNo(1).build()))
+                .build();
+
+        GameCanvasesResponse response = GameCanvasesResponse.builder()
+                .imageUrl("http://iptdesign.mycafe24.com/uploads/class/1/image.png")
+                .identityCanvases(List.of(GameCanvasesResponse.IdentityCanvasItem.builder()
+                        .teamId(1).teamName("1팀").writerUserId(10L).canvas(identityCanvas).build()))
+                .flowCanvases(List.of(GameCanvasesResponse.FlowCanvasItem.builder()
+                        .teamId(1).teamName("1팀").writerUserId(10L).canvas(flowCanvas).build()))
+                .quickWinCanvases(List.of(GameCanvasesResponse.WinCanvasItem.builder()
+                        .teamId(1).teamName("1팀").writerUserId(10L).canvas(quickWinCanvas).build()))
+                .buildWinCanvases(List.of(GameCanvasesResponse.WinCanvasItem.builder()
+                        .teamId(1).teamName("1팀").writerUserId(10L).canvas(buildWinCanvas).build()))
+                .build();
+
+        given(reportFacade.getTeamCanvases(anyInt())).willReturn(response);
 
         mockMvc.perform(get("/api/teach/report/canvas/{gameId}", 1))
                 .andExpect(status().isOk())
@@ -322,112 +331,125 @@ class ReportControllerTest extends RestDocsTestSupport {
                         ),
                         responseFields(
                                 fieldWithPath("status").description("상태 코드"),
-                                fieldWithPath("data[].teamId").description("팀 ID"),
-                                fieldWithPath("data[].teamName").description("팀 이름").optional(),
-                                fieldWithPath("data[].writerUserId").description("대표작성자 ID"),
-                                fieldWithPath("data[].imageUrl").description("강의실 이미지 URL").optional(),
+                                fieldWithPath("data.imageUrl").description("강의실 이미지 URL").optional(),
 
-                                // Identity Canvas
-                                fieldWithPath("data[].identityCanvas").description("정체성 캔버스").optional(),
-                                fieldWithPath("data[].identityCanvas.identityId").description("정체성 캔버스 ID"),
-                                fieldWithPath("data[].identityCanvas.mission").description("미션").optional(),
-                                fieldWithPath("data[].identityCanvas.vision").description("비전").optional(),
-                                fieldWithPath("data[].identityCanvas.value").description("가치").optional(),
-                                fieldWithPath("data[].identityCanvas.macro").description("거시 환경").optional(),
-                                fieldWithPath("data[].identityCanvas.tech").description("기술 환경").optional(),
-                                fieldWithPath("data[].identityCanvas.customer").description("고객").optional(),
-                                fieldWithPath("data[].identityCanvas.competitor").description("경쟁자").optional(),
-                                fieldWithPath("data[].identityCanvas.capability").description("역량").optional(),
-                                fieldWithPath("data[].identityCanvas.culture").description("문화").optional(),
-                                fieldWithPath("data[].identityCanvas.structure").description("구조").optional(),
-                                fieldWithPath("data[].identityCanvas.etc").description("기타").optional(),
-                                fieldWithPath("data[].identityCanvas.newMission").description("새 미션").optional(),
-                                fieldWithPath("data[].identityCanvas.newVision").description("새 비전").optional(),
-                                fieldWithPath("data[].identityCanvas.newValue").description("새 가치").optional(),
-                                fieldWithPath("data[].identityCanvas.userId").description("작성자 ID"),
-                                fieldWithPath("data[].identityCanvas.submitted").description("제출 여부"),
+                                // Identity Canvases
+                                fieldWithPath("data.identityCanvases[]").description("정체성 캔버스 목록"),
+                                fieldWithPath("data.identityCanvases[].teamId").description("팀 ID"),
+                                fieldWithPath("data.identityCanvases[].teamName").description("팀 이름").optional(),
+                                fieldWithPath("data.identityCanvases[].writerUserId").description("대표작성자 ID"),
+                                fieldWithPath("data.identityCanvases[].canvas").description("정체성 캔버스"),
+                                fieldWithPath("data.identityCanvases[].canvas.identityId").description("정체성 캔버스 ID"),
+                                fieldWithPath("data.identityCanvases[].canvas.mission").description("미션").optional(),
+                                fieldWithPath("data.identityCanvases[].canvas.vision").description("비전").optional(),
+                                fieldWithPath("data.identityCanvases[].canvas.value").description("가치").optional(),
+                                fieldWithPath("data.identityCanvases[].canvas.macro").description("거시 환경").optional(),
+                                fieldWithPath("data.identityCanvases[].canvas.tech").description("기술 환경").optional(),
+                                fieldWithPath("data.identityCanvases[].canvas.customer").description("고객").optional(),
+                                fieldWithPath("data.identityCanvases[].canvas.competitor").description("경쟁자").optional(),
+                                fieldWithPath("data.identityCanvases[].canvas.capability").description("역량").optional(),
+                                fieldWithPath("data.identityCanvases[].canvas.culture").description("문화").optional(),
+                                fieldWithPath("data.identityCanvases[].canvas.structure").description("구조").optional(),
+                                fieldWithPath("data.identityCanvases[].canvas.etc").description("기타").optional(),
+                                fieldWithPath("data.identityCanvases[].canvas.newMission").description("새 미션").optional(),
+                                fieldWithPath("data.identityCanvases[].canvas.newVision").description("새 비전").optional(),
+                                fieldWithPath("data.identityCanvases[].canvas.newValue").description("새 가치").optional(),
+                                fieldWithPath("data.identityCanvases[].canvas.userId").description("작성자 ID"),
+                                fieldWithPath("data.identityCanvases[].canvas.submitted").description("제출 여부"),
 
-                                // Flow Canvas
-                                fieldWithPath("data[].flowCanvas").description("성과경로 캔버스"),
-                                fieldWithPath("data[].flowCanvas.newVision").description("새 비전").optional(),
-                                fieldWithPath("data[].flowCanvas.submitted").description("제출 여부").optional(),
-                                fieldWithPath("data[].flowCanvas.goals[]").description("목표 목록"),
-                                fieldWithPath("data[].flowCanvas.goals[].goalId").description("목표 ID"),
-                                fieldWithPath("data[].flowCanvas.goals[].goalTitle").description("목표 제목").optional(),
-                                fieldWithPath("data[].flowCanvas.goals[].goalDescription").description("목표 설명").optional(),
-                                fieldWithPath("data[].flowCanvas.goals[].orderNo").description("순서"),
-                                fieldWithPath("data[].flowCanvas.goals[].tacticals[]").description("전술 지표 목록"),
-                                fieldWithPath("data[].flowCanvas.goals[].tacticals[].metricId").description("지표 ID"),
-                                fieldWithPath("data[].flowCanvas.goals[].tacticals[].tacticalMetric").description("전술 지표"),
-                                fieldWithPath("data[].flowCanvas.goals[].tacticals[].tacticalGoal").description("전술 목표"),
-                                fieldWithPath("data[].flowCanvas.goals[].tacticals[].orderNo").description("순서"),
-                                fieldWithPath("data[].flowCanvas.goals[].strategicActivities[]").description("전략적 행동 목록"),
-                                fieldWithPath("data[].flowCanvas.goals[].strategicActivities[].activityId").description("활동 ID"),
-                                fieldWithPath("data[].flowCanvas.goals[].strategicActivities[].activityMetric").description("활동 지표"),
-                                fieldWithPath("data[].flowCanvas.goals[].strategicActivities[].interCriteria").description("중간 기준"),
-                                fieldWithPath("data[].flowCanvas.goals[].strategicActivities[].orderNo").description("순서"),
+                                // Flow Canvases
+                                fieldWithPath("data.flowCanvases[]").description("성과경로 캔버스 목록"),
+                                fieldWithPath("data.flowCanvases[].teamId").description("팀 ID"),
+                                fieldWithPath("data.flowCanvases[].teamName").description("팀 이름").optional(),
+                                fieldWithPath("data.flowCanvases[].writerUserId").description("대표작성자 ID"),
+                                fieldWithPath("data.flowCanvases[].canvas").description("성과경로 캔버스"),
+                                fieldWithPath("data.flowCanvases[].canvas.newVision").description("새 비전").optional(),
+                                fieldWithPath("data.flowCanvases[].canvas.submitted").description("제출 여부").optional(),
+                                fieldWithPath("data.flowCanvases[].canvas.goals[]").description("목표 목록"),
+                                fieldWithPath("data.flowCanvases[].canvas.goals[].goalId").description("목표 ID"),
+                                fieldWithPath("data.flowCanvases[].canvas.goals[].goalTitle").description("목표 제목").optional(),
+                                fieldWithPath("data.flowCanvases[].canvas.goals[].goalDescription").description("목표 설명").optional(),
+                                fieldWithPath("data.flowCanvases[].canvas.goals[].orderNo").description("순서"),
+                                fieldWithPath("data.flowCanvases[].canvas.goals[].tacticals[]").description("전술 지표 목록"),
+                                fieldWithPath("data.flowCanvases[].canvas.goals[].tacticals[].metricId").description("지표 ID"),
+                                fieldWithPath("data.flowCanvases[].canvas.goals[].tacticals[].tacticalMetric").description("전술 지표"),
+                                fieldWithPath("data.flowCanvases[].canvas.goals[].tacticals[].tacticalGoal").description("전술 목표"),
+                                fieldWithPath("data.flowCanvases[].canvas.goals[].tacticals[].orderNo").description("순서"),
+                                fieldWithPath("data.flowCanvases[].canvas.goals[].strategicActivities[]").description("전략적 행동 목록"),
+                                fieldWithPath("data.flowCanvases[].canvas.goals[].strategicActivities[].activityId").description("활동 ID"),
+                                fieldWithPath("data.flowCanvases[].canvas.goals[].strategicActivities[].activityMetric").description("활동 지표"),
+                                fieldWithPath("data.flowCanvases[].canvas.goals[].strategicActivities[].interCriteria").description("중간 기준"),
+                                fieldWithPath("data.flowCanvases[].canvas.goals[].strategicActivities[].orderNo").description("순서"),
 
-                                // Quick Win Canvas
-                                fieldWithPath("data[].quickWinCanvas").description("전술적 실행과제 캔버스").optional(),
-                                fieldWithPath("data[].quickWinCanvas.canvasId").description("캔버스 ID").optional(),
-                                fieldWithPath("data[].quickWinCanvas.strategicGoal").description("전략 목표").optional(),
-                                fieldWithPath("data[].quickWinCanvas.taskName").description("과제명").optional(),
-                                fieldWithPath("data[].quickWinCanvas.taskDescription").description("과제 설명").optional(),
-                                fieldWithPath("data[].quickWinCanvas.crisisSignal").description("위기 신호").optional(),
-                                fieldWithPath("data[].quickWinCanvas.painTouchPoint").description("고충점").optional(),
-                                fieldWithPath("data[].quickWinCanvas.userId").description("작성자 ID").optional(),
-                                fieldWithPath("data[].quickWinCanvas.submitted").description("제출 여부").optional(),
-                                fieldWithPath("data[].quickWinCanvas.taskInputs[]").description("투입 목록"),
-                                fieldWithPath("data[].quickWinCanvas.taskInputs[].inputId").description("투입 ID"),
-                                fieldWithPath("data[].quickWinCanvas.taskInputs[].resourceName").description("필요자원"),
-                                fieldWithPath("data[].quickWinCanvas.taskInputs[].quantity").description("수량"),
-                                fieldWithPath("data[].quickWinCanvas.taskInputs[].orderNo").description("순서"),
-                                fieldWithPath("data[].quickWinCanvas.taskActivities[]").description("활동 목록"),
-                                fieldWithPath("data[].quickWinCanvas.taskActivities[].activityId").description("활동 ID"),
-                                fieldWithPath("data[].quickWinCanvas.taskActivities[].processStep").description("추진절차"),
-                                fieldWithPath("data[].quickWinCanvas.taskActivities[].activityContent").description("주요내용"),
-                                fieldWithPath("data[].quickWinCanvas.taskActivities[].duration").description("소요기간"),
-                                fieldWithPath("data[].quickWinCanvas.taskActivities[].orderNo").description("순서"),
-                                fieldWithPath("data[].quickWinCanvas.teamwork").description("팀워크").optional(),
-                                fieldWithPath("data[].quickWinCanvas.teamwork.teamworkId").description("팀워크 ID"),
-                                fieldWithPath("data[].quickWinCanvas.teamwork.activityTeamwork").description("팀워크 활동"),
-                                fieldWithPath("data[].quickWinCanvas.teamwork.workType").description("작업 유형"),
-                                fieldWithPath("data[].quickWinCanvas.taskOutcomes[]").description("성과 목록"),
-                                fieldWithPath("data[].quickWinCanvas.taskOutcomes[].outcomeNo").description("성과 번호"),
-                                fieldWithPath("data[].quickWinCanvas.taskOutcomes[].outcomeType").description("성과 유형(QUALITATIVE/QUANTITATIVE)").optional(),
-                                fieldWithPath("data[].quickWinCanvas.taskOutcomes[].outcomeContent").description("성과 내용"),
-                                fieldWithPath("data[].quickWinCanvas.taskOutcomes[].orderNo").description("순서"),
+                                // Quick Win Canvases
+                                fieldWithPath("data.quickWinCanvases[]").description("전술적 실행과제 캔버스 목록"),
+                                fieldWithPath("data.quickWinCanvases[].teamId").description("팀 ID"),
+                                fieldWithPath("data.quickWinCanvases[].teamName").description("팀 이름").optional(),
+                                fieldWithPath("data.quickWinCanvases[].writerUserId").description("대표작성자 ID"),
+                                fieldWithPath("data.quickWinCanvases[].canvas").description("전술적 실행과제 캔버스"),
+                                fieldWithPath("data.quickWinCanvases[].canvas.canvasId").description("캔버스 ID").optional(),
+                                fieldWithPath("data.quickWinCanvases[].canvas.strategicGoal").description("전략 목표").optional(),
+                                fieldWithPath("data.quickWinCanvases[].canvas.taskName").description("과제명").optional(),
+                                fieldWithPath("data.quickWinCanvases[].canvas.taskDescription").description("과제 설명").optional(),
+                                fieldWithPath("data.quickWinCanvases[].canvas.crisisSignal").description("위기 신호").optional(),
+                                fieldWithPath("data.quickWinCanvases[].canvas.painTouchPoint").description("고충점").optional(),
+                                fieldWithPath("data.quickWinCanvases[].canvas.userId").description("작성자 ID").optional(),
+                                fieldWithPath("data.quickWinCanvases[].canvas.submitted").description("제출 여부").optional(),
+                                fieldWithPath("data.quickWinCanvases[].canvas.taskInputs[]").description("투입 목록"),
+                                fieldWithPath("data.quickWinCanvases[].canvas.taskInputs[].inputId").description("투입 ID"),
+                                fieldWithPath("data.quickWinCanvases[].canvas.taskInputs[].resourceName").description("필요자원"),
+                                fieldWithPath("data.quickWinCanvases[].canvas.taskInputs[].quantity").description("수량"),
+                                fieldWithPath("data.quickWinCanvases[].canvas.taskInputs[].orderNo").description("순서"),
+                                fieldWithPath("data.quickWinCanvases[].canvas.taskActivities[]").description("활동 목록"),
+                                fieldWithPath("data.quickWinCanvases[].canvas.taskActivities[].activityId").description("활동 ID"),
+                                fieldWithPath("data.quickWinCanvases[].canvas.taskActivities[].processStep").description("추진절차"),
+                                fieldWithPath("data.quickWinCanvases[].canvas.taskActivities[].activityContent").description("주요내용"),
+                                fieldWithPath("data.quickWinCanvases[].canvas.taskActivities[].duration").description("소요기간"),
+                                fieldWithPath("data.quickWinCanvases[].canvas.taskActivities[].orderNo").description("순서"),
+                                fieldWithPath("data.quickWinCanvases[].canvas.teamwork").description("팀워크").optional(),
+                                fieldWithPath("data.quickWinCanvases[].canvas.teamwork.teamworkId").description("팀워크 ID"),
+                                fieldWithPath("data.quickWinCanvases[].canvas.teamwork.activityTeamwork").description("팀워크 활동"),
+                                fieldWithPath("data.quickWinCanvases[].canvas.teamwork.workType").description("작업 유형"),
+                                fieldWithPath("data.quickWinCanvases[].canvas.taskOutcomes[]").description("성과 목록"),
+                                fieldWithPath("data.quickWinCanvases[].canvas.taskOutcomes[].outcomeNo").description("성과 번호"),
+                                fieldWithPath("data.quickWinCanvases[].canvas.taskOutcomes[].outcomeType").description("성과 유형(QUALITATIVE/QUANTITATIVE)").optional(),
+                                fieldWithPath("data.quickWinCanvases[].canvas.taskOutcomes[].outcomeContent").description("성과 내용"),
+                                fieldWithPath("data.quickWinCanvases[].canvas.taskOutcomes[].orderNo").description("순서"),
 
-                                // Build Win Canvas
-                                fieldWithPath("data[].buildWinCanvas").description("전략적 실행과제 캔버스").optional(),
-                                fieldWithPath("data[].buildWinCanvas.canvasId").description("캔버스 ID").optional(),
-                                fieldWithPath("data[].buildWinCanvas.strategicGoal").description("전략 목표").optional(),
-                                fieldWithPath("data[].buildWinCanvas.taskName").description("과제명").optional(),
-                                fieldWithPath("data[].buildWinCanvas.taskDescription").description("과제 설명").optional(),
-                                fieldWithPath("data[].buildWinCanvas.crisisSignal").description("위기 신호").optional(),
-                                fieldWithPath("data[].buildWinCanvas.painTouchPoint").description("고충점").optional(),
-                                fieldWithPath("data[].buildWinCanvas.userId").description("작성자 ID").optional(),
-                                fieldWithPath("data[].buildWinCanvas.submitted").description("제출 여부").optional(),
-                                fieldWithPath("data[].buildWinCanvas.taskInputs[]").description("투입 목록"),
-                                fieldWithPath("data[].buildWinCanvas.taskInputs[].inputId").description("투입 ID"),
-                                fieldWithPath("data[].buildWinCanvas.taskInputs[].resourceName").description("필요자원"),
-                                fieldWithPath("data[].buildWinCanvas.taskInputs[].quantity").description("수량"),
-                                fieldWithPath("data[].buildWinCanvas.taskInputs[].orderNo").description("순서"),
-                                fieldWithPath("data[].buildWinCanvas.taskActivities[]").description("활동 목록"),
-                                fieldWithPath("data[].buildWinCanvas.taskActivities[].activityId").description("활동 ID"),
-                                fieldWithPath("data[].buildWinCanvas.taskActivities[].processStep").description("추진절차"),
-                                fieldWithPath("data[].buildWinCanvas.taskActivities[].activityContent").description("주요내용"),
-                                fieldWithPath("data[].buildWinCanvas.taskActivities[].duration").description("소요기간"),
-                                fieldWithPath("data[].buildWinCanvas.taskActivities[].orderNo").description("순서"),
-                                fieldWithPath("data[].buildWinCanvas.teamwork").description("팀워크").optional(),
-                                fieldWithPath("data[].buildWinCanvas.teamwork.teamworkId").description("팀워크 ID"),
-                                fieldWithPath("data[].buildWinCanvas.teamwork.activityTeamwork").description("팀워크 활동"),
-                                fieldWithPath("data[].buildWinCanvas.teamwork.workType").description("작업 유형"),
-                                fieldWithPath("data[].buildWinCanvas.taskOutcomes[]").description("성과 목록"),
-                                fieldWithPath("data[].buildWinCanvas.taskOutcomes[].outcomeNo").description("성과 번호"),
-                                fieldWithPath("data[].buildWinCanvas.taskOutcomes[].outcomeType").description("성과 유형(QUALITATIVE/QUANTITATIVE)").optional(),
-                                fieldWithPath("data[].buildWinCanvas.taskOutcomes[].outcomeContent").description("성과 내용"),
-                                fieldWithPath("data[].buildWinCanvas.taskOutcomes[].orderNo").description("순서")
+                                // Build Win Canvases
+                                fieldWithPath("data.buildWinCanvases[]").description("전략적 실행과제 캔버스 목록"),
+                                fieldWithPath("data.buildWinCanvases[].teamId").description("팀 ID"),
+                                fieldWithPath("data.buildWinCanvases[].teamName").description("팀 이름").optional(),
+                                fieldWithPath("data.buildWinCanvases[].writerUserId").description("대표작성자 ID"),
+                                fieldWithPath("data.buildWinCanvases[].canvas").description("전략적 실행과제 캔버스"),
+                                fieldWithPath("data.buildWinCanvases[].canvas.canvasId").description("캔버스 ID").optional(),
+                                fieldWithPath("data.buildWinCanvases[].canvas.strategicGoal").description("전략 목표").optional(),
+                                fieldWithPath("data.buildWinCanvases[].canvas.taskName").description("과제명").optional(),
+                                fieldWithPath("data.buildWinCanvases[].canvas.taskDescription").description("과제 설명").optional(),
+                                fieldWithPath("data.buildWinCanvases[].canvas.crisisSignal").description("위기 신호").optional(),
+                                fieldWithPath("data.buildWinCanvases[].canvas.painTouchPoint").description("고충점").optional(),
+                                fieldWithPath("data.buildWinCanvases[].canvas.userId").description("작성자 ID").optional(),
+                                fieldWithPath("data.buildWinCanvases[].canvas.submitted").description("제출 여부").optional(),
+                                fieldWithPath("data.buildWinCanvases[].canvas.taskInputs[]").description("투입 목록"),
+                                fieldWithPath("data.buildWinCanvases[].canvas.taskInputs[].inputId").description("투입 ID"),
+                                fieldWithPath("data.buildWinCanvases[].canvas.taskInputs[].resourceName").description("필요자원"),
+                                fieldWithPath("data.buildWinCanvases[].canvas.taskInputs[].quantity").description("수량"),
+                                fieldWithPath("data.buildWinCanvases[].canvas.taskInputs[].orderNo").description("순서"),
+                                fieldWithPath("data.buildWinCanvases[].canvas.taskActivities[]").description("활동 목록"),
+                                fieldWithPath("data.buildWinCanvases[].canvas.taskActivities[].activityId").description("활동 ID"),
+                                fieldWithPath("data.buildWinCanvases[].canvas.taskActivities[].processStep").description("추진절차"),
+                                fieldWithPath("data.buildWinCanvases[].canvas.taskActivities[].activityContent").description("주요내용"),
+                                fieldWithPath("data.buildWinCanvases[].canvas.taskActivities[].duration").description("소요기간"),
+                                fieldWithPath("data.buildWinCanvases[].canvas.taskActivities[].orderNo").description("순서"),
+                                fieldWithPath("data.buildWinCanvases[].canvas.teamwork").description("팀워크").optional(),
+                                fieldWithPath("data.buildWinCanvases[].canvas.teamwork.teamworkId").description("팀워크 ID"),
+                                fieldWithPath("data.buildWinCanvases[].canvas.teamwork.activityTeamwork").description("팀워크 활동"),
+                                fieldWithPath("data.buildWinCanvases[].canvas.teamwork.workType").description("작업 유형"),
+                                fieldWithPath("data.buildWinCanvases[].canvas.taskOutcomes[]").description("성과 목록"),
+                                fieldWithPath("data.buildWinCanvases[].canvas.taskOutcomes[].outcomeNo").description("성과 번호"),
+                                fieldWithPath("data.buildWinCanvases[].canvas.taskOutcomes[].outcomeType").description("성과 유형(QUALITATIVE/QUANTITATIVE)").optional(),
+                                fieldWithPath("data.buildWinCanvases[].canvas.taskOutcomes[].outcomeContent").description("성과 내용"),
+                                fieldWithPath("data.buildWinCanvases[].canvas.taskOutcomes[].orderNo").description("순서")
                         )
                 ));
     }

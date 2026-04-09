@@ -54,12 +54,23 @@
 계층형 아키텍처에 CQRS(Reader/Appender) 패턴을 적용합니다.
 
 ```
-Controller → Facade/Service → Implementation → Domain Repository → RepositoryImpl → JPA Repository
+Controller → Service → Implementation(Reader/Appender/Updater/Remover) → Repository(인터페이스) ◄── RepositoryImpl → JPA Repository
+   API 경계      트랜잭션 경계        도메인 로직 (CQRS 분리)              도메인 추상화          영속성 어댑터
 ```
 
-- **Domain Model**: JPA 의존 없는 순수 POJO (`XxxModel`)
-- **Storage Layer**: Entity ↔ Model 변환은 `RepositoryImpl.toModel()`에서 수행
-- **Response**: `ResponseHelper.success(dto)` 래핑, DTO는 `@Builder` + `from()` 팩토리 메서드
+| 레이어 | 책임 | 비고 |
+|--------|------|------|
+| **Controller** | HTTP 입출력, 인증, DTO 매핑 | `@CurrentUser UserId`로 JWT 추출 |
+| **Service** | 트랜잭션 경계, 유스케이스 오케스트레이션 | `@Transactional`이 여기에 붙음 |
+| **Implementation** | Reader/Appender/Updater/Remover/Validator로 CQRS 분리 | 변경 이유가 하나뿐인 클래스 유지 |
+| **Domain Repository** | 도메인 모듈이 의존하는 순수 인터페이스 | storage 의존 0 |
+| **RepositoryImpl** | Entity ↔ Model 변환, JPA 위임 | `toModel()` private 메서드 |
+
+- **Domain Model**: JPA 의존 없는 순수 POJO (`XxxModel`). 도메인/API 레이어는 `storage.jpaentity.*`를 절대 import하지 않습니다.
+- **CQRS 분리**: 같은 도메인이라도 읽기(`Reader`)와 쓰기(`Appender`/`Updater`/`Remover`)를 다른 클래스로 분리해, 변경 이유와 트랜잭션 특성을 격리합니다.
+- **Response**: `ResponseHelper.success(dto)` 래핑, DTO는 `@Builder` + `from()` 팩토리 메서드.
+
+> **"Service와 Implementation이 둘 다 있는 이유?"** — Service는 트랜잭션 경계와 유스케이스 조립을 담당하고, Implementation은 CQRS 단위로 쪼개진 도메인 로직을 담당합니다. 4단 추상화가 아니라, **하나의 도메인 레이어를 책임 단위(읽기/쓰기/검증)로 수평 분할**한 구조입니다.
 
 ---
 
@@ -204,6 +215,46 @@ qtedu.Impact_design/
 
 ---
 
+## 🤖 AI Integration — 운영 관점의 설계
+
+단순 GPT 호출이 아니라, **1GB RAM 서버에서 동시 리포트 생성을 안정적으로 처리하기 위한 동시성/타임아웃/실패 처리** 설계가 핵심입니다.
+
+### 1. 모델 분기
+
+```java
+public enum AiModel { GPT_4_1, GPT_4_1_MINI }
+AiResponse chat(AiModel model, String systemPrompt, String userPrompt);
+```
+
+- 비용/지연이 큰 종합 리포트는 `GPT_4_1`, 단순 분석/요약은 `GPT_4_1_MINI`로 분기.
+- `OpenAiClient`는 `AiClient` 인터페이스를 구현 — Claude/Gemini로 교체 시 어댑터만 추가하면 되도록 OCP 준수.
+
+### 2. 백프레셔 (`ioExecutor`)
+
+리포트 생성은 외부 I/O가 길어 무제한 동시 호출 시 서버가 죽습니다. 별도 풀로 격리하고 큐가 가득 차면 호출 스레드가 직접 실행하도록 설정.
+
+| 항목 | 값 | 의도 |
+|------|----|------|
+| corePoolSize | **5** | 동시 OpenAI 호출 상한 |
+| queueCapacity | **50** | 버스트 흡수 |
+| RejectedExecutionHandler | **CallerRunsPolicy** | 큐가 가득 차면 호출 스레드가 직접 실행 → 자연스러운 백프레셔, 요청 유실 0 |
+
+> 관련 커밋: `a4209e9 refactor: ioExecutor 백프레셔 도입 (풀 5 / 큐 50 / CallerRunsPolicy)`
+
+### 3. 타임아웃 cascade
+
+OpenAI 호출이 매달리면 상위 HTTP 요청도 같이 매달려 톰캣 워커가 고갈됩니다. **상위 요청의 잔여 데드라인을 OpenAI HTTP 클라이언트까지 전파**해, 상위가 죽기 전에 하위가 먼저 끊기도록 했습니다.
+
+> 관련 커밋: `85e4508 fix: 리포트 생성 시 OpenAI 호출 타임아웃 cascade 적용`
+
+### 4. 응답 파싱과 실패 처리
+
+- OpenAI에 **JSON 응답을 강제**한 뒤 `ObjectMapper`/`JsonNode`로 파싱.
+- 파싱 실패/스키마 불일치 시 `BadRequestException`이 아니라 **재시도 가능한 형태로 분리**해, 사용자 입력 오류와 모델 출력 오류를 구분.
+- 외부 호출은 **트랜잭션 경계 밖으로 빼서**, AI 실패가 DB 롤백을 유발하지 않게 했습니다 (보상 트랜잭션 모델).
+
+---
+
 ## 🌐 API Endpoints
 
 | Path | 설명 |
@@ -267,6 +318,33 @@ qtedu.Impact_design/
 ---
 
 ## 🗄 Database Schema
+
+### ⚖ FK 없는 설계 — 의도와 정합성 보장 전략
+
+이 프로젝트는 **DB 레벨 FK 제약을 의도적으로 두지 않습니다.** 모든 관계는 plain 타입 컬럼(`user_id`, `team_id` 등)으로만 표현되고, 조인은 애플리케이션 레이어에서 ID로 조회·조합합니다.
+
+**왜 뺐나**
+
+| 이유 | 설명 |
+|------|------|
+| JPA 연관관계의 부작용 회피 | N+1, `LazyInitializationException`, 양방향 매핑의 순환 직렬화 문제를 원천 차단 |
+| 도메인 모듈 경계 보호 | `domain/`이 `storage/jpaentity`를 import하지 않도록 강제 — DIP 유지 |
+| 스키마 진화 유연성 | 레거시 테이블(`tbgame`, `tbteam`, `tbmission` 등)과 신규 테이블이 공존하는 구조에서 FK는 부담 |
+
+**그러면 정합성은 어떻게 보장하나**
+
+1. **트랜잭션 경계는 Service에 단일 부착** — `@Transactional`이 Service에만 붙고, Implementation은 그 안에서 실행. 단일 Aggregate 단위의 쓰기는 모두 같은 트랜잭션 안에서 일어납니다.
+2. **참조 검증은 Appender/Updater 진입 시점에** — 외래 ID는 사용 직전에 `existsById` / 조회로 검증, 없으면 `NotFoundException`.
+3. **카운터성 데이터는 같은 트랜잭션에서 증감** — `tbteam.num_user`처럼 파생 카운터는 멤버 add/remove/move와 같은 트랜잭션에서 갱신해 일관성 유지.
+4. **외부 I/O는 트랜잭션 밖으로** — OpenAI/파일 업로드 같은 긴 I/O는 트랜잭션 경계 바깥에서 실행해 락 보유 시간 최소화. 실패 시 보상 트랜잭션으로 처리.
+5. **소프트 삭제 일관성** — `is_doing` / `status` 플래그로 소프트 삭제 후, 하위 참조는 같은 플래그로 동시에 비활성화.
+
+**감수한 트레이드오프**
+
+- DB 레벨 무결성은 포기 → 그 비용은 **애플리케이션 레이어 검증과 통합 테스트**(Spring REST Docs 기반)로 갚습니다.
+- 운영 중 orphan 레코드 가능성 → 정합성 체크 배치/관리자 도구로 보완.
+
+---
 
 ### 테이블 관계도 (논리적, FK 제약조건 없음 — 애플리케이션 레벨 조인)
 

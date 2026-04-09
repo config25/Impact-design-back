@@ -53,15 +53,15 @@ public class ReportPromptGenerator {
 
         sb.append("=== 분석 요청 ===\n");
         sb.append("각 섹션에 대해 다음을 수행해주세요:\n");
-        sb.append("- 외부위협/내부한계: 유사 항목 그룹핑 → 빈도순 상위4개(top4), 키워드4개(keywords), 요약3문장(aiSummary)\n");
+        sb.append("- 외부위협/내부한계: 유사 항목 그룹핑 → 빈도순 상위12개(top12), 키워드4개(keywords), 요약3문장(aiSummary)\n");
         sb.append("- 비전/미션/가치: 각각 빈도순 상위4개 + 통합 비전/미션/가치 1개씩 생성\n");
         sb.append("- 전략목표: 키워드 4개 추출(goalKeywords)\n");
         sb.append("- 전술지표/전략적행동지표: 유사한 항목끼리 인접하도록 정렬한 인덱스 배열 반환 (원본 데이터 유지, 순서만 변경)\n\n");
 
         sb.append("JSON 형식으로 응답 (데이터 없는 섹션은 빈 배열):\n");
         sb.append("{\n");
-        sb.append("  \"externalThreats\": { \"top4\": [{\"content\":\"문장\",\"count\":숫자}], \"keywords\": [\"키워드\"], \"aiSummary\": [\"요약\"] },\n");
-        sb.append("  \"internalLimitations\": { \"top4\": [{\"content\":\"문장\",\"count\":숫자}], \"keywords\": [\"키워드\"], \"aiSummary\": [\"요약\"] },\n");
+        sb.append("  \"externalThreats\": { \"top12\": [{\"content\":\"문장\",\"count\":숫자}], \"keywords\": [\"키워드\"], \"aiSummary\": [\"요약\"] },\n");
+        sb.append("  \"internalLimitations\": { \"top12\": [{\"content\":\"문장\",\"count\":숫자}], \"keywords\": [\"키워드\"], \"aiSummary\": [\"요약\"] },\n");
         sb.append("  \"visionMissionValue\": {\n");
         sb.append("    \"visionTop4\": [{\"content\":\"비전\",\"count\":숫자}],\n");
         sb.append("    \"missionTop4\": [{\"content\":\"미션\",\"count\":숫자}],\n");
