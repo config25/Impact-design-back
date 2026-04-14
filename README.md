@@ -811,25 +811,30 @@ java -jar build/libs/Impact_design-0.0.1-SNAPSHOT.jar --spring.profiles.active=l
 
 ### ⚙ JVM 설정
 
-`/etc/systemd/system/impact.service`에서 JVM 힙 메모리를 제한합니다.
+`/etc/systemd/system/impact.service`에서 JVM 옵션을 설정합니다.
 
 ```
-ExecStart=/usr/bin/java -Xms256m -Xmx384m -jar /root/Impact_design-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod --server.port=8080
+ExecStart=/usr/bin/java -Xms256m -Xmx384m -XX:+UseSerialGC -XX:MaxMetaspaceSize=128m -XX:ReservedCodeCacheSize=64m -Xss512k -jar /root/Impact_design-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod --server.port=8080
 ```
 
 | 옵션 | 값 | 설명 |
 |------|----|------|
 | `-Xms` | 256m | 초기 힙 크기 |
 | `-Xmx` | 384m | 최대 힙 크기 (OOM 방지) |
+| `-XX:+UseSerialGC` | - | 1코어 환경에서 G1GC보다 오버헤드 적음 |
+| `-XX:MaxMetaspaceSize` | 128m | 클래스 메타데이터 메모리 상한 (비힙 폭증 방지) |
+| `-XX:ReservedCodeCacheSize` | 64m | JIT 코드 캐시 기본값 240MB → 64MB로 절약 |
+| `-Xss` | 512k | 스레드 스택 1MB → 512KB (스레드 30개 기준 ~15MB 절약) |
 
-#### 메모리 사용 현황 (2026-03 기준)
+#### 메모리 사용 현황 (2026-04 기준)
 
 | 프로세스 | 사용량 | 비고 |
 |----------|--------|------|
 | OS | ~150MB | |
-| JVM (Spring Boot) | ~200-384MB | `-Xmx`로 상한 고정 |
+| JVM (Spring Boot) | ~200-384MB | `-Xmx`로 힙 상한 고정 |
+| JVM 비힙 (Metaspace, 스택, CodeCache) | ~80-100MB | MaxMetaspaceSize + Xss + CodeCache로 상한 고정 |
 | MariaDB | ~22MB | |
-| **합계** | **~400-556MB / 944MB** | 여유 있음 |
+| **합계** | **~450-656MB / 944MB** | 여유 있음 |
 
 > 서버 메모리 확인: `free -h`
 > 프로세스별 확인: `ps aux --sort=-%mem | head -5`

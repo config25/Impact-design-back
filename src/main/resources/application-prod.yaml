@@ -1,22 +1,49 @@
 server:
   tomcat:
     threads:
-      max: 30
-      min-spare: 5
+      max: 15
+      min-spare: 3
+    accept-count: 30
+  compression:
+    enabled: true
+    min-response-size: 1024
+    mime-types: application/json,application/xml,text/html,text/plain
 
 spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.cloud.aws.autoconfigure.context.ContextStackAutoConfiguration
+      - org.springframework.cloud.aws.autoconfigure.context.ContextRegionProviderAutoConfiguration
+      - org.springframework.cloud.aws.autoconfigure.context.ContextCredentialsAutoConfiguration
+      - org.springframework.cloud.aws.autoconfigure.context.ContextResourceLoaderAutoConfiguration
   datasource:
     url: jdbc:mariadb://localhost:3306/impact_design?useUnicode=true&characterEncoding=utf8mb4
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     hikari:
-      maximum-pool-size: 5
-      minimum-idle: 2
+      maximum-pool-size: 8
+      minimum-idle: 4
       max-lifetime: 580000
-      connection-timeout: 5000
+      connection-timeout: 3000
+      idle-timeout: 300000
 
   jpa:
     show-sql: false
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        order_inserts: true
+        order_updates: true
+        jdbc:
+          batch_size: 20
+
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
 
 file:
   base-url: http://iptdesign.mycafe24.com/uploads
