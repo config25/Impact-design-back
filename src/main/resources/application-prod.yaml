@@ -10,12 +10,6 @@ server:
     mime-types: application/json,application/xml,text/html,text/plain
 
 spring:
-  autoconfigure:
-    exclude:
-      - org.springframework.cloud.aws.autoconfigure.context.ContextStackAutoConfiguration
-      - org.springframework.cloud.aws.autoconfigure.context.ContextRegionProviderAutoConfiguration
-      - org.springframework.cloud.aws.autoconfigure.context.ContextCredentialsAutoConfiguration
-      - org.springframework.cloud.aws.autoconfigure.context.ContextResourceLoaderAutoConfiguration
   datasource:
     url: jdbc:mariadb://localhost:3306/impact_design?useUnicode=true&characterEncoding=utf8mb4
     username: ${DB_USERNAME}
