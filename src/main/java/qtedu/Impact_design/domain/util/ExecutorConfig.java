@@ -13,12 +13,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Configuration
 public class ExecutorConfig {
 
-    // 1코어 / 힙 256MB 환경 기준 보수 설정.
-    // - 풀 5: getReport(4작업) + 여유 1. CPU 1코어지만 작업 대부분 IO 대기(OpenAI/DB)라 의미 있음.
-    // - 큐 50: 무제한 큐는 메모리 압박/OOM 위험. 작은 힙에서는 반드시 상한 필요.
-    // - CallerRunsPolicy: 큐가 차면 호출 스레드(톰캣)가 직접 실행 → 자연스러운 백프레셔.
-    //   예외/거부 없이 처리 지연으로 부하 전달.
-    // - 스레드 이름 io-N: jstack/로그 분석 시 식별 용이.
+    // 1코어 / 힙 256MB / RAM 944MB 환경 기준.
+    // - 풀 6: IO 대기 위주라 CPU 1코어여도 유효. 메모리 고려해 최소한으로.
+    // - 큐 20: 작은 힙에서 OOM 방지용 상한.
+    // - CallerRunsPolicy: 큐 포화 시 톰캣 스레드가 직접 실행 → 자연스러운 백프레셔.
     @Bean(name = "ioExecutor")
     public ExecutorService ioExecutor() {
         ThreadFactory threadFactory = new ThreadFactory() {
@@ -33,9 +31,9 @@ public class ExecutorConfig {
         };
 
         return new ThreadPoolExecutor(
-                5, 5,
+                6, 6,
                 0L, TimeUnit.MILLISECONDS,
-                new ArrayBlockingQueue<>(50),
+                new ArrayBlockingQueue<>(20),
                 threadFactory,
                 new ThreadPoolExecutor.CallerRunsPolicy()
         );
