@@ -75,6 +75,10 @@ public class ImpactCheck {
         this.submitted = true;
     }
 
+    public void rollback() {
+        this.submitted = false;
+    }
+
     public void update(Integer q1Score, Integer q2Score, Integer q3Score, Integer q4Score,
                        Integer q5Score, Integer q6Score, Integer q7Score, Integer q8Score,
                        Integer q9Score, Integer q10Score, Integer q11Score, Integer q12Score,

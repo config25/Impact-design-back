@@ -14,4 +14,5 @@ public interface FlowCanvasRepository {
     List<FlowCanvasModel> findByUserIdIn(List<Long> userIds);
     boolean existsSubmittedByUserId(Long userId);
     void submitAllByUserId(Long userId);
+    void rollbackAllByUserId(Long userId);
 }

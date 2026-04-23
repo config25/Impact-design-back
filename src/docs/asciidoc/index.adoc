@@ -1668,6 +1668,38 @@ include::{snippets}/teach-submission/funding-result/http-response.adoc[]
 
 include::{snippets}/teach-submission/funding-result/response-fields.adoc[]
 
+=== 9. 미션 롤백
+
+팀의 특정 스테이지(A, B, C, D, E, F_BUILD, F_QUICK)의 `submitted` 플래그를 false 로 되돌립니다. 데이터는 유지되며 제출 상태만 해제됩니다.
+
+==== 요청(Request)
+
+include::{snippets}/teach-submission/rollback/http-request.adoc[]
+
+==== 요청 필드 설명(Request Fields)
+
+include::{snippets}/teach-submission/rollback/request-fields.adoc[]
+
+==== 응답(Response)
+
+include::{snippets}/teach-submission/rollback/http-response.adoc[]
+
+==== 응답 필드 설명(Response Fields)
+
+include::{snippets}/teach-submission/rollback/response-fields.adoc[]
+
+==== 에러: 팀 없음 (404)
+
+include::{snippets}/teach-submission/rollback-team-not-found/http-response.adoc[]
+
+include::{snippets}/teach-submission/rollback-team-not-found/response-fields.adoc[]
+
+==== 에러: stage 누락 (400)
+
+include::{snippets}/teach-submission/rollback-stage-missing/http-response.adoc[]
+
+include::{snippets}/teach-submission/rollback-stage-missing/response-fields.adoc[]
+
 == Report API
 
 NOTE: 인증 필요 (`Authorization: Bearer {token}`)

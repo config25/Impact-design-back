@@ -11,4 +11,5 @@ public interface IdentityCanvasRepository {
     List<IdentityCanvasModel> findByUserIdIn(List<Long> userIds);
     boolean existsSubmittedByUserId(Long userId);
     void submitByUserId(Long userId);
+    void rollbackByUserId(Long userId);
 }

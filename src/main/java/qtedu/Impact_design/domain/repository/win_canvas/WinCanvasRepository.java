@@ -12,4 +12,5 @@ public interface WinCanvasRepository {
     List<WinCanvasModel> findByUserIdInAndCanvasType(List<Long> userIds, CanvasType canvasType);
     boolean existsSubmittedByUserIdAndCanvasType(Long userId, CanvasType canvasType);
     void submitByUserIdAndCanvasType(Long userId, CanvasType canvasType);
+    void rollbackByUserIdAndCanvasType(Long userId, CanvasType canvasType);
 }

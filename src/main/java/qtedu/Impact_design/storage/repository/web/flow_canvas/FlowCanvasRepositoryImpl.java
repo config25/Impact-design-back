@@ -76,6 +76,13 @@ public class FlowCanvasRepositoryImpl implements FlowCanvasRepository {
         flowCanvasJpaRepository.saveAll(entities);
     }
 
+    @Override
+    public void rollbackAllByUserId(Long userId) {
+        List<FlowCanvas> entities = flowCanvasJpaRepository.findByUserId(userId);
+        entities.forEach(FlowCanvas::rollback);
+        flowCanvasJpaRepository.saveAll(entities);
+    }
+
     private FlowCanvasModel toModel(FlowCanvas entity) {
         return FlowCanvasModel.builder()
                 .goalId(entity.getGoalId())

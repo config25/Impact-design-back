@@ -9,8 +9,10 @@ import qtedu.Impact_design.api.dto.response.identitycanvas.IdentityCanvasRespons
 import qtedu.Impact_design.api.dto.response.impactcheck.ImpactCheckResponse;
 import qtedu.Impact_design.api.dto.response.teach.TeamSubmissionListResponse;
 import qtedu.Impact_design.api.dto.response.wincanvas.WinCanvasResponse;
+import qtedu.Impact_design.domain.implementation.teach.TeachMissionRollbacker;
 import qtedu.Impact_design.domain.implementation.teach.TeachSubmissionReader;
 import qtedu.Impact_design.domain.model.en.CanvasType;
+import qtedu.Impact_design.domain.model.en.RollbackStage;
 
 import java.util.List;
 
@@ -19,6 +21,7 @@ import java.util.List;
 public class TeachSubmissionService {
 
     private final TeachSubmissionReader teachSubmissionReader;
+    private final TeachMissionRollbacker teachMissionRollbacker;
 
     public List<TeamSubmissionListResponse> getSubmissionList(Integer gameId) {
         return teachSubmissionReader.getSubmissionList(gameId);
@@ -46,5 +49,9 @@ public class TeachSubmissionService {
 
     public FundingMyResultResponse getFundingResult(Integer teamId) {
         return teachSubmissionReader.getFundingResult(teamId);
+    }
+
+    public void rollbackMission(Integer teamId, RollbackStage stage) {
+        teachMissionRollbacker.rollback(teamId, stage);
     }
 }

@@ -81,6 +81,15 @@ public class ImpactCheckRepositoryImpl implements ImpactCheckRepository {
                 });
     }
 
+    @Override
+    public void rollbackByUserId(Long userId) {
+        impactCheckJpaRepository.findByUserId(userId)
+                .ifPresent(entity -> {
+                    entity.rollback();
+                    impactCheckJpaRepository.save(entity);
+                });
+    }
+
     private ImpactCheckModel toModel(ImpactCheck entity) {
         return ImpactCheckModel.builder()
                 .answerId(entity.getAnswerId())

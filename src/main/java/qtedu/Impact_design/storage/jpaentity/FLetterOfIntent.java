@@ -124,6 +124,10 @@ public class FLetterOfIntent {
         this.submitted = true;
     }
 
+    public void rollback() {
+        this.submitted = false;
+    }
+
     public void softDelete(String modifiedBy) {
         this.delYn = "Y";
         this.modifiedBy = modifiedBy;

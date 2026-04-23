@@ -7,15 +7,17 @@ import org.springframework.transaction.annotation.Transactional;
 import qtedu.Impact_design.api.dto.response.teach.*;
 import qtedu.Impact_design.common.error.ErrorCode;
 import qtedu.Impact_design.common.error.NotFoundException;
+import qtedu.Impact_design.domain.model.team.ClassInfoProjection;
 import qtedu.Impact_design.domain.model.team.ContentsModel;
 import qtedu.Impact_design.domain.model.team.TbGameModel;
 import qtedu.Impact_design.domain.model.team.TbMissionModel;
 import qtedu.Impact_design.domain.model.team.TbMissionDataModel;
+import qtedu.Impact_design.domain.model.team.TbTeamModel;
+import qtedu.Impact_design.domain.model.team.TeamUserModel;
 import qtedu.Impact_design.domain.repository.auth.TbTeamRepository;
 import qtedu.Impact_design.domain.repository.auth.TeamUserRepository;
 import qtedu.Impact_design.domain.repository.teach.*;
 import qtedu.Impact_design.domain.repository.user.UserinfoRepository;
-import qtedu.Impact_design.domain.model.team.ClassInfoProjection;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -228,21 +230,15 @@ public class TeachReader {
         }
 
         // 1. 팀 정보 배치 조회
-        Map<Integer, qtedu.Impact_design.domain.model.team.TbTeamModel> teamMap =
-                tbTeamRepository.findByTeamIdIn(teamIds).stream()
-                        .collect(Collectors.toMap(
-                                qtedu.Impact_design.domain.model.team.TbTeamModel::getTeamId,
-                                Function.identity()));
+        Map<Integer, TbTeamModel> teamMap = tbTeamRepository.findByTeamIdIn(teamIds).stream()
+                .collect(Collectors.toMap(TbTeamModel::getTeamId, Function.identity()));
 
         // 2. 팀원 정보 배치 조회 → 팀별 userIds + 팀별 인원수
-        List<qtedu.Impact_design.domain.model.team.TeamUserModel> allTeamUsers =
-                teamUserRepository.findByTeamIdIn(teamIds);
+        List<TeamUserModel> allTeamUsers = teamUserRepository.findByTeamIdIn(teamIds);
         Map<Integer, List<Long>> teamUserIdsMap = allTeamUsers.stream()
                 .collect(Collectors.groupingBy(
-                        qtedu.Impact_design.domain.model.team.TeamUserModel::getTeamId,
-                        Collectors.mapping(
-                                qtedu.Impact_design.domain.model.team.TeamUserModel::getUserId,
-                                Collectors.toList())));
+                        TeamUserModel::getTeamId,
+                        Collectors.mapping(TeamUserModel::getUserId, Collectors.toList())));
 
         // 3. 제출 상태 배치 조회
         Map<Integer, TeamSubmitStatusChecker.TeamSubmitResult> submitMap =

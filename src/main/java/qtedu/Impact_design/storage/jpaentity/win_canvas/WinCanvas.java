@@ -57,4 +57,8 @@ public class WinCanvas {
     public void submit() {
         this.submitted = true;
     }
+
+    public void rollback() {
+        this.submitted = false;
+    }
 }

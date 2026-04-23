@@ -3,7 +3,7 @@ server:
     threads:
       max: 15
       min-spare: 3
-    accept-count: 30
+    accept-count: 60
   compression:
     enabled: true
     min-response-size: 1024

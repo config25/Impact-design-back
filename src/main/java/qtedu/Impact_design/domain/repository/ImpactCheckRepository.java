@@ -11,4 +11,5 @@ public interface ImpactCheckRepository {
     List<ImpactCheckModel> findByUserIdIn(List<Long> userIds);
     boolean existsSubmittedByUserId(Long userId);
     void submitByUserId(Long userId);
+    void rollbackByUserId(Long userId);
 }

@@ -6,6 +6,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.http.MediaType;
 import qtedu.Impact_design.api.config.SecurityConfig;
 import qtedu.Impact_design.api.controller.TeachSubmissionController;
 import qtedu.Impact_design.api.dto.response.wincanvas.WinCanvasResponse;
@@ -14,7 +15,11 @@ import qtedu.Impact_design.api.dto.response.funding.FundingInvestmentResponse;
 import qtedu.Impact_design.api.dto.response.funding.FundingMyResultResponse;
 import qtedu.Impact_design.api.dto.response.identitycanvas.IdentityCanvasResponse;
 import qtedu.Impact_design.api.dto.response.impactcheck.ImpactCheckResponse;
+import qtedu.Impact_design.common.error.BadRequestException;
+import qtedu.Impact_design.common.error.ErrorCode;
+import qtedu.Impact_design.common.error.NotFoundException;
 import qtedu.Impact_design.domain.model.en.CanvasType;
+import qtedu.Impact_design.domain.model.en.RollbackStage;
 import qtedu.Impact_design.api.dto.response.teach.TeamSubmissionListResponse;
 import qtedu.Impact_design.api.util.security.JwtAuthenticationFilter;
 import qtedu.Impact_design.domain.model.en.OutcomeType;
@@ -26,8 +31,10 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willThrow;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -439,6 +446,148 @@ class TeachSubmissionControllerTest extends RestDocsTestSupport {
                                 fieldWithPath("data.quick.scores.totalScore").description("총 점수"),
                                 fieldWithPath("data.quick.scores.evaluatorCount").description("평가 참가자 수"),
                                 fieldWithPath("data.quick.opinions[]").description("투자 의견 목록")
+                        )
+                ));
+    }
+
+    // ===== 9. 미션 롤백 =====
+
+    @Test
+    @DisplayName("미션 롤백 - A 스테이지")
+    void rollbackMission_A() throws Exception {
+        String requestJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(java.util.Map.of(
+                "teamId", 1,
+                "stage", "A"
+        ));
+
+        mockMvc.perform(post("/api/teach/submission/rollback")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andExpect(status().isOk())
+                .andDo(document("teach-submission/rollback",
+                        requestFields(
+                                fieldWithPath("teamId").description("팀 ID"),
+                                fieldWithPath("stage").description("롤백할 스테이지 (A, B, C, D, E, F_BUILD, F_QUICK)")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description("상태 코드"),
+                                fieldWithPath("data.message").description("성공")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("미션 롤백 - B 스테이지")
+    void rollbackMission_B() throws Exception {
+        String requestJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(java.util.Map.of(
+                "teamId", 1, "stage", "B"));
+
+        mockMvc.perform(post("/api/teach/submission/rollback")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("미션 롤백 - C 스테이지")
+    void rollbackMission_C() throws Exception {
+        String requestJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(java.util.Map.of(
+                "teamId", 1, "stage", "C"));
+
+        mockMvc.perform(post("/api/teach/submission/rollback")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("미션 롤백 - D 스테이지 (QuickWin)")
+    void rollbackMission_D() throws Exception {
+        String requestJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(java.util.Map.of(
+                "teamId", 1, "stage", "D"));
+
+        mockMvc.perform(post("/api/teach/submission/rollback")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("미션 롤백 - E 스테이지 (BuildWin)")
+    void rollbackMission_E() throws Exception {
+        String requestJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(java.util.Map.of(
+                "teamId", 1, "stage", "E"));
+
+        mockMvc.perform(post("/api/teach/submission/rollback")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("미션 롤백 - F_BUILD 스테이지")
+    void rollbackMission_F_BUILD() throws Exception {
+        String requestJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(java.util.Map.of(
+                "teamId", 1, "stage", "F_BUILD"));
+
+        mockMvc.perform(post("/api/teach/submission/rollback")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("미션 롤백 - F_QUICK 스테이지")
+    void rollbackMission_F_QUICK() throws Exception {
+        String requestJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(java.util.Map.of(
+                "teamId", 1, "stage", "F_QUICK"));
+
+        mockMvc.perform(post("/api/teach/submission/rollback")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("미션 롤백 - 팀 없음")
+    void rollbackMission_teamNotFound() throws Exception {
+        willThrow(new NotFoundException(ErrorCode.TEAM_NOT_FOUND))
+                .given(teachSubmissionService).rollbackMission(anyInt(), any(RollbackStage.class));
+
+        String requestJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(java.util.Map.of(
+                "teamId", 999, "stage", "A"));
+
+        mockMvc.perform(post("/api/teach/submission/rollback")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andExpect(status().isNotFound())
+                .andDo(document("teach-submission/rollback-team-not-found",
+                        responseFields(
+                                fieldWithPath("status").description("404"),
+                                fieldWithPath("data.errorCode").description("TEAM_2"),
+                                fieldWithPath("data.message").description("팀을 찾을 수 없습니다.")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("미션 롤백 - stage 누락")
+    void rollbackMission_stageMissing() throws Exception {
+        willThrow(new BadRequestException(ErrorCode.VARIABLE_WRONG))
+                .given(teachSubmissionService).rollbackMission(anyInt(), isNull());
+
+        String requestJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(java.util.Map.of(
+                "teamId", 1));
+
+        mockMvc.perform(post("/api/teach/submission/rollback")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andExpect(status().isBadRequest())
+                .andDo(document("teach-submission/rollback-stage-missing",
+                        responseFields(
+                                fieldWithPath("status").description("400"),
+                                fieldWithPath("data.errorCode").description("COMMON_2"),
+                                fieldWithPath("data.message").description("요청 변수가 잘못되었습니다.")
                         )
                 ));
     }

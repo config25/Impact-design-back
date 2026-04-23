@@ -22,6 +22,8 @@ public interface FLetterOfIntentRepository {
 
     void submitAllByUserId(Long userId, CanvasType canvasType);
 
+    void rollbackAllByUserId(Long userId, CanvasType canvasType);
+
     List<FLetterOfIntentModel> findByTargetTeamId(Integer teamId, CanvasType canvasType);
     List<FLetterOfIntentModel> findByTargetTeamIds(List<Integer> teamIds, CanvasType canvasType);
 

@@ -16,6 +16,8 @@ import qtedu.Impact_design.domain.implementation.identitycanvas.IdentityCanvasRe
 import qtedu.Impact_design.domain.implementation.impactcheck.ImpactCheckReader;
 import qtedu.Impact_design.domain.implementation.wincanvas.WinCanvasReader;
 import qtedu.Impact_design.domain.model.en.CanvasType;
+import qtedu.Impact_design.domain.model.team.TbTeamModel;
+import qtedu.Impact_design.domain.model.team.TeamUserModel;
 import qtedu.Impact_design.domain.repository.auth.TbTeamRepository;
 import qtedu.Impact_design.domain.repository.auth.TeamUserRepository;
 import qtedu.Impact_design.domain.repository.teach.GameTeamRepository;
@@ -49,20 +51,14 @@ public class TeachSubmissionReader {
             return Collections.emptyList();
         }
 
-        Map<Integer, qtedu.Impact_design.domain.model.team.TbTeamModel> teamMap =
-                tbTeamRepository.findByTeamIdIn(teamIds).stream()
-                        .collect(Collectors.toMap(
-                                qtedu.Impact_design.domain.model.team.TbTeamModel::getTeamId,
-                                Function.identity()));
+        Map<Integer, TbTeamModel> teamMap = tbTeamRepository.findByTeamIdIn(teamIds).stream()
+                .collect(Collectors.toMap(TbTeamModel::getTeamId, Function.identity()));
 
-        List<qtedu.Impact_design.domain.model.team.TeamUserModel> allTeamUsers =
-                teamUserRepository.findByTeamIdIn(teamIds);
+        List<TeamUserModel> allTeamUsers = teamUserRepository.findByTeamIdIn(teamIds);
         Map<Integer, List<Long>> teamUserIdsMap = allTeamUsers.stream()
                 .collect(Collectors.groupingBy(
-                        qtedu.Impact_design.domain.model.team.TeamUserModel::getTeamId,
-                        Collectors.mapping(
-                                qtedu.Impact_design.domain.model.team.TeamUserModel::getUserId,
-                                Collectors.toList())));
+                        TeamUserModel::getTeamId,
+                        Collectors.mapping(TeamUserModel::getUserId, Collectors.toList())));
 
         Map<Integer, TeamSubmitStatusChecker.TeamSubmitResult> submitMap =
                 submitStatusChecker.checkAllSubmitStatuses(teamUserIdsMap);

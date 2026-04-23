@@ -108,6 +108,13 @@ public class FLetterOfIntentRepositoryImpl implements FLetterOfIntentRepository 
     }
 
     @Override
+    public void rollbackAllByUserId(Long userId, CanvasType canvasType) {
+        List<FLetterOfIntent> entities = fLetterOfIntentJpaRepository.findByUserIdAndDelYnAndCanvasType(userId, "N", canvasType);
+        entities.forEach(FLetterOfIntent::rollback);
+        fLetterOfIntentJpaRepository.saveAll(entities);
+    }
+
+    @Override
     public List<FLetterOfIntentModel> findByTargetTeamId(Integer teamId, CanvasType canvasType) {
         return fLetterOfIntentJpaRepository
                 .findByInvestmentTargetAndDelYnAndCanvasType(String.valueOf(teamId), "N", canvasType)
