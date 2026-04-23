@@ -3,6 +3,7 @@ package qtedu.Impact_design.api.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import qtedu.Impact_design.api.dto.request.teach.MissionRollbackRequest;
 import qtedu.Impact_design.api.dto.response.flowcanvas.FlowCanvasResponse;
 import qtedu.Impact_design.api.dto.response.funding.FundingInvestmentResponse;
 import qtedu.Impact_design.api.dto.response.funding.FundingMyResultResponse;
@@ -12,6 +13,7 @@ import qtedu.Impact_design.api.dto.response.teach.TeamSubmissionListResponse;
 import qtedu.Impact_design.api.dto.response.wincanvas.WinCanvasResponse;
 import qtedu.Impact_design.api.util.ResponseHelper;
 import qtedu.Impact_design.common.response.HttpResponse;
+import qtedu.Impact_design.common.response.SuccessOnlyResponse;
 import qtedu.Impact_design.domain.model.en.CanvasType;
 import qtedu.Impact_design.domain.service.TeachSubmissionService;
 
@@ -113,5 +115,18 @@ public class TeachSubmissionController {
     ) {
         FundingMyResultResponse response = teachSubmissionService.getFundingResult(teamId);
         return ResponseHelper.success(response);
+    }
+
+    /**
+     * 미션 롤백 (teach_mission_rollback)
+     * 스테이지별 제출 상태(submitted)를 false 로 되돌림. 데이터는 유지.
+     * stage: A, B, C, D, E, F_BUILD, F_QUICK
+     */
+    @PostMapping("/rollback")
+    public ResponseEntity<HttpResponse<SuccessOnlyResponse>> rollbackMission(
+            @RequestBody MissionRollbackRequest request
+    ) {
+        teachSubmissionService.rollbackMission(request.getTeamId(), request.getStage());
+        return ResponseHelper.successOnly();
     }
 }

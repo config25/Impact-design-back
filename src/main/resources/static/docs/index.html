@@ -1270,24 +1270,34 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_응답_필드_설명response_fields_109">응답 필드 설명(Response Fields)</a></li>
 </ul>
 </li>
+<li><a href="#_9_미션_롤백">9. 미션 롤백</a>
+<ul class="sectlevel3">
+<li><a href="#_요청request_64">요청(Request)</a></li>
+<li><a href="#_요청_필드_설명request_fields_18">요청 필드 설명(Request Fields)</a></li>
+<li><a href="#_응답response_110">응답(Response)</a></li>
+<li><a href="#_응답_필드_설명response_fields_110">응답 필드 설명(Response Fields)</a></li>
+<li><a href="#_에러_팀_없음_404">에러: 팀 없음 (404)</a></li>
+<li><a href="#_에러_stage_누락_400">에러: stage 누락 (400)</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#_report_api">Report API</a>
 <ul class="sectlevel2">
 <li><a href="#_1_팀별_리포트_조회">1. 팀별 리포트 조회</a>
 <ul class="sectlevel3">
-<li><a href="#_요청request_64">요청(Request)</a></li>
+<li><a href="#_요청request_65">요청(Request)</a></li>
 <li><a href="#_경로_변수_설명path_parameters_12">경로 변수 설명(Path Parameters)</a></li>
-<li><a href="#_응답response_110">응답(Response)</a></li>
-<li><a href="#_응답_필드_설명response_fields_110">응답 필드 설명(Response Fields)</a></li>
+<li><a href="#_응답response_111">응답(Response)</a></li>
+<li><a href="#_응답_필드_설명response_fields_111">응답 필드 설명(Response Fields)</a></li>
 </ul>
 </li>
 <li><a href="#_2_게임별_팀_캔버스_조회">2. 게임별 팀 캔버스 조회</a>
 <ul class="sectlevel3">
-<li><a href="#_요청request_65">요청(Request)</a></li>
+<li><a href="#_요청request_66">요청(Request)</a></li>
 <li><a href="#_경로_변수_설명path_parameters_13">경로 변수 설명(Path Parameters)</a></li>
-<li><a href="#_응답response_111">응답(Response)</a></li>
-<li><a href="#_응답_필드_설명response_fields_111">응답 필드 설명(Response Fields)</a></li>
+<li><a href="#_응답response_112">응답(Response)</a></li>
+<li><a href="#_응답_필드_설명response_fields_112">응답 필드 설명(Response Fields)</a></li>
 </ul>
 </li>
 </ul>
@@ -2299,9 +2309,9 @@ Content-Length: 90
 Host: iptdesign.mycafe24.com
 
 {
-  "teamId" : 1,
-  "password" : "1234",
   "loginId" : "a1001",
+  "password" : "1234",
+  "teamId" : 1,
   "code" : "ABC123"
 }</code></pre>
 </div>
@@ -4836,22 +4846,22 @@ Host: iptdesign.mycafe24.com
 
 {
   "goals" : [ {
-    "strategicActivities" : [ {
-      "activityMetric" : "서비스 개선 횟수",
-      "orderNo" : 1,
-      "activityId" : 1,
-      "interCriteria" : "월 2회 이상"
-    } ],
-    "goalTitle" : "사회적 가치 창출",
-    "orderNo" : 1,
     "goalId" : 1,
-    "tacticals" : [ {
+    "orderNo" : 1,
+    "goalTitle" : "사회적 가치 창출",
+    "strategicActivities" : [ {
+      "interCriteria" : "월 2회 이상",
+      "activityId" : 1,
       "orderNo" : 1,
-      "metricId" : 1,
-      "tacticalMetric" : "고객 만족도",
-      "tacticalGoal" : "90% 이상"
+      "activityMetric" : "서비스 개선 횟수"
     } ],
-    "goalDescription" : "지역 사회 문제를 해결하는 솔루션 개발"
+    "goalDescription" : "지역 사회 문제를 해결하는 솔루션 개발",
+    "tacticals" : [ {
+      "tacticalMetric" : "고객 만족도",
+      "metricId" : 1,
+      "orderNo" : 1,
+      "tacticalGoal" : "90% 이상"
+    } ]
   } ]
 }</code></pre>
 </div>
@@ -5171,22 +5181,22 @@ Host: iptdesign.mycafe24.com
 
 {
   "goals" : [ {
-    "strategicActivities" : [ {
-      "activityMetric" : "서비스 개선 횟수",
-      "orderNo" : 1,
-      "activityId" : 1,
-      "interCriteria" : "월 2회 이상"
-    } ],
-    "goalTitle" : "사회적 가치 창출",
-    "orderNo" : 1,
     "goalId" : 1,
-    "tacticals" : [ {
+    "orderNo" : 1,
+    "goalTitle" : "사회적 가치 창출",
+    "strategicActivities" : [ {
+      "interCriteria" : "월 2회 이상",
+      "activityId" : 1,
       "orderNo" : 1,
-      "metricId" : 1,
-      "tacticalMetric" : "고객 만족도",
-      "tacticalGoal" : "90% 이상"
+      "activityMetric" : "서비스 개선 횟수"
     } ],
-    "goalDescription" : "지역 사회 문제를 해결하는 솔루션 개발"
+    "goalDescription" : "지역 사회 문제를 해결하는 솔루션 개발",
+    "tacticals" : [ {
+      "tacticalMetric" : "고객 만족도",
+      "metricId" : 1,
+      "orderNo" : 1,
+      "tacticalGoal" : "90% 이상"
+    } ]
   } ]
 }</code></pre>
 </div>
@@ -5666,28 +5676,28 @@ Host: iptdesign.mycafe24.com
   "crisisSignal" : "환경 오염 심화",
   "painTouchPoint" : "주민 불편 사항",
   "taskInputs" : [ {
-    "orderNo" : 1,
-    "resourceName" : "홍보물",
     "quantity" : 100,
+    "resourceName" : "홍보물",
+    "orderNo" : 1,
     "inputId" : 1
   } ],
   "taskActivities" : [ {
-    "processStep" : "기획",
-    "activityContent" : "캠페인 기획 회의",
     "duration" : "2주",
-    "orderNo" : 1,
-    "activityId" : 1
+    "activityContent" : "캠페인 기획 회의",
+    "processStep" : "기획",
+    "activityId" : 1,
+    "orderNo" : 1
   } ],
   "teamwork" : {
-    "workType" : "협업",
+    "activityTeamwork" : "팀 회의 진행",
     "teamworkId" : 1,
-    "activityTeamwork" : "팀 회의 진행"
+    "workType" : "협업"
   },
   "taskOutcomes" : [ {
-    "outcomeContent" : "참여 인원 50명",
-    "orderNo" : 1,
+    "outcomeType" : "QUANTITATIVE",
     "outcomeNo" : 1,
-    "outcomeType" : "QUANTITATIVE"
+    "orderNo" : 1,
+    "outcomeContent" : "참여 인원 50명"
   } ]
 }</code></pre>
 </div>
@@ -6134,28 +6144,28 @@ Host: iptdesign.mycafe24.com
   "crisisSignal" : "환경 오염 심화",
   "painTouchPoint" : "주민 불편 사항",
   "taskInputs" : [ {
-    "orderNo" : 1,
-    "resourceName" : "홍보물",
     "quantity" : 100,
+    "resourceName" : "홍보물",
+    "orderNo" : 1,
     "inputId" : 1
   } ],
   "taskActivities" : [ {
-    "processStep" : "기획",
-    "activityContent" : "캠페인 기획 회의",
     "duration" : "2주",
-    "orderNo" : 1,
-    "activityId" : 1
+    "activityContent" : "캠페인 기획 회의",
+    "processStep" : "기획",
+    "activityId" : 1,
+    "orderNo" : 1
   } ],
   "teamwork" : {
-    "workType" : "협업",
+    "activityTeamwork" : "팀 회의 진행",
     "teamworkId" : 1,
-    "activityTeamwork" : "팀 회의 진행"
+    "workType" : "협업"
   },
   "taskOutcomes" : [ {
-    "outcomeContent" : "참여 인원 50명",
-    "orderNo" : 1,
+    "outcomeType" : "QUANTITATIVE",
     "outcomeNo" : 1,
-    "outcomeType" : "QUANTITATIVE"
+    "orderNo" : 1,
+    "outcomeContent" : "참여 인원 50명"
   } ]
 }</code></pre>
 </div>
@@ -6707,28 +6717,28 @@ Host: iptdesign.mycafe24.com
   "crisisSignal" : "시장 진입 지연",
   "painTouchPoint" : "사용자 피드백 부족",
   "taskInputs" : [ {
-    "orderNo" : 1,
-    "resourceName" : "개발 인력",
     "quantity" : 3,
+    "resourceName" : "개발 인력",
+    "orderNo" : 1,
     "inputId" : 1
   } ],
   "taskActivities" : [ {
-    "processStep" : "설계",
-    "activityContent" : "서비스 아키텍처 설계",
     "duration" : "3주",
-    "orderNo" : 1,
-    "activityId" : 1
+    "activityContent" : "서비스 아키텍처 설계",
+    "processStep" : "설계",
+    "activityId" : 1,
+    "orderNo" : 1
   } ],
   "teamwork" : {
-    "workType" : "협업",
+    "activityTeamwork" : "주간 스프린트 회의",
     "teamworkId" : 1,
-    "activityTeamwork" : "주간 스프린트 회의"
+    "workType" : "협업"
   },
   "taskOutcomes" : [ {
-    "outcomeContent" : "프로토타입 완성률 100%",
-    "orderNo" : 1,
+    "outcomeType" : "QUANTITATIVE",
     "outcomeNo" : 1,
-    "outcomeType" : "QUANTITATIVE"
+    "orderNo" : 1,
+    "outcomeContent" : "프로토타입 완성률 100%"
   } ]
 }</code></pre>
 </div>
@@ -7175,28 +7185,28 @@ Host: iptdesign.mycafe24.com
   "crisisSignal" : "시장 진입 지연",
   "painTouchPoint" : "사용자 피드백 부족",
   "taskInputs" : [ {
-    "orderNo" : 1,
-    "resourceName" : "개발 인력",
     "quantity" : 3,
+    "resourceName" : "개발 인력",
+    "orderNo" : 1,
     "inputId" : 1
   } ],
   "taskActivities" : [ {
-    "processStep" : "설계",
-    "activityContent" : "서비스 아키텍처 설계",
     "duration" : "3주",
-    "orderNo" : 1,
-    "activityId" : 1
+    "activityContent" : "서비스 아키텍처 설계",
+    "processStep" : "설계",
+    "activityId" : 1,
+    "orderNo" : 1
   } ],
   "teamwork" : {
-    "workType" : "협업",
+    "activityTeamwork" : "주간 스프린트 회의",
     "teamworkId" : 1,
-    "activityTeamwork" : "주간 스프린트 회의"
+    "workType" : "협업"
   },
   "taskOutcomes" : [ {
-    "outcomeContent" : "프로토타입 완성률 100%",
-    "orderNo" : 1,
+    "outcomeType" : "QUANTITATIVE",
     "outcomeNo" : 1,
-    "outcomeType" : "QUANTITATIVE"
+    "orderNo" : 1,
+    "outcomeContent" : "프로토타입 완성률 100%"
   } ]
 }</code></pre>
 </div>
@@ -10182,15 +10192,15 @@ Content-Disposition: form-data; name=request; filename=request
 Content-Type: application/json
 
 {
-  "numMember" : 10,
-  "summary" : "강의실 설명",
-  "numTeam" : 4,
-  "name" : "새 강의실",
-  "projectDate" : "2026-06-30",
-  "popupId" : 0,
   "worldType" : 1,
-  "target" : "대학생",
-  "classType" : "BASIC"
+  "popupId" : 0,
+  "projectDate" : "2026-06-30",
+  "name" : "새 강의실",
+  "numTeam" : 4,
+  "summary" : "강의실 설명",
+  "numMember" : 10,
+  "classType" : "BASIC",
+  "target" : "대학생"
 }
 --6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
 Content-Disposition: form-data; name=image; filename=image.png
@@ -10319,9 +10329,9 @@ Content-Length: 100
 Host: iptdesign.mycafe24.com
 
 {
-  "enddate" : "2026-07-15 18:00",
+  "name" : "수정된 강의실",
   "target" : "대학생",
-  "name" : "수정된 강의실"
+  "enddate" : "2026-07-15 18:00"
 }</code></pre>
 </div>
 </div>
@@ -11174,8 +11184,8 @@ Content-Length: 55
 Host: iptdesign.mycafe24.com
 
 {
-  "step" : "A-1,B-1,C-1,D-1,E-1",
-  "gameId" : 1
+  "gameId" : 1,
+  "step" : "A-1,B-1,C-1,D-1,E-1"
 }</code></pre>
 </div>
 </div>
@@ -12673,9 +12683,9 @@ Content-Length: 90
 Host: iptdesign.mycafe24.com
 
 {
-  "teamName" : "수정된 팀",
-  "sequence" : 2,
   "aiPlay" : 0,
+  "sequence" : 2,
+  "teamName" : "수정된 팀",
   "isDoing" : 1
 }</code></pre>
 </div>
@@ -14682,6 +14692,210 @@ Content-Length: 608
 </table>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_9_미션_롤백"><a class="anchor" href="#_9_미션_롤백"></a><a class="link" href="#_9_미션_롤백">9. 미션 롤백</a></h3>
+<div class="paragraph">
+<p>팀의 특정 스테이지(A, B, C, D, E, F_BUILD, F_QUICK)의 <code>submitted</code> 플래그를 false 로 되돌립니다. 데이터는 유지되며 제출 상태만 해제됩니다.</p>
+</div>
+<div class="sect3">
+<h4 id="_요청request_64"><a class="anchor" href="#_요청request_64"></a><a class="link" href="#_요청request_64">요청(Request)</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/teach/submission/rollback HTTP/1.1
+Content-Type: application/json
+Content-Length: 38
+Host: iptdesign.mycafe24.com
+
+{
+  "teamId" : 1,
+  "stage" : "A"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_요청_필드_설명request_fields_18"><a class="anchor" href="#_요청_필드_설명request_fields_18"></a><a class="link" href="#_요청_필드_설명request_fields_18">요청 필드 설명(Request Fields)</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>stage</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">롤백할 스테이지 (A, B, C, D, E, F_BUILD, F_QUICK)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_응답response_110"><a class="anchor" href="#_응답response_110"></a><a class="link" href="#_응답response_110">응답(Response)</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+Content-Length: 68
+
+{
+  "status" : 200,
+  "data" : {
+    "message" : "성공"
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_응답_필드_설명response_fields_110"><a class="anchor" href="#_응답_필드_설명response_fields_110"></a><a class="link" href="#_응답_필드_설명response_fields_110">응답 필드 설명(Response Fields)</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>status</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">상태 코드</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">성공</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_에러_팀_없음_404"><a class="anchor" href="#_에러_팀_없음_404"></a><a class="link" href="#_에러_팀_없음_404">에러: 팀 없음 (404)</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 404 Not Found
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+Content-Length: 122
+
+{
+  "status" : 404,
+  "data" : {
+    "errorCode" : "TEAM_2",
+    "message" : "팀을 찾을 수 없습니다."
+  }
+}</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>status</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">404</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.errorCode</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TEAM_2</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀을 찾을 수 없습니다.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_에러_stage_누락_400"><a class="anchor" href="#_에러_stage_누락_400"></a><a class="link" href="#_에러_stage_누락_400">에러: stage 누락 (400)</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 400 Bad Request
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+Content-Length: 132
+
+{
+  "status" : 400,
+  "data" : {
+    "errorCode" : "COMMON_2",
+    "message" : "요청 변수가 잘못되었습니다."
+  }
+}</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>status</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.errorCode</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">COMMON_2</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">요청 변수가 잘못되었습니다.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -14702,7 +14916,7 @@ Content-Length: 608
 <div class="sect2">
 <h3 id="_1_팀별_리포트_조회"><a class="anchor" href="#_1_팀별_리포트_조회"></a><a class="link" href="#_1_팀별_리포트_조회">1. 팀별 리포트 조회</a></h3>
 <div class="sect3">
-<h4 id="_요청request_64"><a class="anchor" href="#_요청request_64"></a><a class="link" href="#_요청request_64">요청(Request)</a></h4>
+<h4 id="_요청request_65"><a class="anchor" href="#_요청request_65"></a><a class="link" href="#_요청request_65">요청(Request)</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/teach/report/1 HTTP/1.1
@@ -14733,7 +14947,7 @@ Host: iptdesign.mycafe24.com</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_응답response_110"><a class="anchor" href="#_응답response_110"></a><a class="link" href="#_응답response_110">응답(Response)</a></h4>
+<h4 id="_응답response_111"><a class="anchor" href="#_응답response_111"></a><a class="link" href="#_응답response_111">응답(Response)</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -14869,7 +15083,7 @@ Content-Length: 3321
 </div>
 </div>
 <div class="sect3">
-<h4 id="_응답_필드_설명response_fields_110"><a class="anchor" href="#_응답_필드_설명response_fields_110"></a><a class="link" href="#_응답_필드_설명response_fields_110">응답 필드 설명(Response Fields)</a></h4>
+<h4 id="_응답_필드_설명response_fields_111"><a class="anchor" href="#_응답_필드_설명response_fields_111"></a><a class="link" href="#_응답_필드_설명response_fields_111">응답 필드 설명(Response Fields)</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -15396,7 +15610,7 @@ Content-Length: 3321
 <div class="sect2">
 <h3 id="_2_게임별_팀_캔버스_조회"><a class="anchor" href="#_2_게임별_팀_캔버스_조회"></a><a class="link" href="#_2_게임별_팀_캔버스_조회">2. 게임별 팀 캔버스 조회</a></h3>
 <div class="sect3">
-<h4 id="_요청request_65"><a class="anchor" href="#_요청request_65"></a><a class="link" href="#_요청request_65">요청(Request)</a></h4>
+<h4 id="_요청request_66"><a class="anchor" href="#_요청request_66"></a><a class="link" href="#_요청request_66">요청(Request)</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/teach/report/canvas/1 HTTP/1.1
@@ -15427,7 +15641,7 @@ Host: iptdesign.mycafe24.com</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_응답response_111"><a class="anchor" href="#_응답response_111"></a><a class="link" href="#_응답response_111">응답(Response)</a></h4>
+<h4 id="_응답response_112"><a class="anchor" href="#_응답response_112"></a><a class="link" href="#_응답response_112">응답(Response)</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -15576,7 +15790,7 @@ Content-Length: 3935
 </div>
 </div>
 <div class="sect3">
-<h4 id="_응답_필드_설명response_fields_111"><a class="anchor" href="#_응답_필드_설명response_fields_111"></a><a class="link" href="#_응답_필드_설명response_fields_111">응답 필드 설명(Response Fields)</a></h4>
+<h4 id="_응답_필드_설명response_fields_112"><a class="anchor" href="#_응답_필드_설명response_fields_112"></a><a class="link" href="#_응답_필드_설명response_fields_112">응답 필드 설명(Response Fields)</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -16161,7 +16375,7 @@ Content-Length: 3935
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2026-04-09 14:22:02 +0900
+Last updated 2026-04-23 09:58:48 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>

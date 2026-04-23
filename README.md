@@ -268,6 +268,7 @@ OpenAI 호출이 매달리면 상위 HTTP 요청도 같이 매달려 톰캣 워�
 | `*/api/build-win-canvas/**` | E단계 - Build Win CRUD |
 | `*/api/funding/**` | F단계 - Impact Review |
 | `*/api/teach/**` | 강사 수업/팀/제출물 관리 |
+| `POST /api/teach/submission/rollback` | 팀의 특정 스테이지(A~F_BUILD/F_QUICK) 제출 상태 롤백 |
 | `*/api/teach/report/**` | 팀 성과 리포트 |
 | `*/api/admin/**` | 관리자 대시보드 |
 > D/E단계는 `WinCanvasController`에서 `CanvasType`으로 분기하여 통합 처리
@@ -277,15 +278,29 @@ OpenAI 호출이 매달리면 상위 HTTP 요청도 같이 매달려 톰캣 워�
 
 배포 후 `/docs/index.html`에서 확인할 수 있습니다.
 
+**빌드 흐름**
 ```
-빌드 시 자동 생성:
-  테스트 실행 → Asciidoctor 스니펫 생성 → HTML 변환 → static/docs/index.html
-  
-  업데이트 명령어
-    - ./gradlew test asciidoctor
-    - cp build/docs/asciidoc/index.html src/main/resources/static/docs/index.html
-  
+테스트 실행 → REST Docs 스니펫 생성 (build/generated-snippets)
+           → Asciidoctor HTML 변환 (build/docs/asciidoc/index.html)
+           → static/docs/index.html 로 복사 → 서버에서 /docs/index.html 노출
 ```
+
+**업데이트 명령어**
+
+```bash
+# 1) HTML 재생성 (test → asciidoctor 자동 실행)
+./gradlew asciidoctor
+
+# 2) 서버가 서빙하는 위치로 복사
+cp build/docs/asciidoc/index.html src/main/resources/static/docs/index.html
+```
+
+한 줄로:
+```bash
+./gradlew asciidoctor && cp build/docs/asciidoc/index.html src/main/resources/static/docs/index.html
+```
+
+> `bootJar` 시에는 `build.gradle:78-82` 설정에 의해 자동 복사되지만, 리포지토리에 `static/docs/index.html`을 커밋해 관리하므로 로컬에서 위 `cp` 명령으로 동기화해야 합니다.
 
 | 테스트 클래스 | 커버 영역 |
 |--------------|----------|
@@ -838,6 +853,48 @@ ExecStart=/usr/bin/java -Xms256m -Xmx384m -XX:+UseSerialGC -XX:MaxMetaspaceSize=
 
 > 서버 메모리 확인: `free -h`
 > 프로세스별 확인: `ps aux --sort=-%mem | head -5`
+
+### 🧵 동시성 튜닝 (60 동접 타겟)
+
+1코어·Heap 384MB 환경에서 수업 1개(팀 6 × 멤버 10 = **60명**) 동접을 안정 수용하는 것을 목표로 튜닝했습니다.
+
+**`application-prod.yaml`**
+
+| 설정 | 값 | 의도 |
+|------|-----|------|
+| `server.tomcat.threads.max` | 15 | 1코어 + I/O 대기 위주 요청 조합에 적정 |
+| `server.tomcat.threads.min-spare` | 3 | 평상시 유휴 스레드 최소치 |
+| `server.tomcat.accept-count` | **60** | 동시 제출 피크 흡수 (15 active + 60 queued = 75 수용) |
+| `spring.datasource.hikari.maximum-pool-size` | 8 | 60 동접 기준 충분. 과도하게 키우면 메모리 압박 |
+| `spring.datasource.hikari.connection-timeout` | 3000ms | 커넥션 고갈 시 빠르게 실패하여 스레드 점유 방지 |
+
+**`application.yaml`**
+
+| 설정 | 값 | 의도 |
+|------|-----|------|
+| `spring.servlet.multipart.max-file-size` | **10MB** | Heap 384MB에서 동시 업로드 OOM 방지 (기존 50MB → 축소) |
+| `spring.servlet.multipart.max-request-size` | **10MB** | 동일 |
+
+**`ExecutorConfig.java` — AI 전용 풀 (Tomcat 스레드 보호)**
+
+| 설정 | 값 | 의도 |
+|------|-----|------|
+| corePoolSize / maxPoolSize | 6 / 6 | 동시 OpenAI 호출 상한 |
+| queueCapacity | 20 | 작은 Heap에서 버스트 흡수 |
+| RejectedExecutionHandler | `CallerRunsPolicy` | 큐 포화 시 자연스러운 백프레셔 (요청 유실 0) |
+
+**실제 감당 범위**
+
+| 부하 유형 | 60명 감당 여부 |
+|---|---|
+| 일반 조회/저장 | ✅ 여유 있음 (평균 12 req/s, Tomcat 15 스레드로 충분) |
+| 로그인 피크 | ✅ 안전 |
+| 동시 제출 | ✅ accept-count 60으로 흡수 |
+| 리포트 생성 중 학생 접속 | ✅ ioExecutor 분리로 Tomcat 보호 |
+| 동시 파일 업로드 | ✅ 10MB 제한으로 OOM 방지 |
+| AI 분석 동시 요청 | ⚠️ 5~6명까진 안전, 초과 시 대기 |
+
+> 수업을 **2개 이상 동시 운영(120명+)** 할 경우 RAM 증설(2GB+)이 필요합니다.
 
 ### 🔑 환경변수
 

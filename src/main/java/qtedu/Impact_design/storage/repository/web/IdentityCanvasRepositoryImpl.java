@@ -82,6 +82,15 @@ public class IdentityCanvasRepositoryImpl implements IdentityCanvasRepository {
                 });
     }
 
+    @Override
+    public void rollbackByUserId(Long userId) {
+        identityCanvasJpaRepository.findByUserId(userId)
+                .ifPresent(entity -> {
+                    entity.rollback();
+                    identityCanvasJpaRepository.save(entity);
+                });
+    }
+
     private IdentityCanvasModel toModel(IdentityCanvas entity) {
         return IdentityCanvasModel.builder()
                 .identityId(entity.getIdentityId())

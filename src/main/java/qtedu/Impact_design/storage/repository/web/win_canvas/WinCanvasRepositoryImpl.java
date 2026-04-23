@@ -65,6 +65,15 @@ public class WinCanvasRepositoryImpl implements WinCanvasRepository {
                 });
     }
 
+    @Override
+    public void rollbackByUserIdAndCanvasType(Long userId, CanvasType canvasType) {
+        winCanvasJpaRepository.findByUserIdAndCanvasType(userId, canvasType)
+                .ifPresent(entity -> {
+                    entity.rollback();
+                    winCanvasJpaRepository.save(entity);
+                });
+    }
+
     private WinCanvasModel toModel(WinCanvas entity) {
         return WinCanvasModel.builder()
                 .canvasId(entity.getCanvasId())

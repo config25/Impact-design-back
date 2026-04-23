@@ -43,4 +43,8 @@ public class FlowCanvas {
     public void submit() {
         this.submitted = true;
     }
+
+    public void rollback() {
+        this.submitted = false;
+    }
 }

@@ -60,14 +60,6 @@ class JwtTokenUtilTest {
         }
 
         @Test
-        @DisplayName("그냥 테스트를 하고싶다.")
-        void Candf(){
-
-        }
-
-
-
-        @Test
         @DisplayName("Bearer 접두사가 있어도 userId를 추출한다")
         void extractsUserIdWithBearerPrefix() {
             UserId userId = UserId.of(42L);
